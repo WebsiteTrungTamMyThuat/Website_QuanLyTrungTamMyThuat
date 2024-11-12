@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'QlyTrungTamMyThuat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'QlyTTMyThuat',
+        'NAME': 'qlyttmythuat',
         'USER': 'postgres',
-        'PASSWORD': '205812258',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
     }
