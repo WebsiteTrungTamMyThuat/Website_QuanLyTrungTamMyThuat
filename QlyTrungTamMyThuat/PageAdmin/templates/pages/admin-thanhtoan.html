@@ -1,0 +1,98 @@
+{% extends "layout/layout.html" %} {% block title %} Thanh toán {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel=stylesheet href="{% static "css/admin-thanhtoan.css" %}">
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Thanh toán</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Thanh toán</a>
+                </li>
+            </ul>
+        </div>
+        <div class="button-group">
+            <a href="{% url 'them_hd' %}" class="btn-add">
+                <i class='bx bx-plus'></i>
+                <span class="text">Thêm</span>
+            </a>
+            {% comment %} <a href="#" class="btn-delete">
+                <i class='bx bx-minus'></i>
+                <span class="text">Xóa</span>
+            </a>
+            <a href="#" class="btn-edit">
+                <i class='bx bx-edit-alt' ></i>
+                <span class="text">Sửa</span>
+            </a> {% endcomment %}
+        </div>
+    </div>
+
+    <div class="table-data">
+        <div class="order">
+            <div class="head">
+                <h3>Danh sách hóa đơn</h3>
+                <form action="#" method="GET">
+                    <div class="form-input">
+                        <input name="seachsb" type="search" placeholder="Search...">
+                        <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                    </div>
+                </form>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Ngày lập</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>hd01</td>
+                        <td>01/01/2023</td>
+                        <td>10000000</td>
+                        <td><span class="status process">Chưa hoàn tất</td>
+                        <td>
+                            <div class="form-button">
+                                <a href="#" class="btn-delete">
+                                    <i class='bx bx-minus'></i>
+                                    <span class="text">Xóa</span>
+                                </a>
+                                <a href="{% url 'sua_hd' %}" class="btn-edit">
+                                    <i class='bx bx-edit-alt' ></i>
+                                    <span class="text">Sửa</span>
+                                </a> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>hd01</td>
+                        <td>01/01/2023</td>
+                        <td>10000000</td>
+                        <td><span class="status process">Hoàn tất</td>
+                        <td>
+                            <div class="form-button">
+                                <a href="#" class="btn-delete">
+                                    <i class='bx bx-minus'></i>
+                                    <span class="text">Xóa</span>
+                                </a>
+                                <a href="#" class="btn-edit">
+                                    <i class='bx bx-edit-alt' ></i>
+                                    <span class="text">Sửa</span>
+                                </a> 
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}
