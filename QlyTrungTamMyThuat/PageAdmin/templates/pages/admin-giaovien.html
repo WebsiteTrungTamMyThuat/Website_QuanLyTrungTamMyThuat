@@ -57,14 +57,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for gv in ds_gv %}
                     <tr>
-                        <td>hv01</td>
-                        <td>Luong Mai Thanh Thao</td>
-                        <td><span class="status process">Nữ</td>
-                        <td>24/12/2003</td>
-                        <td>012345678</td>
-                        <td>thao@gmail.com</td>
-                        <td><span class="status process">Đang học</span></td>
+                        <td>{{gv.magv}}</td>
+                        <td>{{gv.hoten}}</td>
+                        <td><span class="status process">{{gv.GioiTinh}}</td>
+                        <td>{{gv.NgaySinh}}</td>
+                        <td>{{gv.SDT}}</td>
+                        <td>{{gv.email}}</td>
+                        <td><span class="status process">{{gv.taikhoan.trangthai}}</span></td>
                         <td>
                             <div class="form-button">
                                 <a href="#" class="btn-delete">
@@ -78,27 +79,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td>hv01</td>
-                        <td>Luong Mai Thanh Thao</td>
-                        <td><span class="status process">Nữ</td>
-                        <td>24/12/2003</td>
-                        <td>012345678</td>
-                        <td>thao@gmail.com</td>
-                        <td><span class="status process">Vô hiệu hóa</span></td>
-                        <td>
-                            <div class="form-button">
-                                <a href="#" class="btn-delete">
-                                    <i class='bx bx-minus'></i>
-                                    <span class="text">Xóa</span>
-                                </a>
-                                <a href="#" class="btn-edit">
-                                    <i class='bx bx-edit-alt' ></i>
-                                    <span class="text">Sửa</span>
-                                </a> 
-                            </div>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
