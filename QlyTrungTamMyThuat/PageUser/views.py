@@ -10,3 +10,9 @@ def dangky(request):
 
 def dangnhap(request):
     return render(request,'layout/dangnhap.html')
+
+def quenmk(request):
+    return render(request,'layout/quenmk.html')
+
+def dangkytuvan(request):
+    return render(request,'pages/dang-ky-tu-van.html')

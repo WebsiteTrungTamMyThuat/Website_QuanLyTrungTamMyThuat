@@ -48,7 +48,7 @@
   <header class="header" data-header>
     <div class="container">
       <div class="nav__logo">
-        <a href="#" class="logo"><img src="{%static "img/logo (2).png"%}" alt=""></a>
+        <a href="{% url "user" %}" class="logo"><img src="{%static "img/logo (2).png"%}" alt=""></a>
     </div>
     <nav class="navbar" data-navbar>
       <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
@@ -57,7 +57,7 @@
 
       <ul class="navbar-list">
         <li class="navbar-item">
-          <a href="#" class="navbar-link">Trang chủ</a>
+          <a href="{% url "user" %}" class="navbar-link">Trang chủ</a>
         </li>
 
         <li class="navbar-item">
@@ -81,7 +81,7 @@
         </li>
 
         <li class="navbar-item">
-          <a href="#" class="navbar-link">Đăng ký tư vấn</a>
+          <a href="{% url "dangkytuvan" %}" class="navbar-link">Đăng ký tư vấn</a>
         </li>
 
         <div class="nav-right">
@@ -124,25 +124,17 @@
 
         <div class="footer-brand">
 
-          <a href="#" class="logo">Style Art</a>
+          <a href="#" class="logo">Mỹ thuật Bụi</a>
 
           <p class="footer-text">
-            Trung tâm dạy vẽ mỹ thuật<br>
-            Style Art - Mỹ thuật phong cách<br>
-            Khơi nguồn sáng tạo, vẽ nên phong cách<br>
+            CÔNG TY CP ĐÀO TẠO VÀ <br>TƯ VẤN GIÁO DỤC MỸ THUẬT BỤI
           </p>
 
           <ul class="social-list">
 
             <li>
-              <a href="#" class="social-link">
+              <a href="https://www.facebook.com/mythuatbui" class="social-link">
                 <ion-icon name="logo-facebook"></ion-icon>
-              </a>
-            </li>
-
-            <li>
-              <a href="#" class="social-link">
-                <ion-icon name="logo-tiktok"></ion-icon>
               </a>
             </li>
 
@@ -206,7 +198,7 @@
 
         <div class="footer-list">
 
-          <p class="footer-list-title">Liên hệ</p>
+          <p class="footer-list-title">Góp ý cho mỹ thuật Bụi</p>
 
           <p class="footer-text">
             Nếu bạn có câu hỏi hoặc góp ý?<br>
@@ -226,7 +218,8 @@
       <div class="footer-bottom">
 
         <p class="copyright">
-          Trụ sở : 140 Đường Lê Trọng Tấn, Tây Thạnh, Tân Phú, Hồ Chí Minh, Việt Nam
+          Trụ sở: Số 6, Đường số 6, Phường 04, Quận 3, Hồ Chí Minh, Việt Nam
+          <br>Mã số thuế: 0107766904
         </p>
 
       </div>
