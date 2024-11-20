@@ -42,3 +42,6 @@ const addEventOnElements = function (elements, eventType, callback) {
   }
   
   window.addEventListener("scroll", headerActive);
+
+
+//Change dropdown icon

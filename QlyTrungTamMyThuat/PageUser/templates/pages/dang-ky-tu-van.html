@@ -1,0 +1,67 @@
+{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel="stylesheet" href="{% static "css/dang-ky-tu-van.css" %}">
+<script src="{% static "js/script.js" %} "></script>
+<div class="consult">
+    <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-2">
+    
+    <div class="consult-content">
+        <p> 
+            Mỹ thuật Bụi là nơi bạn có thể bắt gặp những tâm hồn đồng điệu về hội họa. 
+            Không cần bạn phải có 10 hoa tay, cũng không phân biệt về trình độ, 
+            tuổi tác, nghề nghiệp hay giới tính, Bụi tin rằng bất cứ ai cũng đều có thể vẽ nên những tác phẩm của riêng mình một cách thật đặc biệt!
+        </p>
+        <p>
+            Đến với Mỹ thuật Bụi bạn có thể thoải mái lựa chọn các khóa học yêu thích như: Phong cảnh, Chân Dung, Ký họa, Màu nước, Sơn dầu và các môn vẽ được thiết kế riêng cho trẻ em từ 5 – 13 tuổi. 
+        </p>
+        <p>
+            Điền thông tin của bạn vào bảng bên dưới để Bụi nhanh chóng tư vấn cho bạn chi tiết hơn nhé!
+        </p>
+       
+    </div>
+     <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-3">
+
+    <div class="consult-box">
+        <div class="consult-header">
+            <header>Đăng ký tư vấn</header>
+        </div>
+
+        
+        <div class="label">
+            <label for="choices" class="lb-header">Bạn muốn đăng ký lớp vẽ nào?</label>
+        </div>
+        <div class="input-box" style="margin:10px 0">
+            <select name="choices" id="choices" required>
+                <option value="adult-class">Lớp học người lớn</option>
+                <option value="kids-class">Lớp vẽ trẻ em</option>
+            </select>
+            <ion-icon name="chevron-down-outline" class="dropdown-icon"></ion-icon>
+        </div>
+
+
+        <div class="label">
+            <label class="lb-header">Hình thức học?</label>
+        </div>
+        <div class="input-box" style="margin:10px 0">
+            <input type="radio" id="place" name="study-method" style="margin-right:10px" value="offline" required>
+            <label for="place" style="margin-right:10px">Học tại cơ sở</label>
+
+            <input type="radio" id="onl" name="study-method" style="margin-right:10px" value="online" required>
+            <label for="onl">Học online</label>
+        </div>
+
+        <div class="input-box">
+            <input type="text" class="input-field" placeholder="Tên của bạn" name="name" autocomplete="off" required>
+        </div>
+        <div class="input-box">
+            <input type="tel" class="input-field" placeholder="Số điện thoại" name="phone" autocomplete="off" required>
+        </div>
+        <div class="input-submit">
+            <button class="submit-btn" id="submit"></button>
+            <label for="submit">Đăng ký tư vấn</label>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
