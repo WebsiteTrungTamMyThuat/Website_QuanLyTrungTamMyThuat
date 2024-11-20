@@ -40,3 +40,6 @@ def giaovien(request):
 
 def chitietgiaovien(request):
     return render(request, 'pages/chi-tiet-giao-vien.html')
+
+def chinhanh(request):
+    return render(request,'pages/chi-nhanh.html')

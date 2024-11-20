@@ -64,8 +64,8 @@
           <a href="#" class="navbar-link">Hướng dẫn</a>
             <ul class="submenu">
               <li><a href="{% url "hdthanhtoan" %}">Hướng dẫn thanh toán</a></li>
-              <li><a href="#">Câu hỏi thường gặp</a></li>
-              <li><a href="#">Chi nhánh</a></li>
+              {% comment %} <li><a href="#">Câu hỏi thường gặp</a></li> {% endcomment %}
+              <li><a href="{% url "chinhanh" %}">Chi nhánh</a></li>
             </ul>
         </li>
 
