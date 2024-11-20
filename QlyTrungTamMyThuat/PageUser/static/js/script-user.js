@@ -74,12 +74,12 @@ function initParadoxWay() {
         var size = randomValue(sArray);
         $(".bubbles").append(
             '<div class="individual-bubble" style="left: ' +
-                randomValue(bArray) +
-                "px; width: " +
-                size +
-                "px; height:" +
-                size +
-                'px;"></div>'
+            randomValue(bArray) +
+            "px; width: " +
+            size +
+            "px; height:" +
+            size +
+            'px;"></div>'
         );
         $(".individual-bubble").animate(
             {
@@ -97,6 +97,18 @@ function initParadoxWay() {
 //   Init All ------------------
 $(document).ready(function () {
     initParadoxWay();
+    document.querySelectorAll('[name="payment"]').forEach(function (element) {
+        element.addEventListener('change', function () {
+            console.log(this.value);
+            if (this.value === "transfer") {
+                document.getElementById('collapseTransfer').classList.add('show');
+                document.getElementById('collapseOnePay').classList.remove('show');
+            } else {
+                document.getElementById('collapseOnePay').classList.add('show');
+                document.getElementById('collapseTransfer').classList.remove('show');
+            }
+        });
+    });
 });
 
 
@@ -105,48 +117,51 @@ let thisPage = 1;
 let limit = 12;
 let list = document.querySelectorAll('.grid-container .card');
 
-function loadItem(){
+function loadItem() {
     let beginGet = limit * (thisPage - 1);
     let endGet = limit * thisPage - 1;
-    list.forEach((card, key)=>{
-        if(key >= beginGet && key <= endGet){
+    list.forEach((card, key) => {
+        if (key >= beginGet && key <= endGet) {
             card.style.display = 'block';
-        }else{
+        } else {
             card.style.display = 'none';
         }
     })
     listPage();
 }
+
 loadItem();
-function listPage(){
+
+function listPage() {
     let count = Math.ceil(list.length / limit);
     document.querySelector('.list-page').innerHTML = '';
 
-    if(thisPage != 1){
+    if (thisPage != 1) {
         let prev = document.createElement('li');
         prev.innerText = 'Trước';
         prev.setAttribute('onclick', "changePage(" + (thisPage - 1) + ")");
         document.querySelector('.list-page').appendChild(prev);
     }
 
-    for(i = 1; i <= count; i++){
+    for (i = 1; i <= count; i++) {
         let newPage = document.createElement('li');
         newPage.innerText = i;
-        if(i == thisPage){
+        if (i == thisPage) {
             newPage.classList.add('active');
         }
         newPage.setAttribute('onclick', "changePage(" + i + ")");
         document.querySelector('.list-page').appendChild(newPage);
     }
 
-    if(thisPage != count){
+    if (thisPage != count) {
         let next = document.createElement('li');
         next.innerText = 'Tiếp';
         next.setAttribute('onclick', "changePage(" + (thisPage + 1) + ")");
         document.querySelector('.list-page').appendChild(next);
     }
 }
-function changePage(i){
+
+function changePage(i) {
     thisPage = i;
     loadItem();
 }

@@ -43,3 +43,6 @@ def chitietgiaovien(request):
 
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
+
+def giohang(request):
+    return render(request, 'pages/gio-hang.html')
