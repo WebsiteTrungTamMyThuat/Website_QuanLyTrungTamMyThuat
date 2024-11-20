@@ -1,5 +1,320 @@
 {% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
 {%block content %} 
 {% load static%}
+<link rel="stylesheet" href="{% static "css/khoahoc.css" %}">
+<div class="list-course">
+    <h1>Danh sách khóa học </h1>
+    <div class="list-button">
+        <h3> Môn học: </h3>
+        <div class="course-button">
+            <button class="btn btn-all">Tất cả</button>
+            <button class="btn btn-phong-canh">Phong cảnh</button>
+            <button class="btn btn-ky-hoa">Ký họa</button>
+            <button class="btn btn-chan-dung">Chân dung</button>
+            <button class="btn btn-mau-nuoc">Màu nước</button>
+            <button class="btn btn-son-dau">Sơn dầu</button> 
+        </div>
+    </div>
+    <div class="list-button">
+        <h3>Trình độ: </h3>
+        <div class="level-button">
+            <button class="btn btn-all">Tất cả</button>
+            <button class="btn btn-co-ban">Cơ bản</button>
+            <button class="btn btn-nang-cao">Nâng cao</button>
+        </div>
+    </div>
+    <div class="grid-container">
+        <div class="card">
+            <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Tranh ký họa</h5>
+                <p class="card-text">Ký họa nâng cao</p>
+            </div>
+            <div class="price">
+                <h3>1$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Tranh chân dung</h5>
+                        <p class="card-text">Chân dung cơ bản</p>
+                    </div>
+                    <div class="price">
+                        <h3>90$</h3>
+                        <button class="btn btn-submit">Đăng ký</button>
+                    </div>
+        </div>
+        <div class="card">
+            <img src="{% static "img/tranh-son-dau.jpg" %}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+            </div>
+            <div class="price">
+                <h3>10$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+            </div>
+            <div class="price">
+                <h3>$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Đăng ký</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Buy Now</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Buy Now</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Buy Now</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="./img/dish1.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">TIRAMISU CAKE</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam
+                    dignissimos accusantium amet similique velit iste.</p>
+            </div>
+            <div class="price">
+                <h3>190$</h3>
+                <button class="btn btn-submit">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <ul class="list-page">
+        <li class="active">1</li>
+        <li>2</li>
+        <li>3</li>
+    </ul>
+</div>
 
 {%endblock%}

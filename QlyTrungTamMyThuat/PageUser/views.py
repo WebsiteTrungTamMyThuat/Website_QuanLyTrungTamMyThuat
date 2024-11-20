@@ -31,3 +31,6 @@ def chinhsachdichvu(request):
 
 def khoahoc(request):
     return render(request,'pages/khoahoc.html')
+
+def ttkhoahoc(request):
+    return render(request,'pages/thong-tin-khoa-hoc.html')

@@ -11,5 +11,6 @@ urlpatterns = [
     path('chinhsachbaomat/',views.chinhsachbaomat,name='chinhsachbaomat'),
     path('hdthanhtoan/',views.hdthanhtoan,name='hdthanhtoan'),
     path('chinhsachdichvu/',views.chinhsachdichvu,name='chinhsachdichvu'),
-    path('khoahoc/',views.khoahoc,name='khoahoc')
+    path('khoahoc/',views.khoahoc,name='khoahoc'),
+    path('khoahoc/ttkhoahoc',views.ttkhoahoc,name='ttkhoahoc'),
 ]
