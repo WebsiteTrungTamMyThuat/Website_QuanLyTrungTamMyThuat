@@ -28,3 +28,6 @@ def hdthanhtoan(request):
 
 def chinhsachdichvu(request):
     return render(request,'pages/chinh-sach-dich-vu.html')
+
+def khoahoc(request):
+    return render(request,'pages/khoahoc.html')
