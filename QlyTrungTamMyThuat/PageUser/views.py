@@ -34,3 +34,9 @@ def khoahoc(request):
 
 def ttkhoahoc(request):
     return render(request,'pages/thong-tin-khoa-hoc.html')
+
+def giaovien(request):
+    return render(request, 'pages/giao-vien.html')
+
+def chitietgiaovien(request):
+    return render(request, 'pages/chi-tiet-giao-vien.html')
