@@ -16,7 +16,7 @@
   <!-- 
     - favicon
   -->
-  <link rel="shortcut icon" href="{% static "img/logo (2).png"%}" type="image/svg+xml">
+  <link rel="shortcut icon" href="{% static "img/logo.png"%}" type="image/svg+xml">
 
   <!-- 
     - google font link
@@ -48,7 +48,7 @@
   <header class="header" data-header>
     <div class="container">
       <div class="nav__logo">
-        <a href="{% url "user" %}" class="logo"><img src="{%static "img/logo (2).png"%}" alt=""></a>
+        <a href="{% url "user" %}" class="logo"><img src="{%static "img/logo.png"%}" alt=""></a>
     </div>
     <nav class="navbar" data-navbar>
       <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
@@ -159,16 +159,16 @@
             <p class="footer-list-title">Hỗ trợ</p>
           </li>
           <li>
-            <a href="#" class="footer-link">Giới thiệu</a>
+            <a href="{% url "gioithieu" %}" class="footer-link">Giới thiệu</a>
           </li>
           <li>
-            <a href="#" class="footer-link">Hướng dẫn thanh toán</a>
+            <a href="{% url "hdthanhtoan" %}" class="footer-link">Hướng dẫn thanh toán</a>
           </li>
           <li>
-            <a href="#" class="footer-link">Chính sách bảo mật</a>
+            <a href="{% url "chinhsachbaomat" %}" class="footer-link">Chính sách bảo mật</a>
           </li>
           <li>
-            <a href="#" class="footer-link">Chính sách dịch vụ</a>
+            <a href="{% url "chinhsachdichvu" %}" class="footer-link">Chính sách dịch vụ</a>
           </li>
         </ul>
 

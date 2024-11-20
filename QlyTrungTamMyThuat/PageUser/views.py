@@ -16,3 +16,15 @@ def quenmk(request):
 
 def dangkytuvan(request):
     return render(request,'pages/dang-ky-tu-van.html')
+
+def gioithieu(request):
+    return render(request,'pages/gioithieu.html')
+
+def chinhsachbaomat(request):
+    return render(request,'pages/chinh-sach-bao-mat.html')
+
+def hdthanhtoan(request):
+    return render(request,'pages/huong-dan-thanh-toan.html')
+
+def chinhsachdichvu(request):
+    return render(request,'pages/chinh-sach-dich-vu.html')
