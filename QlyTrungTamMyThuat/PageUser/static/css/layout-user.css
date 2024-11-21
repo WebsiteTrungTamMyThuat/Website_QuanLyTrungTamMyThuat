@@ -765,7 +765,7 @@ body {
     padding: 75px 50px 75px;
     overflow: hidden;
     background: #f5f6fa;
-    border: 1ps solid #f1f1f1;
+    border: 1px solid #f1f1f1;
     border-radius: 10px;
     transition: all .3s ease-in-out;
 }
