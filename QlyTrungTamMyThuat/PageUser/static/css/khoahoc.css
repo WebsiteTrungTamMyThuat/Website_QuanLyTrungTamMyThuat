@@ -1,46 +1,56 @@
 .list-course {
-    padding:min(50px,7%);
+    padding: min(50px, 7%);
     margin-top: -30px;
 }
-.list-course h1{
+
+.list-course h1 {
     text-align: center;
-    margin:30px 0;
+    margin: 30px 0;
 }
 
 
-.grid-container{
+.grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
     justify-content: center;
 }
 
-.card-img-top{
+.card-img-top {
     border-radius: 50px;
     padding: 20px;
     height: 200px;
     object-fit: cover;
     width: -webkit-fill-available;
 }
-.card{
-    display: flex !important;
-    flex-direction: column;
-    justify-content: space-between;
+
+.card {
     overflow: hidden;
     border-radius: 30px;
-    border:1px solid var(--umber);
+    border: 1px solid var(--umber);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
-.card-text{
-    display: inline-block;
-    word-wrap: break-word;
-    max-height: 5em;
-    overflow: hidden;
+
+.card > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-.card-body{
+
+.card-text {
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.card-body {
     padding: 25px;
     margin-top: -15px;
 }
+
 .price {
     display: flex;
     margin-top: auto;
@@ -48,36 +58,40 @@
     align-items: center;
     padding: 15px 20px;
 }
-.btn-submit{
+
+.btn-submit {
     font-size: 14px;
     border-radius: 50px;
     /* width: 120px; */
 }
-.btn-submit:hover{
+
+.btn-submit:hover {
     background-color: black;
     border: none;
 }
-h3,h5{
+
+h3, h5 {
     color: black;
 }
 
-.list-page{
-    margin:30px;
-    padding:10px;
+.list-page {
+    margin: 30px;
+    padding: 10px;
     text-align: center;
 }
-.list-page li{
+
+.list-page li {
     color: var(--white);
     background-color: var(--umber);
-    padding:10px;
+    padding: 10px;
     display: inline-block;
-    margin:0 5px;
+    margin: 0 5px;
     cursor: pointer;
     height: auto;
     border-radius: 15px;
 }
 
-.list-page .active{
+.list-page .active {
     background-color: var(--bistre);
     color: var(--white);
 }
@@ -99,29 +113,32 @@ h3 {
     gap: 10px;
 }
 
-.level-button{
+.level-button {
     display: flex;
-    gap:10px;
+    gap: 10px;
 }
 
-.course-button button{
+.course-button button {
     border-radius: 10px;
     padding: 5px 10px;
     background-color: var(--camel);
 }
-.course-button button:hover{
+
+.course-button button:hover {
     background-color: var(--bistre_a75);
 }
-.level-button button{
+
+.level-button button {
     border-radius: 10px;
     padding: 5px 10px;
     background-color: var(--granite-gray);
 }
-.level-button button:hover{
+
+.level-button button:hover {
     background-color: var(--black);
 }
 
-.course-button h3{
-    top:10px
+.course-button h3 {
+    top: 10px
 }
 
