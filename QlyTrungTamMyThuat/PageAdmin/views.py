@@ -5,10 +5,10 @@ from django.http import HttpResponse
 def admin(request):
     return render(request, 'pages/admin.html')
 
-def giaovien(request):
+def giaovien_ad(request):
     return render(request,'pages/admin-giaovien.html')
 
-def khoahoc(request):
+def khoahoc_ad(request):
     return render(request,'pages/admin-khoahoc.html')
 
 def hocvien(request):
