@@ -1,49 +1,15 @@
 {% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
 {%block content %} 
 {% load static%}
-<link rel="stylesheet" href="{% static "css/thong-tin-khoa-hoc.css" %}">
-<div class="instruct">
-    <div class="instruct-header">
+<link rel="stylesheet" href="{% static "css/lich-su-khoa-hoc.css" %}">
+<div class="service">
+    <div class="service-header">
         <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-2">
-        <h1 class="instruct-title">Thông tin khóa học</h1>
+        <h1 class="service-title">Khóa học của tôi</h1>
         <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-3">
     </div>
-    <div class="instruct-content">
-        <div class="side-bar">
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-
-        <div class="main-content">
-            <p>Màu bột là chất liệu phù hợp cho người mới bắt đầu, màu có sức bám tốt, có thể phủ màu khi vẽ sai và rửa màu khi cần thiết. 
-                Cùng khám phá chất liệu này với 5 bài vẽ động vật hấp dẫn dưới đây nhé
-            </p>
-            <p><b>CẤP ĐỘ BÀI HỌC: </b> Dễ</p>
-
-            <p><b>ĐỐI TƯỢNG HỌC: </b> Học viên đã học qua các lớp Căn bản Màu online
-                /offline tại Mỹ thuật Bụi hoặc có kỹ năng vẽ màu bột (gouache)</p> 
-
-            <p>Bạn có thể tải hoặc in mẫu vẽ để tiện quan sát khi học nhé.
-                Cuối cùng là chuẩn bị một tâm hồn đẹp, đầy hứng khởi vào học cùng Bụi thôi nào!</p>
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="others">
-        <h3 class="instruct-title">Các khóa học liên quan</h3>
+    <div class="service-content">
+        <h3>Các khóa học đã mua</h3>
         <div class="grid-container">
             <a class="card" href="{% url "ttkhoahoc" %}">
                 <div>
@@ -54,7 +20,6 @@
                     </div>
                     <div class="price">
                         <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
                     </div>
                 </div>
             </a>
@@ -67,7 +32,6 @@
                     </div>
                     <div class="price">
                         <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
                     </div>
                 </div>
             </a>
@@ -80,11 +44,18 @@
                     </div>
                     <div class="price">
                         <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
                     </div>
                 </div>
             </a>
         </div>
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-4">
+        <div class="not-active">
+            <h3>Chờ kích hoạt </h3>
+            <hr>
+            <button class="btn btn-submit">Mua khóa học</button>
+        </div>
+    
+    
     </div>
 </div>
-{% endblock %}
+{%endblock%}

@@ -46,3 +46,9 @@ def chinhanh(request):
 
 def giohang(request):
     return render(request, 'pages/gio-hang.html')
+
+def tthocvien(request):
+    return render(request,'pages/thong-tin-hoc-vien.html')
+
+def lichsukh(request):
+    return render(request,'pages/lich-su-khoa-hoc.html')
