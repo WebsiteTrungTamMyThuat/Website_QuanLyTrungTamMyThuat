@@ -1,62 +1,48 @@
-.instruct-header {
+.service-header {
     text-align: center;
     position: relative;
     padding: 20px;
 }
 
-.instruct-header img {
+.service-header img {
     max-width: 100%;
     height: auto;
 }
 .shape-2 {
     position: absolute;
     top: 20px;
-    left:370px;
+    left:360px;
     width: 60px;
     transform: scaleX(-1);
 }
  .shape-3 {
     position: absolute;
     top: 20px;
-    right:370px;
+    right:360px;
     width: 60px;
 }
 .shape-4 {
     position: absolute;
-    bottom: -40px;
+    bottom: -10px;
     right: 30px;
     width: 100px;
 }
 
-.instruct-title {
-    text-align: center;
+.service-title {
     font-size: 40px;
     font-weight: bold;
     margin: 20px 0;
 }
 
-.instruct-content{
+.service-content{
     text-align: justify;
     padding: 0px 60px 60px 50px;
-    display: flex;
-    gap:20px;
 }
-.instruct-content p{
-    padding: 10px 0 0 0;
+.service-content p{
+    padding: 10px;
 }
-
-.instruct-content .side-bar{
-    width: 35%;
-    padding:10px;
-}
-.instruct-content .side-bar .btn-submit{
-    margin-left: 20px;
-    border-radius: 30px;
-    padding:0 30px;
-}
-.instruct-content .main-content{
-    width: 65%;
-    padding:10px;
+.service-content h3{
+    padding: 5px;
 }
 
 .grid-container{
@@ -108,19 +94,12 @@
     margin-top: auto;
 }
 .btn-submit{
+    margin:20px 0;
     font-size: 14px;
     border-radius: 50px;
-    /* width: 120px; */
+    width: 100%;
 }
 .btn-submit:hover{
     background-color: black;
     border: none;
-}
-
-hr{
-    margin: 0 60px;
-    width: 90%;
-}
-.others{
-    padding: 20px;
 }
