@@ -1559,3 +1559,55 @@ h4, h2 {
 .border-b {
     border-bottom: 1px solid var(--granite-gray);
 }
+
+#loginRegister {
+    display: flex;
+}
+
+.deactive {
+    display: none !important;
+}
+
+#userLoggedIn {
+    display: flex;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: block;
+    width: 200px;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu ul li {
+    margin: 0;
+    width: 100%;
+}
+
+.dropdown-menu ul li a {
+    padding: 15px;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-menu ul li a:hover {
+    color: var(--golden-brown_a60);
+}
+
+#userLoggedIn {
+    position: relative;
+}
+
+#logoutButton {
+    cursor: pointer;
+}
