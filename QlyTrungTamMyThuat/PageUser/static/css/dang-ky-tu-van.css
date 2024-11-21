@@ -81,14 +81,14 @@
 .input-box .dropdown-icon {
     position: absolute;                     
     right: 40px;
-    top:34%;                 
+    top:32%;                 
     transform: translateY(-50%);   
     pointer-events: none;    
     font-size: 20px;     
     color: #333;
 }
 .input-box select:focus {
-    outline: none; 
+    outline: none;
 }
 .input-box select:focus ~ .dropdown-icon {
     transform: translateY(-50%) rotate(180deg); 

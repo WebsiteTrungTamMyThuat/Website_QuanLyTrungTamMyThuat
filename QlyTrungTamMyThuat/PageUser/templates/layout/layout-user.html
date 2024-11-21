@@ -9,23 +9,23 @@
   <!-- 
     - primary meta tags
   -->
-  <title>Style Art- Trung Tâm Dạy Vẽ Mỹ Thuật</title>
-  <meta name="title" content="Crafti - We Make Top Quality Handmade Products">
-  <meta name="description" content="This is a Handmade Products html template made by codewithsadee">
+  <title>Mỹ thuật Bụi- Trung Tâm Dạy Vẽ Mỹ Thuật</title>
 
   <!-- 
     - favicon
   -->
-  <link rel="shortcut icon" href="{% static "img/logo (2).png"%}" type="image/svg+xml">
+  <link rel="shortcut icon" href="{% static "img/logo.png"%}" type="image/svg+xml">
 
   <!-- 
     - google font link
   -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Rosario:wght@500;600;700&display=swap"
     rel="stylesheet">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/6.4.8/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- 
     - custom css link
   -->
@@ -48,7 +48,7 @@
   <header class="header" data-header>
     <div class="container">
       <div class="nav__logo">
-        <a href="{% url "user" %}" class="logo"><img src="{%static "img/logo (2).png"%}" alt=""></a>
+        <a href="{% url "user" %}" class="logo"><img src="{%static "img/logo.png"%}" alt=""></a>
     </div>
     <nav class="navbar" data-navbar>
       <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
@@ -63,14 +63,14 @@
         <li class="navbar-item">
           <a href="#" class="navbar-link">Hướng dẫn</a>
             <ul class="submenu">
-              <li><a href="">Hướng dẫn đăng ký tài khoản</a></li>
-              <li><a href="">Hướng dẫn xem khóa học</a></li>
-              <li><a href="">Câu hỏi thường gặp</a></li>
+              <li><a href="{% url "hdthanhtoan" %}">Hướng dẫn thanh toán</a></li>
+              {% comment %} <li><a href="#">Câu hỏi thường gặp</a></li> {% endcomment %}
+              <li><a href="{% url "chinhanh" %}">Chi nhánh</a></li>
             </ul>
         </li>
 
         <li class="navbar-item">
-          <a href="#" class="navbar-link">Lớp học</a>
+          <a href="{% url "khoahoc" %}" class="navbar-link">Lớp học</a>
             <ul class="submenu">
               <li><a href="">Phong cảnh</a></li>
               <li><a href="">Ký họa</a></li>
@@ -92,7 +92,7 @@
         </div>
 
         <div class="packing-button">
-          <button class="navbar-button"><ion-icon name="bag-handle-outline"></ion-icon></button>
+          <button class="navbar-button"><a href="{% url 'giohang' %}"><ion-icon name="bag-handle-outline"></ion-icon></a></button>
         </div>
       </ul>
     </nav>
@@ -159,42 +159,18 @@
             <p class="footer-list-title">Hỗ trợ</p>
           </li>
           <li>
-            <a href="#" class="footer-link">Giới thiệu</a>
+            <a href="{% url "gioithieu" %}" class="footer-link">Giới thiệu</a>
           </li>
           <li>
-            <a href="#" class="footer-link">Hướng dẫn thanh toán</a>
+            <a href="{% url "hdthanhtoan" %}" class="footer-link">Hướng dẫn thanh toán</a>
           </li>
           <li>
-            <a href="#" class="footer-link">Chính sách bảo mật</a>
+            <a href="{% url "chinhsachbaomat" %}" class="footer-link">Chính sách bảo mật</a>
           </li>
           <li>
-            <a href="#" class="footer-link">Chính sách dịch vụ</a>
+            <a href="{% url "chinhsachdichvu" %}" class="footer-link">Chính sách dịch vụ</a>
           </li>
         </ul>
-
-        {% comment %} <ul class="footer-list">
-
-          <li>
-            <p class="footer-list-title">Hỗ trợ</p>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Hướng dẫn thanh toán</a>
-          </li> {% endcomment %}
-
-          {% comment %} <li>
-            <a href="#" class="footer-link">Feedback</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Support Center</a>
-          </li>
-
-          <li>
-            <a href="#" class="footer-link">Our Stores</a>
-          </li> {% endcomment %}
-
-        {% comment %} </ul> {% endcomment %}
 
         <div class="footer-list">
 
@@ -234,14 +210,14 @@
   <!-- 
     - custom js link
   -->
-  <script src="{%static "js/script.js"%}"></script>
+  <script src="{%static "js/script-user.js"%}"></script>
 
   <!-- 
     - ionicon link
   -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/6.4.8/swiper-bundle.min.js"></script>
 </body>
 
 
