@@ -23,7 +23,7 @@
     width: -webkit-fill-available;
 }
 .card{
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
@@ -31,13 +31,19 @@
     border:1px solid var(--umber);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
+.card-text{
+    display: inline-block;
+    word-wrap: break-word;
+    max-height: 5em;
+    overflow: hidden;
+}
 .card-body{
     padding: 25px;
     margin-top: -15px;
-    margin-bottom: 60px;
 }
 .price {
     display: flex;
+    margin-top: auto;
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;

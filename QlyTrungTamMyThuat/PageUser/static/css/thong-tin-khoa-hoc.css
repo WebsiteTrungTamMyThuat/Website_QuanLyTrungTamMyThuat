@@ -29,6 +29,7 @@
 }
 
 .instruct-title {
+    text-align: center;
     font-size: 40px;
     font-weight: bold;
     margin: 20px 0;
@@ -41,21 +42,30 @@
     gap:20px;
 }
 .instruct-content p{
-    padding: 10px;
-}
-.instruct-content h3{
-    padding: 5px;
+    padding: 10px 0 0 0;
 }
 
 .instruct-content .side-bar{
-    width: 30%;
+    width: 35%;
+    padding:10px;
+}
+.instruct-content .side-bar .btn-submit{
+    margin-left: 20px;
+    border-radius: 30px;
+    padding:0 30px;
+}
+.instruct-content .main-content{
+    width: 65%;
     padding:10px;
 }
 
-.instruct-content .main-content{
-    width: 70%;
-    padding:10px;
+.grid-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    justify-content: center;
 }
+
 
 .card-img-top{
     border-radius: 50px;
@@ -63,4 +73,41 @@
     height: 200px;
     object-fit: cover;
     width: -webkit-fill-available;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    border-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+}
+.card-body{
+    padding: 25px;
+    margin-top: -15px;
+    margin-bottom: 60px;
+}
+.price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+.btn-submit{
+    font-size: 14px;
+    border-radius: 50px;
+    /* width: 120px; */
+}
+.btn-submit:hover{
+    background-color: black;
+    border: none;
+}
+
+hr{
+    margin: 0 60px;
+    width: 90%;
+}
+.others{
+    padding: 20px;
 }

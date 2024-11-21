@@ -10,12 +10,18 @@
     </div>
     <div class="instruct-content">
         <div class="side-bar">
-            <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-            <h3>Tranh ký họa</h3>
-
-            <p>Giáo viên: ???? <br>khóa học cấp độ ????</p>
-
-
+            <div class="card">
+                <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3 class="card-title">TRANH KÝ HỌA</h3>
+                    <p class="card-text">Giáo viên: ??? </p>
+                    <p class="card-text">Khóa học cấp độ: ??? </p>
+                </div>
+                <div class="price">
+                    <h3>$</h3>
+                    <button class="btn btn-submit">Mua khóa học</button>
+                </div>
+            </div>
         </div>
 
 
@@ -30,6 +36,53 @@
 
             <p>Bạn có thể tải hoặc in mẫu vẽ để tiện quan sát khi học nhé.
                 Cuối cùng là chuẩn bị một tâm hồn đẹp, đầy hứng khởi vào học cùng Bụi thôi nào!</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="others">
+        <h3 class="instruct-title">Các khóa học liên quan</h3>
+        <div class="grid-container">
+            <a href="{% url "ttkhoahoc" %}">
+                <div class="card">
+                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Tranh ký họa</h5>
+                        <p class="card-text">Ký họa nâng cao</p>
+                    </div>
+                    <div class="price">
+                        <h3>1$</h3>
+                        <button class="btn btn-submit">Đăng ký</button>
+                    </div>
+                </div>
+            </a>
+            <a href="{% url "ttkhoahoc" %}">
+                <div class="card">
+                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Tranh chân dung</h5>
+                                <p class="card-text">Chân dung cơ bản</p>
+                            </div>
+                            <div class="price">
+                                <h3>90$</h3>
+                                <button class="btn btn-submit">Đăng ký</button>
+                            </div>
+                </div>
+            </a>
+            <a href="{% url "ttkhoahoc" %}">
+                <div class="card">
+                    <img src="{% static "img/tranh-son-dau.jpg" %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">TIRAMISU CAKE</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
+                    </div>
+                    <div class="price">
+                        <h3>10$</h3>
+                        <button class="btn btn-submit">Đăng ký</button>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
