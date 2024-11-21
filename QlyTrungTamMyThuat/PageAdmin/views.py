@@ -1,12 +1,29 @@
 from django.shortcuts import render
 from django.http import HttpResponse 
+from .models import *
 
 # Create your views herede
 def admin(request):
     return render(request, 'pages/admin.html')
 
-def giaovien_ad(request):
-    return render(request,'pages/admin-giaovien.html')
+def giaovien(request):
+    dsgv = GiaoVien.objects.all()
+    dstk = TaiKhoanNguoiDung.objects.all()
+    
+    data = [
+        {
+            'magv': gv.magv,
+            'hoten': gv.hoten,
+            'email': gv.email,
+            'GioiTinh':gv.GioiTinh,
+            'NgaySinh':gv.NgaySinh,
+            'SDT': gv.SDT,
+            'taikhoan': dstk.filter(idtaikhoan=gv.magv).values('trangthai').first()
+        }
+        for gv in dsgv
+    ]
+    
+    return render(request,'pages/admin-giaovien.html',{'ds_gv': data})
 
 def khoahoc_ad(request):
     return render(request,'pages/admin-khoahoc.html')

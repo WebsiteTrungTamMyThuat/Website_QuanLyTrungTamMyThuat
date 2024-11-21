@@ -1,0 +1,155 @@
+CREATE TABLE NhaCC (
+    MaNCC SERIAL PRIMARY KEY,
+    TenNCC VARCHAR(255),
+    DiaChi VARCHAR(255),
+    SDT VARCHAR(15)
+);
+
+CREATE TABLE NhanVien (
+    MaNV CHAR(5) PRIMARY KEY,
+    HoTen VARCHAR(40),
+	GioiTinh VARCHAR(5),
+	NgaySinh DATE,
+	DiaChi VARCHAR(255),
+	SDT VARCHAR(11),
+    CCCD VARCHAR(12)
+);
+
+CREATE TABLE GiaoVien (
+    MaGV CHAR(10) PRIMARY KEY,
+    HoTen VARCHAR(255),
+	Email VARCHAR(255),
+	SDT CHAR(11),
+    GioiTinh VARCHAR(5),
+    NgaySinh DATE,
+    DiaChi VARCHAR(255)
+);
+ALTER TABLE GiaoVien
+ADD FOREIGN KEY (MaGV) REFERENCES TaiKhoanNguoiDung(IDTaiKhoan)
+
+CREATE TABLE HocVien (
+    MaHV CHAR(10) PRIMARY KEY,
+    HoTen VARCHAR(255),
+	Email VARCHAR(255),
+	SDT CHAR(11),
+    GioiTinh VARCHAR(5),
+    NgaySinh DATE,
+    DiaChi VARCHAR(255)
+);
+ALTER TABLE HocVien
+ADD FOREIGN KEY (MaHV) REFERENCES TaiKhoanNguoiDung(IDTaiKhoan)
+
+CREATE TABLE HoaCu
+(
+	MaHoaCu SERIAL PRIMARY KEY,
+	TenHoaCu VARCHAR(255),
+	SoLuong INT
+);
+
+CREATE TABLE PhieuNhap (
+    MaPhieuNhap SERIAL PRIMARY KEY,
+    NgayNhap DATE,
+    TongTien NUMERIC,
+    GhiChu TEXT,
+    MaNCC INT REFERENCES NhaCC(MaNCC),
+	MaNV CHAR(5) REFERENCES NhanVien(MaNV)
+);
+
+CREATE TABLE ChiTietPhieuNhap (
+	SoLuong INT,
+    DonGia NUMERIC,
+    ThanhTien NUMERIC,
+	MaPhieuNhap INT REFERENCES PhieuNhap(MaPhieuNhap),
+    MaHoaCu INT REFERENCES HoaCu(MaHoaCu),
+    PRIMARY KEY (MaPhieuNhap, MaHoaCu)
+);
+
+CREATE TABLE TaiKhoanNhanVien (
+	UserName CHAR(5) REFERENCES NhanVien(MaNV),
+    Pass VARCHAR(50),
+    Quyen VARCHAR(50),
+    TrangThai VARCHAR(50),
+	PRIMARY KEY(UserName) 
+);
+
+CREATE TABLE TaiKhoanNguoiDung (
+    IDTaiKhoan CHAR(10) PRIMARY KEY,
+    UserName VARCHAR(50) UNIQUE,
+    Pass VARCHAR(50),
+    Quyen VARCHAR(10),
+    TrangThai VARCHAR(50)
+);
+
+CREATE TABLE KhoaHoc (
+    MaKH CHAR(7) PRIMARY KEY,
+    TenKH VARCHAR(255),
+    MoTa TEXT,
+    HinhThuc VARCHAR(50)
+);
+
+CREATE TABLE NoiDungKhoaHoc
+(
+	MaNoiDung SERIAL PRIMARY KEY,
+	TieuDe VARCHAR(255)
+);
+
+CREATE TABLE ChiTietKhoaHoc
+(
+	STT INT,
+	TenNoiDung VARCHAR(255),
+	MaKH CHAR(7) REFERENCES KhoaHoc(MaKH),
+	MaNoiDung INT REFERENCES NoiDungKhoaHoc(MaNoiDung),
+	PRIMARY KEY(MaKH,MaNoiDung)
+);
+
+CREATE TABLE LopHoc
+(
+	MaLop CHAR(7) PRIMARY KEY,
+	TenLop VARCHAR(100),
+	SiSo INT,
+	DiaDiemHoc VARCHAR(255),
+	NgayBatDau DATE,
+	TongGioHoc INT,
+	HocPhi NUMERIC,
+	MaKH CHAR(7) REFERENCES KhoaHoc(MaKH),
+	MaGV CHAR(10) REFERENCES GiaoVien(MaGV)
+);
+
+CREATE TABLE LichHoc
+(
+	MaLich SERIAL PRIMARY KEY,
+	NgayHoc DATE,
+	GioHoc TIME,
+	SoGioHoc INT,
+	MaLop CHAR(7) REFERENCES LopHoc(MaLop)
+);
+
+CREATE TABLE HoaDon
+(
+	SoHD SERIAL PRIMARY KEY,
+	NgayLap DATE,
+	TongTien NUMERIC,
+	TrangThai VARCHAR(20),
+	MaLop CHAR(7) REFERENCES LopHoc(MaLop),
+	MaNV CHAR(5) REFERENCES NhanVien(MaNV),
+	MaHV CHAR(10) REFERENCES HocVien(MaHV)
+);
+
+CREATE TABLE LichSuGiaoDich
+(
+	MaGiaoDich INT REFERENCES HoaDon(SoHD),
+	NgayGiaoDich DATE,
+	SoTien NUMERIC,
+	LoaiGiaoDich VARCHAR(20),
+	GhiChu TEXT,
+	PRIMARY KEY (MaGiaoDich)
+);
+
+CREATE TABLE DanhGia
+(
+	MaDanhGia SERIAL,
+	MoTa TEXT,
+	MaHV CHAR(10) REFERENCES HocVien(MaHV),
+	MaLop CHAR(7) REFERENCES LopHoc(MaLop),
+	PRIMARY KEY(MaDanhGia, MaHV)
+);
