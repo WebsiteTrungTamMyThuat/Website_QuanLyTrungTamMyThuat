@@ -74,28 +74,40 @@ class LichHoc(models.Model):
         db_table = 'lichhoc'
         
 class NhaCungCap(models.Model):
-    mancc = models.CharField(max_length=5, primary_key=True)
+    mancc = models.AutoField(max_length=5, primary_key=True)
     tenncc = models.CharField(max_length=255)
     diachi = models.CharField(max_length=255)
     sdt = models.CharField(max_length=15)
     class Meta:
-        db_table = 'nhacungcap'
+        db_table = 'nhacc'
         
+from django.contrib.auth.models import User
 class NhanVien(models.Model):
-    manv = models.CharField(max_length=5, primary_key=True)
+    GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
+    manv = models.CharField(max_length=20, primary_key=True, db_column='manv')
     hoten = models.CharField(max_length=255)
-    gioitinh = models.CharField(max_length=5)
+    gioitinh = models.CharField(max_length=5, choices=GIOI_TINH_CHOICES,default='Nam')
     ngaysinh = models.DateField()
     diachi = models.CharField(max_length=255)
     sdt = models.CharField(max_length=11)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     class Meta:
         db_table = 'nhanvien'
-        
+
+class TaiKhoanNhanVien(models.Model):
+    username = models.CharField(max_length=20, primary_key=True)
+    pass_word = models.CharField(max_length=50, db_column='pass')
+    quyen = models.CharField(max_length=50)
+    trangthai = models.CharField(max_length=50)
+    class Meta:
+        db_table = 'taikhoannhanvien'
+
+ 
 class DanhGia(models.Model):
     madanhgia = models.AutoField(primary_key=True)
     mota = models.TextField()
-    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE)
-    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE)
+    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE, db_column='mahv')
+    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE, db_column='malop')
     class Meta:
         db_table = 'danhgia'
         
@@ -114,8 +126,8 @@ class PhieuNhap(models.Model):
     ngaynhap = models.DateField()
     tongtien = models.DecimalField(max_digits=10, decimal_places=2)
     ghichu = models.TextField()
-    mancc = models.ForeignKey(NhaCungCap, on_delete=models.CASCADE)
-    manv = models.ForeignKey(NhanVien, on_delete=models.CASCADE)
+    mancc = models.ForeignKey(NhaCungCap, on_delete=models.CASCADE, db_column="mancc")
+    manv = models.ForeignKey(NhanVien, on_delete=models.CASCADE, db_column="manv")
     class Meta:
         db_table = 'phieunhap'
         
