@@ -3,7 +3,7 @@ from django.db import models
 class TaiKhoanNguoiDung(models.Model):
     idtaikhoan = models.CharField(max_length=10, primary_key=True)
     username = models.CharField(max_length=50, unique=True)
-    pass_word = models.CharField(max_length=50, db_column='pass')
+    pass_word = models.CharField(max_length=50)
     quyen = models.CharField(max_length=10)
     trangthai = models.CharField(max_length=50)
     class Meta:
