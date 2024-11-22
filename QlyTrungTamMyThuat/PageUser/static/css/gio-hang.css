@@ -46,14 +46,33 @@
     display: flex;
     align-items: center;
     padding: 16px 0;
+    position: relative;
 }
 
 .cart__order-item__img img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
     border-radius: 10px;
-    max-height: 200px;
+    max-height: 150px;
+    max-width: 150px;
+}
+
+.cart__order-item__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart__order-item .btn-remove {
+    position: absolute;
+    right: -10px;
+    top: 10px;
+}
+
+.cart__order-item .btn-remove ion-icon {
+    font-size: 30px;
+    color: var(--bistre);
+    cursor: pointer;
 }
 
 .cart__order-item__info {
@@ -69,17 +88,15 @@
 }
 
 .panel {
-    display: flex;
     justify-content: space-between;
     padding: 16px 0;
     max-height: 200px;
     align-items: center;
-    position: relative;
-    z-index: -1;
 }
 
 #collapseTransfer, #collapseOnePay {
     display: none;
+    z-index: -1;
 }
 
 .panel img {
@@ -91,11 +108,7 @@
 
 .show {
     display: flex !important;
-    transition: .5s ease-in-out ;
-}
-
-#collapseOnePay {
-    display: flex;
+    transition: .5s ease-in-out;
 }
 
 .onepay {
@@ -107,13 +120,65 @@
     cursor: pointer;
     margin: 10px;
     text-align: left;
+    z-index: 1;
+    display: flex;
+    height: 100px;
 }
 
-.onepay ion-icon {
-    width: 30px;
-    height: 60px;
-    padding-right: 20px;
+.onepay:first-child {
+    background-color: rgb(255, 222, 77);
+}
+
+.onepay:first-child:hover {
+    background-color: rgb(255, 178, 44);
+}
+
+.onepay:nth-child(2) {
+    background-color: rgb(96, 139, 193);
+}
+
+.onepay:nth-child(2):hover {
+    background-color: rgb(19, 62, 135);
+}
+
+.onepay:last-child {
+    background-color: rgb(215, 108, 130);
+}
+
+.onepay:last-child:hover{
+    background-color: rgb(176, 48, 82);
+}
+
+.onepay-momo {
+    background-color: rgb(176, 48, 82) !important;
+}
+
+.onepay-visa {
+    background-color: rgb(19, 62, 135) !important;
+
+}
+
+.onepay-bank {
+    background-color: rgb(255, 178, 44) !important;
+}
+
+.onepay i {
     font-size: 30px;
-    margin-right: 18px;
-    float: left;
+    margin: 5px 20px 0;
+}
+
+.checkout__payment {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+.checkout__payment i {
+    padding: 10px 20px;
+    background-color: var(--cultured);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: .3s;
 }

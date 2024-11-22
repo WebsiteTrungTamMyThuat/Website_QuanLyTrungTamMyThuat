@@ -71,7 +71,6 @@ def giohang(request):
 
 
 
-
 #### Đăng nhập
 
 
@@ -166,3 +165,10 @@ def register(request):
             return render(request, 'layout/dangky.html', {'error': str(e)})
 
     return render(request, 'layout/dangky.html')
+
+def tthocvien(request):
+    return render(request,'pages/thong-tin-hoc-vien.html')
+
+def lichsukh(request):
+    return render(request,'pages/lich-su-khoa-hoc.html')
+

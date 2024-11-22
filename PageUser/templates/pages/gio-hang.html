@@ -1,0 +1,117 @@
+{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %}
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/gio-hang.css" %}">
+    <div class="cart container">
+        <h1>Tiến hành mua hàng</h1>
+        <div class="cart__content row">
+            <div class="cart__left col-8">
+                <div class="cart__user">
+                    <h2>Thông tin khách hàng</h2>
+                    <form action="" class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="name">Họ và tên *</label>
+                                <input required type="text" class="input-field" id="name" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Địa chỉ email *</label>
+                                <input required type="text" id="name" name="name">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="name">Số điện thoại *</label>
+                                <input required type="text" id="name" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Người giới thiệu</label>
+                                <input type="text" id="name" name="name">
+                            </div>
+                        </div>
+                    </form>
+                    <span class="note">"Nếu bạn đã từng mua khóa học hoặc có tài khoản tại lopveonline.vn , bạn có thể đăng nhập để không phải nhập lại thông tin cá nhân"</span>
+                </div>
+                <div class="cart__payment">
+                    <h2>Phương thức thanh toán</h2>
+                    <div class="cart__payment-method">
+                        <div class="cart__payment-method-item">
+                            <input type="radio" name="payment" value="transfer" id="payment2">
+                            <label for="payment2">Chuyển khoản ngân hàng</label>
+                            <div class="panel-group">
+                                <div class="panel" id="collapseTransfer">
+                                    <div class="panel__left">
+                                        <img src="{% static "img/tpbank.png" %}" alt="">
+                                    </div>
+                                    <div class="panel__right">
+                                        <p>Ngân hàng: TP Bank</p>
+                                        <p>Chủ tài khoản: Công ty TNHH Mỹ thuật Bụi</p>
+                                        <p>Số tài khoản: 123456789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cart__payment-method-item">
+                            <input type="radio" name="payment" value="onepay" id="payment3">
+                            <label for="payment3">Thanh toán online qua Momo - Ngân hàng</label>
+                            <div class="panel-group">
+                                <div class="panel" id="collapseOnePay">
+                                    <div class="onepay">
+                                        <ion-icon name="qr-code-outline"></ion-icon>
+                                        Thanh toán qua Momo
+                                    </div>
+                                    <div class="onepay">
+                                        <ion-icon name="qr-code-outline"></ion-icon>
+                                        Thanh toán qua Momo
+                                    </div><div class="onepay">
+                                        <ion-icon name="qr-code-outline"></ion-icon>
+                                        Thanh toán qua Momo
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cart__right col-4">
+                <h2>Đơn hàng</h2>
+                <div class="cart__order">
+                    <div class="cart__order-item border-b">
+                        <div class="cart__order-item__img">
+                            <img src="{% static "img/hero-shape.png" %}" alt="">
+                        </div>
+                        <div class="cart__order-item__info">
+                            <h3>CĂN BẢN CHÌ</h3>
+                            <h3>1000$</h3>
+                        </div>
+                    </div>
+                    <div class="cart__order-item border-b">
+                        <div class="cart__order-item__img">
+                            <img src="{% static "img/hero-shape.png" %}" alt="">
+                        </div>
+                        <div class="cart__order-item__info">
+                            <h3>CĂN BẢN CHÌ</h3>
+                            <h3>1000$</h3>
+                        </div>
+                    </div>
+                    <div class="cart__order-item border-b">
+                        <div class="cart__order-item__img">
+                            <img src="{% static "img/hero-shape.png" %}" alt="">
+                        </div>
+                        <div class="cart__order-item__info">
+                            <h3>CĂN BẢN CHÌ</h3>
+                            <h3>1000$</h3>
+                        </div>
+                    </div>
+                    <div class="cart__order-total">
+                        <h3>Tổng cộng: </h3>
+                        <h3>3000$</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

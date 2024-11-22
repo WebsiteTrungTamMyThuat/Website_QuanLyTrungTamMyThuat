@@ -1,0 +1,61 @@
+{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel="stylesheet" href="{% static "css/lich-su-khoa-hoc.css" %}">
+<div class="service">
+    <div class="service-header">
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-2">
+        <h1 class="service-title">Khóa học của tôi</h1>
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-3">
+    </div>
+    <div class="service-content">
+        <h3>Các khóa học đã mua</h3>
+        <div class="grid-container">
+            <a class="card" href="{% url "ttkhoahoc" %}">
+                <div>
+                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Tranh ký họa</h5>
+                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    </div>
+                    <div class="price">
+                        <h3>1$</h3>
+                    </div>
+                </div>
+            </a>
+            <a class="card" href="{% url "ttkhoahoc" %}">
+                <div>
+                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Tranh ký họa</h5>
+                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    </div>
+                    <div class="price">
+                        <h3>1$</h3>
+                    </div>
+                </div>
+            </a>
+            <a class="card" href="{% url "ttkhoahoc" %}">
+                <div>
+                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Tranh ký họa</h5>
+                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    </div>
+                    <div class="price">
+                        <h3>1$</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-4">
+        <div class="not-active">
+            <h3>Chờ kích hoạt </h3>
+            <hr>
+            <button class="btn btn-submit">Mua khóa học</button>
+        </div>
+    
+    
+    </div>
+</div>
+{%endblock%}

@@ -1,0 +1,36 @@
+{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel="stylesheet" href="{% static "css/huong-dan-thanh-toan.css" %}">
+<div class="instruct">
+    <div class="instruct-header">
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-2">
+        <h1 class="instruct-title">Hướng dẫn thanh toán</h1>
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-3">
+    </div>
+    <div class="instruct-content">
+        <h3> 1. THANH TOÁN BẰNG CHUYỂN KHOẢN</h3>
+
+        <p>Áp dụng cho khách hàng có nhu cầu sử dụng phương thức thanh toán này. Các bước tiến hành như sau:</p>
+
+        <p>Đến Ngân hàng gần nơi ở của Quý khách nhất để chuyển tiền/ 
+            hoặc chuyển khoản theo thông tin chi tiết hệ thống cung cấp: Số tiền, Tên đơn vị, Số tài khoản, Ngân hàng mở tài khoản, nội dụng chuyển tiền/chuyển khoản.
+        </p>
+
+        <p> + Tên thông tin chuyển khoản: đúng như lựa chọn trong bước thanh toán</p>
+
+        <p> + Nội dung chuyển khoản: Mã đơn hàng (khi bạn đặt hàng, website sẽ hiện mã đơn hàng để bạn thanh toán, ví dụ: DH937)</p>
+
+        <p>
+            Chúng tôi sẽ không chịu trách nhiệm về sai sót trong quá trình chuyển khoản hoặc chuyển khoản sai thông tin,
+            Quý khách phải làm việc với Ngân hàng để được xử lý ổn thỏa, chỉ khi nào tiền được chuyển đến tài khoản của chún tôi, chúng tôi sẽ xác nhận với Quý khách.
+        </p>
+
+        <p>
+            Ngay khi nhận được báo cáo xác nhận từ Ngân hàng, chúng tôi sẽ tiến hành thông báo lại cho Quý khách đồng thời kích hoạt khoá học cho Quý khách.
+        </p>
+
+        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-4">
+    </div>
+</div>
+{%endblock%}

@@ -26,7 +26,7 @@ def giaovien(request):
     
     return render(request,'pages/admin-giaovien.html',{'ds_gv': data})
 
-def khoahoc(request):
+def khoahoc_ad(request):
     return render(request,'pages/admin-khoahoc.html')
 
 def hocvien(request):

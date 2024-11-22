@@ -1,0 +1,76 @@
+{% extends "layout/layout.html" %} {% block title %} Khóa học {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel=stylesheet href="{% static "css/admin-khoahoc.css" %}">
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Khóa học</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Khóa học</a>
+                </li>
+            </ul>
+        </div>
+        <div class="button-group">
+            <a href="{% url 'them_kh' %}" class="btn-add">
+                <i class='bx bx-plus'></i>
+                <span class="text">Thêm</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="table-data">
+        <div class="order">
+            <div class="head">
+                <h3>Danh sách khóa học</h3>
+                <form action="#" method="GET">
+                    <div class="form-input">
+                        <input name="seachsb" type="search" placeholder="Search...">
+                        <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                    </div>
+                </form>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Tên</th>
+                        <th>Mô tả</th>
+                        <th>Nội dung</th>
+                        <th>Hình thức</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for kh in dskh%}
+                    <tr>
+                        <td>{{kh.makh}}</td>
+                        <td>{{kh.tenkh}}</td>
+                        <td>{{kh.mota}}</td>
+                        <td><a href="#" class="">Chi tiết khóa học</td>
+                        <td>{{kh.hinhthuc}}</td>
+                        <td>
+                            <div class="form-button">
+                                <a href="#" class="btn-delete">
+                                    <i class='bx bx-minus'></i>
+                                    <span class="text">Xóa</span>
+                                </a>
+                                <a href="{% url 'sua_kh' %}" class="btn-edit">
+                                    <i class='bx bx-edit-alt' ></i>
+                                    <span class="text">Sửa</span>
+                                </a> 
+                            </div>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

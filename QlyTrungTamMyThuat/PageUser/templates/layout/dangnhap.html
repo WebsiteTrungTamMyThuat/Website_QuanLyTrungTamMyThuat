@@ -41,6 +41,13 @@
         </div>
     </form>
     </div>
+<script>
+    const check = document.getElementById('submit');
+    check.addEventListener('click', function() {
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = "{% url "user" %}";
+    });
+</script>
 </div>
 {%endblock%}
 <script src="{% static "js/script.js" %}">
