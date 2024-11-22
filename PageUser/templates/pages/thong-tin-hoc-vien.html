@@ -1,0 +1,31 @@
+{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel="stylesheet" href="{% static "css/thong-tin-hoc-vien.css" %}">
+<div class="body">
+    <div class="info-box">
+        <div class="info-header">
+            <header>Thông tin cá nhân</header>
+        </div>
+        <div class="input-box">
+            <input type="text" class="input-field" placeholder="Họ tên" autocomplete="off" required  value="{{ form.hoten.value }}">
+            {% if form.hoten.errors %}
+            <div class="error">{{ form.hoten.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="input-box">
+            <input type="text" class="input-field" placeholder="Số điện thoại" autocomplete="off" required>
+        </div>
+        <div class="input-box">
+            <input type="email" class="input-field" placeholder="Email" autocomplete="off" required>
+        </div>
+        <div class="input-box">
+            <input type="date" class="input-field" placeholder="Ngày sinh" autocomplete="off" required>
+        </div>
+        <div class="input-submit">
+            <button class="submit-btn" id="submit"></button>
+            <label for="submit">Lưu thay đổi</label>
+        </div>
+    </div>
+</div>
+{%endblock%}
