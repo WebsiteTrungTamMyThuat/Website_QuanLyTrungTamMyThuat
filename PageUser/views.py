@@ -21,7 +21,7 @@ from django.core.exceptions import ValidationError
 
 
 # Create your views herede
-
+# @login_required(login_url="dangnhap") 
 def user(request):
     username = request.session.get('user_username', None)  # Lấy username từ session
     if username:
