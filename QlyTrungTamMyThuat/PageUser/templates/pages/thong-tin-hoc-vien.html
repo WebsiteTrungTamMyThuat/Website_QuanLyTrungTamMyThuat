@@ -8,7 +8,10 @@
             <header>Thông tin cá nhân</header>
         </div>
         <div class="input-box">
-            <input type="text" class="input-field" placeholder="Họ tên" autocomplete="off" required>
+            <input type="text" class="input-field" placeholder="Họ tên" autocomplete="off" required  value="{{ form.hoten.value }}">
+            {% if form.hoten.errors %}
+            <div class="error">{{ form.hoten.errors }}</div>
+            {% endif %}
         </div>
         <div class="input-box">
             <input type="text" class="input-field" placeholder="Số điện thoại" autocomplete="off" required>

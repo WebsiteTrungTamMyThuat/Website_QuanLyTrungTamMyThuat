@@ -5,7 +5,6 @@ urlpatterns = [
     path('', views.user, name='user'),
     path('dangky/',views.register,name='dangky'),
     path('dangnhap/',views.userlogin,name='dangnhap'),
-    path("dangxuat/", views.user_logout, name="dangxuat"),
     path('quenmk/',views.quenmk,name='quenmk'),
     path('dangkytuvan/',views.dangkytuvan,name='dangkytuvan'),
     path('gioithieu/',views.gioithieu,name='gioithieu'),
@@ -18,6 +17,6 @@ urlpatterns = [
     path('chinhanh/',views.chinhanh,name='chinhanh'),
     path('giaovien/chitietgiaovien/', views.chitietgiaovien, name='chitietgiaovien'),
     path('giohang/', views.giohang, name='giohang'),
-    path('tthocvien/',views.tthocvien,name='tthocvien'),
+    path('tthocvien/',views.thongtinhv,name='tthocvien'),
     path('lichsukh/',views.lichsukh,name='lichsukh')
 ]

@@ -23,9 +23,6 @@ def user(request):
     if username:
         context = {'username': username}
         return render(request, 'pages/user.html', context)
-    else:
-        messages.error(request, "Bạn chưa đăng nhập!")
-        return redirect('dangnhap') 
 
 def dangky(request):
     return render(request,'layout/dangky.html')
@@ -101,15 +98,6 @@ def userlogin(request):
 
 
 
-##Dang xuat
-def user_logout(request):
-    logout(request)
-    return redirect("dangnhap")
-
-
-
-
-    return render(request, 'layout/dangky.html', {'form': form})
 
 
 ## Tạo id tai khoản theo hv
@@ -172,3 +160,9 @@ def tthocvien(request):
 def lichsukh(request):
     return render(request,'pages/lich-su-khoa-hoc.html')
 
+## thông tin học viên
+def thongtinhv(request):
+    tthv = {
+        'tt_hv': HocVien.objects.all(),
+    }
+    return render(request,'pages/thong-tin-hoc-vien.html',tthv)
