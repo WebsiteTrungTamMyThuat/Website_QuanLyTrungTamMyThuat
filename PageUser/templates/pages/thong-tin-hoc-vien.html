@@ -7,25 +7,43 @@
         <div class="info-header">
             <header>Thông tin cá nhân</header>
         </div>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="input-box">
+                <input type="text" name="hoten" class="input-field" placeholder="Họ tên" value="{{ form.hoten.value }}">
+                {% if form.hoten.errors %}
+                <div class="error">{{ form.hoten.errors }}</div>
+                {% endif %}
+            </div>
+
         <div class="input-box">
-            <input type="text" class="input-field" placeholder="Họ tên" autocomplete="off" required  value="{{ form.hoten.value }}">
-            {% if form.hoten.errors %}
-            <div class="error">{{ form.hoten.errors }}</div>
+            {{ form.SDT}}
+            {% if form.SDT.errors %}
+            <div class="error">{{ form.SDT.errors }}</div>
+            {% endif %}
+
+        </div>
+        <div class="input-box">
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="error">{{ form.email.errors }}</div>
+                {% endif %}
+        </div>
+        
+        <div class="input-box">
+            <input type="date" name="NgaySinh" class="input-field" value="{{ form.NgaySinh.value|date:'Y-m-d' }}">
+            {% if form.NgaySinh.errors %}
+            <div class="error">{{ form.NgaySinh.errors }}</div>
             {% endif %}
         </div>
-        <div class="input-box">
-            <input type="text" class="input-field" placeholder="Số điện thoại" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="email" class="input-field" placeholder="Email" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="date" class="input-field" placeholder="Ngày sinh" autocomplete="off" required>
-        </div>
+
+
         <div class="input-submit">
             <button class="submit-btn" id="submit"></button>
             <label for="submit">Lưu thay đổi</label>
         </div>
+    </form>
     </div>
 </div>
 {%endblock%}
