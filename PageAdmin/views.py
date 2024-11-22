@@ -5,7 +5,6 @@ from django.db import transaction
 from django.contrib import messages
 from django.urls import reverse
 
-
 # Create your views herede
 def admin(request):
     return render(request, 'pages/admin.html')
