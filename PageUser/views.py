@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponse 
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -14,6 +14,10 @@ from .models import *
 from django.db.models import Max
 
 from .forms import HocVienForm
+
+import re
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 # Create your views herede
@@ -125,6 +129,15 @@ def register(request):
         # Kiểm tra mật khẩu khớp
         if password != password_confirmation:
             return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
+        
+
+        if not sdt.isdigit():
+            return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            return render(request, 'user/dangky.html', {'error': 'Email không hợp lệ!'})
 
         try:
             # Tạo mã học viên duy nhất
@@ -135,8 +148,8 @@ def register(request):
                 idtaikhoan=mahv,
                 username=email,
                 pass_word=password,
-                quyen='hocvien',
-                trangthai='active'
+                quyen='Học Viên',
+                trangthai='Hoạt Động'
             )
             
             # Lưu học viên
@@ -162,7 +175,32 @@ def lichsukh(request):
 
 ## thông tin học viên
 def thongtinhv(request):
-    tthv = {
-        'tt_hv': HocVien.objects.all(),
-    }
-    return render(request,'pages/thong-tin-hoc-vien.html',tthv)
+    if not request.session.get('user_username'):
+        return redirect('dangnhap')
+
+    username = request.session['user_username']
+    hoc_vien = get_object_or_404(HocVien, email=username)
+
+    if request.method == 'POST':
+        hoten = request.POST.get('hoten')
+        SDT = request.POST.get('SDT')
+        email = request.POST.get('email')
+        NgaySinh = request.POST.get('NgaySinh')
+        form = HocVienForm(request.POST, instance=hoc_vien)
+        if form.is_valid():
+            HocVien.objects.update(
+              
+                hoten=hoten,
+                SDT=SDT,
+                email=email,
+                NgaySinh=NgaySinh
+                
+                
+            )
+            messages.success(request, 'Cập nhật thông tin thành công!')
+            return redirect('thong-tin-hoc-vien')
+        else:
+            messages.error(request, 'Cập nhật thất bại, vui lòng kiểm tra lại!')
+
+    form = HocVienForm(instance=hoc_vien)
+    return render(request, 'pages/thong-tin-hoc-vien.html', {'form': form})
