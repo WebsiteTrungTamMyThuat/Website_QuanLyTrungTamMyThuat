@@ -1,0 +1,63 @@
+{% extends "layout/layout.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Sửa hóa đơn</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="{% url 'thanhtoan' %}">Thanh toán</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Chi tiết hóa đơn</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="table-data">
+        <div class="order">
+            <section class="container">
+                <form action="#" class="form">
+
+                    <div class="column">
+                        <div class="input-box">
+                            <label>Số hóa đơn</label>
+                            <input type="text" placeholder="Nhập mã" required />
+                        </div>
+                        <div class="status-box">
+                            <label>Trạng thái</label>
+                            <div class="select-box">
+                                <select>
+                                    <option hidden>Chọn</option>
+                                    <option>Chưa hoàn tất</option>
+                                    <option>Hoàn tất</option>
+                                </select>
+                            </div> 
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="column">
+                        <div class="input-box">
+                            <label>Ngày lập</label>
+                            <input type="date" placeholder="" required />
+                        </div>
+                        
+                        <div class="input-box">
+                            <label>Tổng tiền</label>
+                            <input type="text" placeholder=""  />
+                        </div>
+                    </div>
+                  <button>Sửa</button>
+                </form>
+              </section>
+        </div>
+    </div>
+</main>
+{% endblock %}
