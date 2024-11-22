@@ -9,13 +9,7 @@ class TaiKhoanNguoiDung(models.Model):
     class Meta:
         db_table = 'taikhoannguoidung'
 
-class TaiKhoanNhanVien(models.Model):
-    username = models.CharField(max_length=5, primary_key=True)
-    pass_word = models.CharField(max_length=50, db_column='pass')
-    quyen = models.CharField(max_length=50)
-    trangthai = models.CharField(max_length=50)
-    class Meta:
-        db_table = 'taikhoannhanvien'
+
         
 class KhoaHoc(models.Model):
     makh = models.CharField(max_length=7, primary_key=True)
