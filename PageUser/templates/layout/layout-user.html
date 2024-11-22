@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <!--
+      - primary meta tags
+    -->
+    <title>Mỹ thuật Bụi- Trung Tâm Dạy Vẽ Mỹ Thuật</title>
+
+    <!--
+      - favicon
+    -->
+    <link rel="shortcut icon" href="{% static "img/logo.png" %}" type="image/svg+xml">
+
+    <!--
+      - google font link
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Rosario:wght@500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/6.4.8/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--
+      - custom css link
+    -->
+    <link rel="stylesheet" href="{% static "css/layout-user.css" %}">
+
+    <!--
+      - preload images
+    -->
+    <link rel="preload" as="image" href="./assets/images/hero-banner-1.jpg">
+    <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg">
+
+</head>
+
+<body>
+
+<!--
+  - #HEADER
+-->
+
+<header class="header" data-header>
+
+
+
+    <div class="container">
+        <div class="nav__logo">
+            <a href="{% url "user" %}" class="logo"><img src="{% static "img/logo.png" %}" alt=""></a>
+        </div>
+
+        <div id="loginSuccessNotification" class="notification deactive">
+            <span class="notification-icon">&#10003;</span> 
+            <span class="notification-message">Đăng nhập thành công.</span>
+            <span class="close-btn" onclick="closeNotification()">×</span>
+        </div>
+
+        <nav class="navbar" data-navbar>
+            <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
+                <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+            </button>
+
+            <ul class="navbar-list">
+                <li class="navbar-item">
+                    <a href="{% url "user" %}" class="navbar-link">Trang chủ</a>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="#" class="navbar-link">Hướng dẫn</a>
+                    <ul class="submenu">
+                        <li><a href="{% url "hdthanhtoan" %}">Hướng dẫn thanh toán</a></li>
+                        {% comment %}
+                            <li><a href="#">Câu hỏi thường gặp</a></li> {% endcomment %}
+                        <li><a href="{% url "chinhanh" %}">Chi nhánh</a></li>
+                    </ul>
+                </li>
+                
+                <li class="navbar-item">
+                    <a href="{% url "khoahoc" %}" class="navbar-link">Lớp học</a>
+                    <ul class="submenu">
+                        <li><a href="">Phong cảnh</a></li>
+                        <li><a href="">Ký họa</a></li>
+                        <li><a href="">Chân dung</a></li>
+                        <li><a href="">Màu nước</a></li>
+                        <li><a href="">Sơn dầu</a></li>
+                    </ul>
+                </li>
+
+                <li class="navbar-item">
+                    <a href="{% url "dangkytuvan" %}" class="navbar-link">Đăng ký tư vấn</a>
+                </li>
+
+                <div id="loginRegister">
+                    <div class="nav-right">
+                        <button class="navbar-button"><a href="{% url "dangky" %}">Đăng ký</a></button>
+                    </div>
+                    <div class="nav-right-right">
+                        <button class="navbar-button"><a href="{% url "dangnhap" %}">Đăng nhập</a></button>
+                    </div>
+                </div>
+
+                
+
+                <div id="userLoggedIn" class="packing-button deactive">
+                    <li style="margin-top: -1px;"> {{ request.session.user_username }}</li>
+                    <button class="navbar-button">
+                        <ion-icon name="person-outline"></ion-icon>
+                    </button>
+                </div>
+
+
+
+              
+
+
+                <div class="packing-button">
+                    <button class="navbar-button"><a href="{% url 'giohang' %}">
+                        <ion-icon name="bag-handle-outline"></ion-icon>
+                    </a></button>
+                </div>
+            </ul>
+        </nav>
+
+        <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
+            <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+        </button>
+
+        <div class="overlay" data-nav-toggler data-overlay></div>
+
+    </div>
+</header>
+
+
+
+<main>
+    
+
+    {% block content %}
+
+    {% endblock %}
+
+</main>
+
+<!--
+  - #FOOTER
+-->
+
+<footer class="footer">
+    <div class="container">
+
+        <div class="section footer-top">
+
+            <div class="footer-brand">
+
+                <a href="#" class="logo">Mỹ thuật Bụi</a>
+
+                <p class="footer-text">
+                    CÔNG TY CP ĐÀO TẠO VÀ <br>TƯ VẤN GIÁO DỤC MỸ THUẬT BỤI
+                </p>
+
+                <ul class="social-list">
+
+                    <li>
+                        <a href="https://www.facebook.com/mythuatbui" class="social-link">
+                            <ion-icon name="logo-facebook"></ion-icon>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="social-link">
+                            <ion-icon name="logo-instagram"></ion-icon>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="social-link">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <ul class="footer-list">
+                <li>
+                    <p class="footer-list-title">Hỗ trợ</p>
+                </li>
+                <li>
+                    <a href="{% url "gioithieu" %}" class="footer-link">Giới thiệu</a>
+                </li>
+                <li>
+                    <a href="{% url "hdthanhtoan" %}" class="footer-link">Hướng dẫn thanh toán</a>
+                </li>
+                <li>
+                    <a href="{% url "chinhsachbaomat" %}" class="footer-link">Chính sách bảo mật</a>
+                </li>
+                <li>
+                    <a href="{% url "chinhsachdichvu" %}" class="footer-link">Chính sách dịch vụ</a>
+                </li>
+            </ul>
+
+            <div class="footer-list">
+
+                <p class="footer-list-title">Góp ý cho mỹ thuật Bụi</p>
+
+                <p class="footer-text">
+                    Nếu bạn có câu hỏi hoặc góp ý?<br>
+                    Liên hệ cho chúng tôi, chúng tôi rất vinh hạnh khi được nghe
+                </p>
+
+                <a href="#" class="btn">
+                    <span class="span">Liên hệ</span>
+
+                    <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p class="copyright">
+                Trụ sở: Số 6, Đường số 6, Phường 04, Quận 3, Hồ Chí Minh, Việt Nam
+                <br>Mã số thuế: 0107766904
+            </p>
+
+        </div>
+
+    </div>
+</footer>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Kiểm tra nếu có thông báo đăng nhập thành công
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    // Hiển thị thông báo thành công
+                    document.getElementById('loginSuccessNotification').classList.remove('deactive');
+                    
+                    // Ẩn thông báo sau 3 giây
+                    setTimeout(function () {
+                        document.getElementById('loginSuccessNotification').classList.add('deactive');
+                    }, 3000);  // 3 giây
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+
+<!--
+  - custom js link
+-->
+<script src="{% static "js/script-user.js" %}"></script>
+
+<!--
+  - ionicon link
+-->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/6.4.8/swiper-bundle.min.js"></script>
+</body>
+
+
+</html>
