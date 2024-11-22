@@ -7,12 +7,25 @@
         <div class="login-header">
             <header>Đăng nhập</header>
         </div>
-        <div class="input-box">
-            <input type="email" class="input-field" placeholder="Email hoặc Số điện thoại" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="password" class="input-field" placeholder="Password" autocomplete="off" required>
-        </div>
+        <form action="{% url 'dangnhap' %}" method="POST">
+            {% csrf_token %}
+
+            {% if messages %}
+                <div class="error-messages">
+                    {% for message in messages %}
+                        <p class="error-text">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+            <div class="input-box">
+                <input type="email" class="input-field" placeholder="Email hoặc Số điện thoại" autocomplete="off" required name="username" id="username"> 
+            </div>
+            <div class="input-box">
+                <input type="password" class="input-field" placeholder="Password" autocomplete="off" required name="pass_word" id="pass_word" >
+            </div>
+       
         <div class="forgot">
             <section>
                 <input type="checkbox" id="check">
@@ -29,7 +42,27 @@
         <div class="sign-in-link">
             <p>Nếu bạn không có tài khoản? <a href="{% url "dangky" %}">Đăng ký</a></p>
         </div>
+    </form>
     </div>
+
+   
+    
+
+    
+<script>
+    const check = document.getElementById('submit');
+    check.addEventListener('click', function() {
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = "{% url "user" %}";
+    });
+</script>
+
+
+
 </div>
 {%endblock%}
+
+
 <script src="{% static "js/script.js" %}">
+
+

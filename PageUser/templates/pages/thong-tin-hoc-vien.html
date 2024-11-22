@@ -1,0 +1,49 @@
+{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel="stylesheet" href="{% static "css/thong-tin-hoc-vien.css" %}">
+<div class="body">
+    <div class="info-box">
+        <div class="info-header">
+            <header>Thông tin cá nhân</header>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="input-box">
+                <input type="text" name="hoten" class="input-field" placeholder="Họ tên" value="{{ form.hoten.value }}">
+                {% if form.hoten.errors %}
+                <div class="error">{{ form.hoten.errors }}</div>
+                {% endif %}
+            </div>
+
+        <div class="input-box">
+            {{ form.SDT}}
+            {% if form.SDT.errors %}
+            <div class="error">{{ form.SDT.errors }}</div>
+            {% endif %}
+
+        </div>
+        <div class="input-box">
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="error">{{ form.email.errors }}</div>
+                {% endif %}
+        </div>
+        
+        <div class="input-box">
+            <input type="date" name="NgaySinh" class="input-field" value="{{ form.NgaySinh.value|date:'Y-m-d' }}">
+            {% if form.NgaySinh.errors %}
+            <div class="error">{{ form.NgaySinh.errors }}</div>
+            {% endif %}
+        </div>
+
+
+        <div class="input-submit">
+            <button class="submit-btn" id="submit"></button>
+            <label for="submit">Lưu thay đổi</label>
+        </div>
+    </form>
+    </div>
+</div>
+{%endblock%}

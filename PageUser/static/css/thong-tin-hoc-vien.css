@@ -1,0 +1,81 @@
+.body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image:url('/static/img/hero-shape.png');
+    background-size: 50%;
+    background-position: center;
+  }
+
+  .info-box {
+    margin:30px;
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    height: auto;
+    padding: 40px;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    background-color: hsla(30, 30%, 58%, 0.1);
+    backdrop-filter: blur(8px);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .info-header{
+    text-align: center;
+    margin: 20px 0 30px 0;
+  }
+
+  .info-header header {
+    color: #333;
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  .info-box .input-field{
+    width: 100%;
+    height: 60px;
+    font-size: 17px;
+    padding: 0 25px;
+    margin-bottom: 15px;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0px 5px 10px 1px rgba(0,0,0, 0.05);
+    outline: none;
+    transition: .3s;
+  }
+  ::placeholder{
+    font-weight: 500;
+    color: #222;
+  }
+  .input-field:focus{
+    width: 105%;
+  }
+
+  .input-submit{
+    position: relative;
+  }
+  .submit-btn{
+    width: 100%;
+    height: 60px;
+    background: #222;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .3s;
+  }
+  .input-submit label{
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    color: #fff;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+  .submit-btn:hover{
+    background: #000;
+    transform: scale(1.05,1);
+  }
