@@ -104,6 +104,13 @@
                     </div>
                 </div>
 
+                {% if request.session.user_username %}
+                <li style="margin-top: 10.5px;"> {{ request.session.user_username }}!</li>
+               
+                
+                {% else %}
+                {% endif %}
+
                 <div id="userLoggedIn" class="packing-button deactive">
                     <button class="navbar-button">
                         <ion-icon name="person-outline"></ion-icon>
