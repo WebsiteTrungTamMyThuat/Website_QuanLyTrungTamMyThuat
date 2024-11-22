@@ -82,15 +82,26 @@
 
         <li class="navbar-item">
           <a href="{% url "dangkytuvan" %}" class="navbar-link">Đăng ký tư vấn</a>
+          
         </li>
 
-        <div class="nav-right">
-          <button class="navbar-button"><a href="{% url "dangky" %}">Đăng ký</a></button>
-        </div>
-        <div class="nav-right-right">
-          <button class="navbar-button"><a href="{% url "dangnhap" %}">Đăng nhập</a></button>
-        </div>
-
+          
+              {% if request.session.user_username %}
+                  <li>Chào, {{ request.session.user_username }}!</li>
+                  
+              {% else %}
+              <div class="nav-right">
+                <button class="navbar-button"><a href="{% url 'dangky' %}">Đăng ký</a></button>
+              </div>
+              <div class="nav-right-right">
+                <button class="navbar-button"><a href="{% url 'dangnhap' %}">Đăng nhập</a></button>
+              </div>
+              {% endif %}
+       
+ 
+       
+   
+        
         <div class="packing-button">
           <button class="navbar-button"><a href="{% url 'giohang' %}"><ion-icon name="bag-handle-outline"></ion-icon></a></button>
         </div>
@@ -197,6 +208,11 @@
           Trụ sở: Số 6, Đường số 6, Phường 04, Quận 3, Hồ Chí Minh, Việt Nam
           <br>Mã số thuế: 0107766904
         </p>
+
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+          © 2024 Copyright: https://mythuatbui.edu.vn
+    
+        </div>
 
       </div>
 

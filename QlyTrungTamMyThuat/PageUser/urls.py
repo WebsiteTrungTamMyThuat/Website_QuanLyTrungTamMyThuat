@@ -3,8 +3,9 @@ from . import views
 
 urlpatterns = [
     path('', views.user, name='user'),
-    path('dangky/',views.dangky,name='dangky'),
-    path('dangnhap/',views.dangnhap,name='dangnhap'),
+    path('dangky/',views.register,name='dangky'),
+    path('dangnhap/',views.userlogin,name='dangnhap'),
+    path("dangxuat/", views.user_logout, name="dangxuat"),
     path('quenmk/',views.quenmk,name='quenmk'),
     path('dangkytuvan/',views.dangkytuvan,name='dangkytuvan'),
     path('gioithieu/',views.gioithieu,name='gioithieu'),

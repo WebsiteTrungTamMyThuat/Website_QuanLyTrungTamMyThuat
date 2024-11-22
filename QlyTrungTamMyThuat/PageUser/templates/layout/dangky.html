@@ -1,41 +1,48 @@
-{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
-{%block content %} 
-{% load static%}
+{% extends "layout/layout-user.html" %}
+{% block title %} Home {% endblock %}
+{% block content %}
+{% load static %}
 <link rel="stylesheet" href="{% static "css/dangky-dangnhap.css" %}">
 <div class="body">
     <div class="register-box">
         <div class="register-header">
             <header>Đăng ký</header>
         </div>
-        <div class="input-box">
-            <input type="text" class="input-field" placeholder="Họ tên" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="text" class="input-field" placeholder="Số điện thoại" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="email" class="input-field" placeholder="Email" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="password" class="input-field" placeholder="Mật khẩu" autocomplete="off" required>
-        </div>
-        <div class="input-box">
-            <input type="password" class="input-field" placeholder="Nhập lại mật khẩu" autocomplete="off" required>
-        </div>
-        <div class="forgot">
-            <section>
-                <input type="checkbox" id="check">
-                <label for="check">Hiện mật khẩu</label>
-            </section>
-        </div>
-        <div class="input-submit">
-            <button class="submit-btn" id="submit"></button>
-            <label for="submit">Đăng ký</label>
-        </div>
+        <form method="post">
+            {% csrf_token %}
+            {% if error %}
+                <div style="color: red; text-align: center;">{{ error }}</div>
+            {% endif %}
+            <div class="input-box">
+                <input type="text" class="input-field" name="hoten" placeholder="Họ tên" autocomplete="off" required>
+            </div>
+            <div class="input-box">
+                <input type="text" class="input-field" name="sdt" placeholder="Số điện thoại" autocomplete="off" required>
+            </div>
+            <div class="input-box">
+                <input type="email" class="input-field" name="email" placeholder="Email" autocomplete="off" required>
+            </div>
+            <div class="input-box">
+                <input type="password" class="input-field" name="password" placeholder="Mật khẩu" autocomplete="off" required>
+            </div>
+            <div class="input-box">
+                <input type="password" class="input-field" name="password_confirmation" placeholder="Nhập lại mật khẩu" autocomplete="off" required>
+            </div>
+            <div class="forgot">
+                <section>
+                    <input type="checkbox" id="check" onclick="togglePassword()">
+                    <label for="check">Hiện mật khẩu</label>
+                </section>
+            </div>
+            <div class="input-submit">
+                <button class="submit-btn" id="submit"></button>
+                <label for="submit">Đăng Ký</label>
+            </div>
+        </form>
         <div class="sign-up-link">
-            <p>Nếu bạn đã có tài khoản? <a href="{% url "dangnhap" %}">Đăng nhập</a></p>
+            <p>Nếu bạn đã có tài khoản? <a href="{% url 'dangnhap' %}">Đăng nhập</a></p>
         </div>
     </div>
 </div>
-{%endblock%}
+{% endblock %}
 <script src="{% static "js/script.js" %}">

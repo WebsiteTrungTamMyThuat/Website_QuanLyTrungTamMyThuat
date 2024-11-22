@@ -4,10 +4,6 @@ class TaiKhoanNguoiDung(models.Model):
     idtaikhoan = models.CharField(max_length=10, primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     pass_word = models.CharField(max_length=50)
-    sdt = models.CharField(max_length=11)
-    gioitinh = models.CharField(max_length=5)
-    ngaysinh = models.DateField()
-    diachi = models.CharField(max_length=255)
     quyen = models.CharField(max_length=10)
     trangthai = models.CharField(max_length=50)
     class Meta:
@@ -46,10 +42,11 @@ class HocVien(models.Model):
     mahv = models.CharField(max_length=10, primary_key=True)
     hoten = models.CharField(max_length=40)
     email = models.CharField(max_length=255)
-    SDT = models.CharField(max_length=11)
-    GioiTinh = models.CharField(max_length=5)
-    NgaySinh = models.DateField()
-    DiaChi = models.CharField(max_length=255)
+
+    gioitinh = models.CharField(max_length=5)
+    ngaysinh = models.DateField()
+    diachi = models.CharField(max_length=255)
+    sdt  = models.CharField(max_length=11)
     class Meta:
         db_table = 'hocvien'
         

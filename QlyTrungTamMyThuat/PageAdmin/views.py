@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse 
 from .models import *
 
+
 # Create your views herede
 def admin(request):
     return render(request, 'pages/admin.html')
