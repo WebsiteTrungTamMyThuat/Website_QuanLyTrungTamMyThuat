@@ -9,6 +9,7 @@
         </div>
         <form action="{% url 'dangnhap' %}" method="POST">
             {% csrf_token %}
+
             {% if messages %}
                 <div class="error-messages">
                     {% for message in messages %}
@@ -16,6 +17,8 @@
                     {% endfor %}
                 </div>
             {% endif %}
+
+
             <div class="input-box">
                 <input type="email" class="input-field" placeholder="Email hoặc Số điện thoại" autocomplete="off" required name="username" id="username"> 
             </div>
@@ -41,6 +44,11 @@
         </div>
     </form>
     </div>
+
+   
+    
+
+    
 <script>
     const check = document.getElementById('submit');
     check.addEventListener('click', function() {
@@ -48,6 +56,13 @@
         window.location.href = "{% url "user" %}";
     });
 </script>
+
+
+
 </div>
 {%endblock%}
+
+
 <script src="{% static "js/script.js" %}">
+
+

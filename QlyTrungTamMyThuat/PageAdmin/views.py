@@ -7,7 +7,7 @@ from .models import *
 def admin(request):
     return render(request, 'pages/admin.html')
 
-def giaovien(request):
+def giaovien_ad(request):
     dsgv = GiaoVien.objects.all()
     dstk = TaiKhoanNguoiDung.objects.all()
     

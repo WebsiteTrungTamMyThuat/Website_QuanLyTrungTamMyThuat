@@ -46,10 +46,20 @@
 -->
 
 <header class="header" data-header>
+
+
+
     <div class="container">
         <div class="nav__logo">
             <a href="{% url "user" %}" class="logo"><img src="{% static "img/logo.png" %}" alt=""></a>
         </div>
+
+        <div id="loginSuccessNotification" class="notification deactive">
+            <span class="notification-icon">&#10003;</span> 
+            <span class="notification-message">Đăng nhập thành công.</span>
+            <span class="close-btn" onclick="closeNotification()">×</span>
+        </div>
+
         <nav class="navbar" data-navbar>
             <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
                 <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
@@ -69,7 +79,7 @@
                         <li><a href="{% url "chinhanh" %}">Chi nhánh</a></li>
                     </ul>
                 </li>
-
+                
                 <li class="navbar-item">
                     <a href="{% url "khoahoc" %}" class="navbar-link">Lớp học</a>
                     <ul class="submenu">
@@ -100,6 +110,11 @@
                     </button>
                 </div>
 
+
+
+              
+
+
                 <div class="packing-button">
                     <button class="navbar-button"><a href="{% url 'giohang' %}">
                         <ion-icon name="bag-handle-outline"></ion-icon>
@@ -117,7 +132,11 @@
     </div>
 </header>
 
+
+
 <main>
+    
+
     {% block content %}
 
     {% endblock %}
@@ -214,6 +233,25 @@
     </div>
 </footer>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Kiểm tra nếu có thông báo đăng nhập thành công
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    // Hiển thị thông báo thành công
+                    document.getElementById('loginSuccessNotification').classList.remove('deactive');
+                    
+                    // Ẩn thông báo sau 3 giây
+                    setTimeout(function () {
+                        document.getElementById('loginSuccessNotification').classList.add('deactive');
+                    }, 3000);  // 3 giây
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    });
+</script>
 
 <!--
   - custom js link
