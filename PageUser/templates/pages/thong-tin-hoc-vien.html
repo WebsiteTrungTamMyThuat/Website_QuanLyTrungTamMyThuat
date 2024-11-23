@@ -9,7 +9,13 @@
         </div>
         <form method="post">
             {% csrf_token %}
-
+            {% if messages %}
+                <div class="error-messages">
+                    {% for message in messages %}
+                        <p class="error-text">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="input-box">
                 <input type="text" name="hoten" class="input-field" placeholder="Họ tên" value="{{ form.hoten.value }}">
                 {% if form.hoten.errors %}

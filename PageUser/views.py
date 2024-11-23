@@ -178,29 +178,42 @@ def thongtinhv(request):
     if not request.session.get('user_username'):
         return redirect('dangnhap')
 
+    # Get the logged-in user's email
     username = request.session['user_username']
+    
+    # Fetch the HocVien and TaiKhoanNguoiDung instances
     hoc_vien = get_object_or_404(HocVien, email=username)
+    tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
 
     if request.method == 'POST':
         hoten = request.POST.get('hoten')
         SDT = request.POST.get('SDT')
         email = request.POST.get('email')
         NgaySinh = request.POST.get('NgaySinh')
-        form = HocVienForm(request.POST, instance=hoc_vien)
-        if form.is_valid():
-            HocVien.objects.update(
-              
-                hoten=hoten,
-                SDT=SDT,
-                email=email,
-                NgaySinh=NgaySinh
-                
-                
-            )
+
+        # Update the HocVien model
+        hoc_vien.hoten = hoten
+        hoc_vien.SDT = SDT
+        hoc_vien.email = email
+        hoc_vien.NgaySinh = NgaySinh
+
+        try:
+            # Save the updated HocVien
+            hoc_vien.save()
+
+            # Update the TaiKhoanNguoiDung username if the email changed
+            if tai_khoan.username != email:
+                tai_khoan.username = email
+                tai_khoan.save()
+
+            # Update the session username to reflect the new email
+            request.session['user_username'] = email
+
             messages.success(request, 'Cập nhật thông tin thành công!')
             return redirect('thong-tin-hoc-vien')
-        else:
-            messages.error(request, 'Cập nhật thất bại, vui lòng kiểm tra lại!')
 
-    form = HocVienForm(instance=hoc_vien)
-    return render(request, 'pages/thong-tin-hoc-vien.html', {'form': form})
+        except Exception as e:
+            print(e)  # Debugging
+            messages.error(request, 'Đã xảy ra lỗi, vui lòng thử lại!')
+
+    return render(request, 'pages/thong-tin-hoc-vien.html', {'form': HocVienForm(instance=hoc_vien)})
