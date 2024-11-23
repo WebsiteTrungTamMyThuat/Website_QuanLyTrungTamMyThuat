@@ -1560,10 +1560,20 @@ h4, h2 {
     border-bottom: 1px solid var(--granite-gray);
 }
 
+<<<<<<< HEAD
 #loginRegister {
     display: flex;
 }
 
+=======
+<<<<<<< HEAD
+
+=======
+#loginRegister {
+    display: flex;
+}
+
+>>>>>>> fb26cc0414bf521cdcc12000682d96bd0e1c2f43
 .deactive {
     display: none !important;
 }
@@ -1611,6 +1621,7 @@ h4, h2 {
 #logoutButton {
     cursor: pointer;
 }
+<<<<<<< HEAD
 
 /* Notification styling */
 .notification {
@@ -1648,3 +1659,6 @@ h4, h2 {
 .deactive {
     display: none;
 }
+=======
+>>>>>>> 7f84a0139e49e2d6d2fa0e0255c202b1b8f1ad1e
+>>>>>>> fb26cc0414bf521cdcc12000682d96bd0e1c2f43
