@@ -4,10 +4,16 @@ from .models import *
 from django.db import transaction
 from django.contrib import messages
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 # Create your views herede
-def admin(request):
-    return render(request, 'pages/admin.html')
+@login_required
+def admin(request, idtaikhoan):
+    id = request.session.get('user_idtaikhoan')
+    if id:
+        return render(request, 'pages/admin.html', {'idtaikhoan': idtaikhoan})
+    return render(request, '403.html', status=403)
+    
 
 def giaovien(request):
     dsgv = GiaoVien.objects.all()
