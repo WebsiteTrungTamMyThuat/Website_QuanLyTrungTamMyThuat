@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from .models import *
+from django import forms
 # Register your models here.
 
 
@@ -81,21 +82,18 @@ class DanhGiaAdmin(admin.ModelAdmin):
     search_fields = ('mahv','malop',)
     
     
-    
-class ChiTietKhoaHocInline(admin.TabularInline):
-    model = ChiTietKhoaHoc
-    extra = 1  # Số dòng trống thêm mới
-    fields = ('stt', 'manoidung')
+@admin.register(ChiTietKhoaHoc)  
+class ChiTietKhoaHocAdmin(admin.ModelAdmin):
+    list_display = ('id', 'stt', 'manoidung', 'makh')
+    list_filter = ('makh','manoidung',)
     autocomplete_fields = ['manoidung']
-    
-        
 
-@admin.register(KhoaHoc)
+
+@admin.register(KhoaHoc)    
 class KhoaHocAdmin(admin.ModelAdmin):
     list_display = ('makh', 'tenkh', 'mota', 'hinhthuc')
     search_fields = ('tenkh','hinhthuc',)
     list_filter = ('hinhthuc',)
-    inlines = [ChiTietKhoaHocInline]
     
 @admin.register(NoiDungKhoaHoc)
 class NoiDungKhoaHocAdmin(admin.ModelAdmin):
@@ -125,10 +123,15 @@ class LichHocAdmin(admin.ModelAdmin):
     search_fields = ('malich','malop',)
     list_filter = ('giohoc','sogiohoc','malop',)
     
+    
+
+        
 @admin.register(LopHoc)
 class LopHocAdmin(admin.ModelAdmin):
     list_display = ('malop','tenlop','siso','tonggiohoc','hocphi','makh',)
     search_fields = ('tenlop','makh',)
     list_filter = ('tenlop','makh','tonggiohoc',)
+    
+    
     
     
