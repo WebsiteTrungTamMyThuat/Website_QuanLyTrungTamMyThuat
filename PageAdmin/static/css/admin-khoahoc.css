@@ -1,5 +1,3 @@
-
-			
 @media screen and (max-width: 576px) {
     #content .table-data .order .head form .form-input input {
         display: none;
@@ -25,16 +23,19 @@
         color: var(--light);
         background: var(--red);
     }
+
     #content main .table-data .order table {
         min-width: 420px;
     }
 }
+
 table, th, td {
     border-collapse: collapse;
     padding: 1rem;
     text-align: center;
-	
+
 }
+
 thead th {
     position: sticky;
     top: 0;
@@ -48,4 +49,203 @@ thead th {
     td:not(:first-of-type) {
         min-width: 12.1rem;
     }
+}
+
+.timetable {
+    display: grid;
+    grid-template-areas: ". week"
+                       "time content";
+    grid-template-columns: 120px;
+    grid-template-rows: 60px;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    margin: 20px calc(calc(100% - 900) / 2);
+}
+
+.timetable .weekend {
+    background: #F1F5F6;
+    color: #697B85;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background: #546E7A;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-nav:hover {
+    background: #8eeec0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-nav span {
+    font-size: 18px;
+    margin: 0 8px;
+}
+
+#current-week-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #546E7A;
+    text-align: center;
+}
+
+
+.timetable .week-names {
+    grid-area: week;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.timetable .week-names > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 1px 0 0 #ECEFF1;
+}
+
+.timetable .time-interval {
+    grid-area: time;
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    font-size: 14px;
+}
+
+.timetable .time-interval > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 1px 0 0 #ECEFF1;
+}
+
+.timetable .content {
+    grid-area: content;
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.timetable .content > div {
+    box-shadow: inset 1px 0 0 #ECEFF1, inset 0 1px 0 0 #ECEFF1;
+}
+
+.course {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7px;
+    font-size: 14px;
+}
+
+.course .className {
+    font-size: 16px !important;
+    font-weight: 700;
+}
+
+/* Gradients and Tiles */
+.accent-pink-gradient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #C90057, #FF4D80);
+    transition: 0.2s ease box-shadow, 0.2s ease transform;
+}
+
+.accent-pink-gradient:hover {
+    box-shadow: 0 20px 30px 0 rgba(201, 0, 87, 0.3);
+    transform: scale(1.05);
+}
+
+.accent-orange-gradient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #FFA64D, #FFD480);
+    transition: 0.2s ease box-shadow, 0.2s ease transform;
+}
+
+.accent-orange-gradient:hover {
+    box-shadow: 0 20px 30px 0 rgba(255, 166, 77, 0.3);
+    transform: scale(1.05);
+}
+
+.accent-green-gradient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #80FFB9, #B3FFD1);
+    transition: 0.2s ease box-shadow, 0.2s ease transform;
+}
+
+.accent-green-gradient:hover {
+    box-shadow: 0 20px 30px 0 rgba(128, 255, 185, 0.3);
+    transform: scale(1.05);
+}
+
+.accent-cyan-gradient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #8EEEC0, #B3FFD1);
+    transition: 0.2s ease box-shadow, 0.2s ease transform;
+}
+
+.accent-cyan-gradient:hover {
+    box-shadow: 0 20px 30px 0 rgba(142, 238, 192, 0.3);
+    transform: scale(1.05);
+}
+
+.accent-blue-gradient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4D80FF, #80A6FF);
+    transition: 0.2s ease box-shadow, 0.2s ease transform;
+}
+
+.accent-blue-gradient:hover {
+    box-shadow: 0 20px 30px 0 rgba(77, 128, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.accent-purple-gradient {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #B980FF, #D1B3FF);
+    transition: 0.2s ease box-shadow, 0.2s ease transform;
+}
+
+.accent-purple-gradient:hover {
+    box-shadow: 0 20px 30px 0 rgba(185, 128, 255, 0.3);
+    transform: scale(1.05);
 }
