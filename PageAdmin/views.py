@@ -28,10 +28,8 @@ def giaovien(request):
     
     return render(request,'pages/admin-giaovien.html',{'ds_gv': data})
 
-def khoahoc(request):
-    dskh = KhoaHoc.objects.all()
-    
-    return render(request,'pages/admin-khoahoc.html', {'dskh': dskh})
+def lichhoc(request):
+    return render(request,'pages/admin-khoahoc.html')
 
 def hocvien(request):
     dshv = HocVien.objects.all()
