@@ -52,7 +52,6 @@
 .card-body {
     padding: 25px;
     margin-top: -15px;
-    margin-bottom: 60px;
 }
 
 .price {
@@ -66,7 +65,8 @@
 .btn-submit {
     font-size: 14px;
     border-radius: 50px;
-    /* width: 120px; */
+    padding: 0 15px;
+    min-height: 40px;
 }
 
 .btn-submit:hover {
