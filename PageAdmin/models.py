@@ -1,10 +1,11 @@
 from django.db import models
 
 class TaiKhoanNguoiDung(models.Model):
-    idtaikhoan = models.CharField(max_length=10, primary_key=True)
-    username = models.CharField(max_length=50, unique=True)
-    pass_word = models.CharField(max_length=50)
-    quyen = models.CharField(max_length=10)
+    QUYEN_CHOICES = [('GV', 'Giáo Viên'), ('HV', 'Học Viên'),]
+    idtaikhoan = models.CharField(max_length=10, primary_key=True, db_column='idtaikhoan')
+    username = models.CharField(max_length=50, unique=True, db_column='username')
+    pass_word = models.CharField(max_length=50, db_column='pass')
+    quyen = models.CharField(max_length=10, choices=QUYEN_CHOICES, default='GV')
     trangthai = models.CharField(max_length=50)
     class Meta:
         db_table = 'taikhoannguoidung'
@@ -20,24 +21,25 @@ class KhoaHoc(models.Model):
         db_table = 'khoahoc'
         
 class LopHoc(models.Model):
-    malop = models.CharField(max_length=7, primary_key=True)
+    malop = models.CharField(max_length=7, primary_key=True, db_column='malop')
     tenlop = models.CharField(max_length=100)
     siso = models.IntegerField()
     diadiemhoc = models.CharField(max_length=255)
     ngaybatdau = models.DateField()
     tonggiohoc = models.IntegerField()
     hocphi = models.DecimalField(max_digits=10, decimal_places=2)
-    makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE)
-    magv = models.CharField(max_length=10)
+    makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
+    magv = models.CharField(max_length=10, db_column='magv')
     class Meta:
         db_table = 'lophoc'
         
 class HocVien(models.Model):
+    GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
     mahv = models.CharField(max_length=10, primary_key=True)
     hoten = models.CharField(max_length=40)
     email = models.CharField(max_length=255)
     SDT = models.CharField(max_length=11)
-    GioiTinh = models.CharField(max_length=5)
+    GioiTinh = models.CharField(max_length=5, choices=GIOI_TINH_CHOICES, default='Nam')
     NgaySinh = models.DateField()
     DiaChi = models.CharField(max_length=255)
     class Meta:
@@ -54,15 +56,18 @@ class HoaDon(models.Model):
         db_table = 'hoadon'
         
 class GiaoVien(models.Model):
+    GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
     magv = models.CharField(max_length=10, primary_key=True)
     hoten = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     SDT = models.CharField(max_length=11)
-    GioiTinh = models.CharField(max_length=5)
+    GioiTinh = models.CharField(max_length=5, choices=GIOI_TINH_CHOICES, default='Nam')
     NgaySinh = models.DateField()
     DiaChi = models.CharField(max_length=255)
     class Meta:
         db_table = 'giaovien'
+    
+        
         
 class LichHoc(models.Model):
     malich = models.AutoField(primary_key=True)
@@ -74,7 +79,7 @@ class LichHoc(models.Model):
         db_table = 'lichhoc'
         
 class NhaCungCap(models.Model):
-    mancc = models.AutoField(max_length=5, primary_key=True)
+    mancc = models.AutoField(primary_key=True)
     tenncc = models.CharField(max_length=255)
     diachi = models.CharField(max_length=255)
     sdt = models.CharField(max_length=15)
