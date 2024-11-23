@@ -161,6 +161,7 @@ def register(request):
                 diachi ="",
                 sdt=sdt
             )
+            messages.success(request, 'Đăng ký thành công!')
             return redirect('dangnhap')  # Chuyển hướng sau khi đăng ký thành công
         except Exception as e:
             return render(request, 'layout/dangky.html', {'error': str(e)})
@@ -210,10 +211,10 @@ def thongtinhv(request):
             request.session['user_username'] = email
 
             messages.success(request, 'Cập nhật thông tin thành công!')
-            return redirect('thong-tin-hoc-vien')
+            return redirect('dangnhap')
 
         except Exception as e:
-            print(e)  # Debugging
+            print("Error:", str(e))
             messages.error(request, 'Đã xảy ra lỗi, vui lòng thử lại!')
 
     return render(request, 'pages/thong-tin-hoc-vien.html', {'form': HocVienForm(instance=hoc_vien)})
