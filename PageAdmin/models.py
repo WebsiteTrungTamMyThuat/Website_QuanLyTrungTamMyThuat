@@ -19,6 +19,25 @@ class KhoaHoc(models.Model):
     hinhthuc = models.CharField(max_length=50)
     class Meta:
         db_table = 'khoahoc'
+    def __str__(self):
+        return self.tenkh
+
+class NoiDungKhoaHoc(models.Model):
+    manoidung = models.AutoField(primary_key=True)
+    tieude = models.CharField(max_length=255)
+    class Meta:
+        db_table = 'noidungkhoahoc'
+    def __str__(self):
+        return self.tieude
+        
+class ChiTietKhoaHoc(models.Model):
+    stt = models.IntegerField()
+    makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
+    manoidung = models.ForeignKey(NoiDungKhoaHoc, on_delete=models.CASCADE, db_column='manoidung')
+    id = models.AutoField(primary_key=True, db_column='id')
+    class Meta:
+        db_table = 'chitietkhoahoc'
+    
         
 class LopHoc(models.Model):
     malop = models.CharField(max_length=7, primary_key=True, db_column='malop')
@@ -32,6 +51,8 @@ class LopHoc(models.Model):
     magv = models.CharField(max_length=10, db_column='magv')
     class Meta:
         db_table = 'lophoc'
+    def __str__(self):
+        return self.malop + " - " + self.tenlop
         
 class HocVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
@@ -44,6 +65,8 @@ class HocVien(models.Model):
     DiaChi = models.CharField(max_length=255)
     class Meta:
         db_table = 'hocvien'
+    def __str__(self):
+        return self.hoten
     
 class HoaDon(models.Model):
     sohd = models.AutoField(primary_key=True)
@@ -66,6 +89,8 @@ class GiaoVien(models.Model):
     DiaChi = models.CharField(max_length=255)
     class Meta:
         db_table = 'giaovien'
+    def __str__(self):
+        return self.hoten
     
         
         
@@ -85,6 +110,8 @@ class NhaCungCap(models.Model):
     sdt = models.CharField(max_length=15)
     class Meta:
         db_table = 'nhacc'
+    def __str__(self):
+        return self.tenncc
         
 from django.contrib.auth.models import User
 class NhanVien(models.Model):
@@ -98,6 +125,8 @@ class NhanVien(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     class Meta:
         db_table = 'nhanvien'
+    def __str__(self):
+        return self.hoten
 
 class TaiKhoanNhanVien(models.Model):
     username = models.CharField(max_length=20, primary_key=True)
@@ -115,6 +144,7 @@ class DanhGia(models.Model):
     malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE, db_column='malop')
     class Meta:
         db_table = 'danhgia'
+    
         
 class LichSuGiaoDich(models.Model):
     magiaodich = models.AutoField(primary_key=True)
@@ -151,22 +181,10 @@ class HoaCu(models.Model):
     soluong = models.IntegerField()
     class Meta:
         db_table = 'hoacu'
-
-class NoiDungKhoaHoc(models.Model):
-    manoidung = models.AutoField(primary_key=True)
-    tieude = models.CharField(max_length=255)
-    class Meta:
-        db_table = 'noidungkhoahoc'
     def __str__(self):
-        return self.tieude
-        
-class ChiTietKhoaHoc(models.Model):
-    id = models.AutoField(primary_key=True)
-    stt = models.IntegerField()
-    makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
-    manoidung = models.ForeignKey(NoiDungKhoaHoc, on_delete=models.CASCADE, db_column='manoidung')
-    class Meta:
-        db_table = 'chitietkhoahoc'
+        return self.tenhoacu
+
+
 
 class ChiTietPhieuNhap(models.Model):
     soluong = models.IntegerField()
