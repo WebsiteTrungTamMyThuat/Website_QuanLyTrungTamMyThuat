@@ -8,13 +8,13 @@ def create_nhanvien_for_user(sender, instance, created, **kwargs):
     if created:
         # Tạo bản ghi trong bảng NhanVien khi tạo user mới
         NhanVien.objects.create(
-            manv=instance.username,  # Giả sử manv là username trong auth_user
-            hoten=instance.first_name + ' ' + instance.last_name,  # Tạo họ tên từ first_name và last_name
-            gioitinh='',  # Thêm giá trị mặc định nếu cần
-            ngaysinh=None,  # Thêm giá trị mặc định nếu cần
-            diachi='',  # Thêm giá trị mặc định nếu cần
-            sdt='',  # Thêm giá trị mặc định nếu cần
-            user_id=instance.id  # Liên kết với user_id trong bảng NhanVien
+            manv=instance.username, 
+            hoten=instance.first_name + ' ' + instance.last_name, 
+            gioitinh='',
+            ngaysinh=None, 
+            diachi='', 
+            sdt='', 
+            user_id=instance.id  
         )
         
 @receiver(post_save, sender=User)

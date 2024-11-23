@@ -74,7 +74,61 @@ class GiaoVienAdmin(admin.ModelAdmin):
             )
         super().save_model(request,obj,form,change)
     
+    
 @admin.register(DanhGia)
 class DanhGiaAdmin(admin.ModelAdmin):
     list_display = ('madanhgia', 'mota', 'mahv', 'malop')
     search_fields = ('mahv','malop',)
+    
+    
+    
+class ChiTietKhoaHocInline(admin.TabularInline):
+    model = ChiTietKhoaHoc
+    extra = 1  # Số dòng trống thêm mới
+    fields = ('stt', 'manoidung')
+    autocomplete_fields = ['manoidung']
+    
+        
+
+@admin.register(KhoaHoc)
+class KhoaHocAdmin(admin.ModelAdmin):
+    list_display = ('makh', 'tenkh', 'mota', 'hinhthuc')
+    search_fields = ('tenkh','hinhthuc',)
+    list_filter = ('hinhthuc',)
+    inlines = [ChiTietKhoaHocInline]
+    
+@admin.register(NoiDungKhoaHoc)
+class NoiDungKhoaHocAdmin(admin.ModelAdmin):
+    list_display = ('manoidung', 'tieude')
+    search_fields = ('tieude',)
+    
+    
+@admin.register(PhieuNhap)
+class PhieuNhapAdmin(admin.ModelAdmin):
+    list_display = ('maphieunhap', 'ngaynhap', 'tongtien', 'ghichu', 'mancc', 'manv')
+    search_fields = ('maphieunhap','mancc', 'manv', )
+    list_filter = ('mancc','manv','ngaynhap',) 
+    
+    
+from .forms import HoaDonForm
+@admin.register(HoaDon)
+class HoaDonAdmin(admin.ModelAdmin):
+    form = HoaDonForm
+    list_display = ('sohd','ngaylap','tongtien','trangthai','malop','mahv',)
+    search_fields = ('sohd','malop','mahv',)
+    list_filter = ('trangthai','malop','mahv',)
+
+
+@admin.register(LichHoc)
+class LichHocAdmin(admin.ModelAdmin):
+    list_display = ('malich','ngayhoc','giohoc','sogiohoc','malop',)
+    search_fields = ('malich','malop',)
+    list_filter = ('giohoc','sogiohoc','malop',)
+    
+@admin.register(LopHoc)
+class LopHocAdmin(admin.ModelAdmin):
+    list_display = ('malop','tenlop','siso','tonggiohoc','hocphi','makh',)
+    search_fields = ('tenlop','makh',)
+    list_filter = ('tenlop','makh','tonggiohoc',)
+    
+    
