@@ -1,36 +1,53 @@
-{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
-{%block content %} 
-{% load static%}
-<link rel="stylesheet" href="{% static "css/thong-tin-khoa-hoc.css" %}">
-<div class="instruct">
-    <div class="instruct-header">
-        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-2">
-        <h1 class="instruct-title">Thông tin khóa học</h1>
-        <img src="{%static "img/hero-shape.png" %}" width="570" height="676" alt="laves" class="shape-3">
+{% extends "layout/layout-user.html" %}
+{% block title %} Thông tin khóa học {% endblock %} 
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/thong-tin-khoa-hoc.css" %}">
+
+    <div class="instruct">
+        {% if single_lop %}
+            <div class="instruct-header">
+                <img src="{% static 'img/hero-shape.png' %}" width="570" height="676" alt="laves" class="shape-2">
+                <h1 class="instruct-title">Thông tin khóa học</h1>
+                <img src="{% static 'img/hero-shape.png' %}" width="570" height="676" alt="laves" class="shape-3">
+            </div>
+
+            <div class="instruct-content">
+                <div class="side-bar">
+                    <!-- Display class image and details -->
+                    <img src="{% static 'img/tranh-ky-hoa.jpg' %}" class="card-img-top" alt="...">
+                    <h3>{{ single_lop.tenlop }}</h3>
+                    <p>
+                        Giáo viên: 
+                        {% if single_lop.magv %}
+                            {{ single_lop.magv.hoten }}
+                        {% else %}
+                            Chưa có thông tin giáo viên
+                        {% endif %}
+                        <br>
+                        Khóa học cấp độ: 
+                        {% if single_lop.khoa_hoc %}
+                            {{ single_lop.khoa_hoc.capdo }}
+                        {% else %}
+                            Chưa có thông tin cấp độ
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="main-content">
+                    <!-- Detailed class description -->
+                    <p>
+                        Màu bột là chất liệu phù hợp cho người mới bắt đầu, màu có sức bám tốt, có thể phủ màu khi vẽ sai và rửa màu khi cần thiết. 
+                        Cùng khám phá chất liệu này với 5 bài vẽ động vật hấp dẫn dưới đây nhé
+                    </p>
+                    <p><b>CẤP ĐỘ BÀI HỌC: </b> Dễ</p>
+                    <p><b>ĐỐI TƯỢNG HỌC: </b> Học viên đã học qua các lớp Căn bản Màu online/offline tại Mỹ thuật Bụi hoặc có kỹ năng vẽ màu bột (gouache)</p>
+                    <p>Bạn có thể tải hoặc in mẫu vẽ để tiện quan sát khi học nhé. Cuối cùng là chuẩn bị một tâm hồn đẹp, đầy hứng khởi vào học cùng Bụi thôi nào!</p>
+                </div>
+            </div>
+        {% else %}
+            <p>Không tìm thấy thông tin lớp học.</p>
+        {% endif %}
     </div>
-    <div class="instruct-content">
-        <div class="side-bar">
-            <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-            <h3>Tranh ký họa</h3>
-
-            <p>Giáo viên: ???? <br>khóa học cấp độ ????</p>
-
-
-        </div>
-
-
-        <div class="main-content">
-            <p>Màu bột là chất liệu phù hợp cho người mới bắt đầu, màu có sức bám tốt, có thể phủ màu khi vẽ sai và rửa màu khi cần thiết. 
-                Cùng khám phá chất liệu này với 5 bài vẽ động vật hấp dẫn dưới đây nhé
-            </p>
-            <p><b>CẤP ĐỘ BÀI HỌC: </b> Dễ</p>
-
-            <p><b>ĐỐI TƯỢNG HỌC: </b> Học viên đã học qua các lớp Căn bản Màu online
-                /offline tại Mỹ thuật Bụi hoặc có kỹ năng vẽ màu bột (gouache)</p> 
-
-            <p>Bạn có thể tải hoặc in mẫu vẽ để tiện quan sát khi học nhé.
-                Cuối cùng là chuẩn bị một tâm hồn đẹp, đầy hứng khởi vào học cùng Bụi thôi nào!</p>
-        </div>
-    </div>
-</div>
 {% endblock %}

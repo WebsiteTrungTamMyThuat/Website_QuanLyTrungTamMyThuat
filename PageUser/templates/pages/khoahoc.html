@@ -1,4 +1,5 @@
-{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %}
+{% extends "layout/layout-user.html" %}
+{% block title %} Home {% endblock %}
 {% block content %}
     {% load static %}
     <link rel="stylesheet" href="{% static "css/khoahoc.css" %}">
@@ -7,12 +8,10 @@
         <div class="list-button">
             <h3> Môn học: </h3>
             <div class="course-button">
-                <button class="btn btn-all">Tất cả</button>
-                <button class="btn btn-phong-canh">Phong cảnh</button>
-                <button class="btn btn-ky-hoa">Ký họa</button>
-                <button class="btn btn-chan-dung">Chân dung</button>
-                <button class="btn btn-mau-nuoc">Màu nước</button>
-                <button class="btn btn-son-dau">Sơn dầu</button>
+                <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
+                {% for tl in dm_kh %}
+                    <button class="btn btn-phong-canh"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.tenkh }}</a></button>
+                {% endfor %}
             </div>
         </div>
         <div class="list-button">
@@ -24,329 +23,22 @@
             </div>
         </div>
         <div class="grid-container">
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.</p>
+            {% for lop in ds_lop %}
+                <a class="card" href="{% url 'ttkhoahoc' lop.malop %}">
+                    <div>
+                        <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ lop.tenlop }}</h5>
+                            <p class="card-text">{{ lop.mota }}</p>
+                        </div>
+                        <div class="price">
+                            <h3>{{ lop.hocphi|floatformat:0 }} VNĐ</h3>
+                            <button class="btn btn-submit">Đăng ký</button>
+                        </div>
                     </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                            quasi
-                            architecto beatae vitae dicta sunt explicabo.</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit
-                            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit
-                            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                            quasi
-                            architecto beatae vitae dicta sunt explicabo.</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit
-                            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                            quasi
-                            architecto beatae vitae dicta sunt explicabo.</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit
-                            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                            quasi
-                            architecto beatae vitae dicta sunt explicabo.</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit
-                            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                            in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-ky-hoa.jpg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh ký họa</h5>
-                        <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                            quasi
-                            architecto beatae vitae dicta sunt explicabo.</p>
-                    </div>
-                    <div class="price">
-                        <h3>1$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
-            <a class="card" href="{% url "ttkhoahoc" %}">
-                <div>
-                    <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Tranh chân dung</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation
-                            ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit
-                            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-                    <div class="price">
-                        <h3>90$</h3>
-                        <button class="btn btn-submit">Đăng ký</button>
-                    </div>
-                </div>
-            </a>
+                </a>
+            {% endfor %}
         </div>
-
     </div>
 
     <ul class="list-page">
@@ -354,6 +46,5 @@
         <li>2</li>
         <li>3</li>
     </ul>
-    </div>
-
+</div>
 {% endblock %}

@@ -18,6 +18,8 @@ from .forms import HocVienForm
 import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+import random
+from django.db import transaction
 
 
 # Create your views herede
@@ -80,7 +82,7 @@ def giohang(request):
 def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        pass_word = request.POST.get("pass_word")
+        pass_word = request.POST.get("pass")
 
         if username and pass_word:
             try:
@@ -108,23 +110,22 @@ def userlogin(request):
 
 ## Tạo id tai khoản theo hv
 def generate_unique_id():
-    last_id = TaiKhoanNguoiDung.objects.aggregate(max_id=Max('idtaikhoan'))['max_id']
-    if last_id:
-        # Chỉ lấy phần số từ id (vd: "hv003" -> 3), tăng giá trị
-        last_number = int(last_id.replace('hv', '').strip())
-        new_id = f"hv{last_number + 1:03d}"
-    else:
-        # Nếu chưa có bản ghi nào, bắt đầu từ "hv001"
-        new_id = "hv001"
-    return new_id
+    with transaction.atomic():
+        while True:
+            # Generate a random 5-digit numeric ID
+            new_id = f"{random.randint(1000000, 9999999)}"
+            
+            # Check if the ID already exists in the database
+            if not TaiKhoanNguoiDung.objects.filter(idtaikhoan=new_id).exists():
+                return new_id
 
 
 ## Đăng ký
 def register(request):
     if request.method == 'POST':
         hoten = request.POST.get('hoten')
-        sdt = request.POST.get('sdt')
         email = request.POST.get('email')
+        SDT = request.POST.get('SDT')
         password = request.POST.get('password')
         password_confirmation = request.POST.get('password_confirmation')
 
@@ -133,7 +134,7 @@ def register(request):
             return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
         
 
-        if not sdt.isdigit():
+        if not SDT.isdigit():
             return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
 
         try:
@@ -159,9 +160,7 @@ def register(request):
                 mahv=mahv,
                 hoten=hoten,
                 email=email,
-                gioitinh = "",
-                diachi ="",
-                sdt=sdt
+                SDT=SDT
             )
             messages.success(request, 'Đăng ký thành công!')
             return redirect('dangnhap')  # Chuyển hướng sau khi đăng ký thành công
@@ -187,6 +186,7 @@ def thongtinhv(request):
     # Fetch the HocVien and TaiKhoanNguoiDung instances
     hoc_vien = get_object_or_404(HocVien, email=username)
     tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
+    
 
     if request.method == 'POST':
         hoten = request.POST.get('hoten')
@@ -220,3 +220,43 @@ def thongtinhv(request):
             messages.error(request, 'Đã xảy ra lỗi, vui lòng thử lại!')
 
     return render(request, 'pages/thong-tin-hoc-vien.html', {'form': HocVienForm(instance=hoc_vien)})
+
+### Danh sách khóa học - lớp
+def DSKhoaHoc(request):
+    dskh = {
+        'dm_kh' : KhoaHoc.objects.all(),
+        'ds_lop': LopHoc.objects.all(),
+    }
+    return render(request,'pages/khoahoc.html',dskh)
+
+
+
+## Danh sách lớp theo khóa học
+
+def DSTheoKH(request , ml):
+
+    Lop = LopHoc.objects.filter(makh=ml)
+    dskh = KhoaHoc.objects.all()
+    data = {
+        'ds_lop': Lop,
+        'dm_kh': dskh, 
+    }
+    return render(request, 'pages/khoahoc.html', data)
+
+### Chi tiet lop hoc
+
+def ChiTietLop(request,mlop):
+
+    lop = get_object_or_404(LopHoc, malop=mlop)
+
+   
+    khoa_hoc = lop.makh  
+
+    data = {
+        'single_lop': lop,
+        'khoa_hoc': khoa_hoc,  
+    }
+
+    return render(request, 'pages/thong-tin-khoa-hoc.html', data)
+
+

@@ -78,14 +78,13 @@ WSGI_APPLICATION = 'QlyTrungTamMyThuat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'QLTrungTamMt',
-        'USER': 'postgres',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'QLyTTMyThuat',
+        'USER': 'du',
+        'PASSWORD': 'AVNS_22TguLdYTe37qrZw2hw',
+        'HOST': 'postgresql-server-vi-tranhoangvi21072003-f2c0.b.aivencloud.com',
+        'PORT': '24035',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

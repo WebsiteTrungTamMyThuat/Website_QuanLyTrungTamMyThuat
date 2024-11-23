@@ -49,11 +49,3 @@
 {%endblock%}
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const message = "{{ messages|escapejs }}";
-        if (message) {
-            alert(message); // Or use a modal/toast for better UX
-        }
-    });
-</script>
