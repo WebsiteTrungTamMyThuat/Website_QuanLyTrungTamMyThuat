@@ -91,11 +91,9 @@
                 <li class="navbar-item">
                     <a href="{% url "khoahoc" %}" class="navbar-link">Lớp học</a>
                     <ul class="submenu">
-                        <li><a href="">Phong cảnh</a></li>
-                        <li><a href="">Ký họa</a></li>
-                        <li><a href="">Chân dung</a></li>
-                        <li><a href="">Màu nước</a></li>
-                        <li><a href="">Sơn dầu</a></li>
+                        {% for tl in dm_kh %}
+                        <li><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.tenkh }}</a></li>
+                        {% endfor %}
                     </ul>
                 </li>
 

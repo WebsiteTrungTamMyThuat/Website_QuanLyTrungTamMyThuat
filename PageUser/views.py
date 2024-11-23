@@ -250,11 +250,13 @@ def ChiTietLop(request,mlop):
     lop = get_object_or_404(LopHoc, malop=mlop)
 
    
-    khoa_hoc = lop.makh  
+    khoa_hoc = lop.makh 
+    giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
     data = {
         'single_lop': lop,
         'khoa_hoc': khoa_hoc,  
+        'giaovien': giaovien,
     }
 
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)

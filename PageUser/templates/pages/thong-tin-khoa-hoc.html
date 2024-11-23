@@ -9,7 +9,7 @@
         {% if single_lop %}
             <div class="instruct-header">
                 <img src="{% static 'img/hero-shape.png' %}" width="570" height="676" alt="laves" class="shape-2">
-                <h1 class="instruct-title">Thông tin khóa học</h1>
+                <h1 class="instruct-title">Thông tin lớp học</h1>
                 <img src="{% static 'img/hero-shape.png' %}" width="570" height="676" alt="laves" class="shape-3">
             </div>
 
@@ -20,8 +20,8 @@
                     <h3>{{ single_lop.tenlop }}</h3>
                     <p>
                         Giáo viên: 
-                        {% if single_lop.magv %}
-                            {{ single_lop.magv.hoten }}
+                        {% if giaovien %}
+                        {{ giaovien.hoten }}
                         {% else %}
                             Chưa có thông tin giáo viên
                         {% endif %}
@@ -36,14 +36,18 @@
                 </div>
 
                 <div class="main-content">
-                    <!-- Detailed class description -->
-                    <p>
-                        Màu bột là chất liệu phù hợp cho người mới bắt đầu, màu có sức bám tốt, có thể phủ màu khi vẽ sai và rửa màu khi cần thiết. 
-                        Cùng khám phá chất liệu này với 5 bài vẽ động vật hấp dẫn dưới đây nhé
-                    </p>
-                    <p><b>CẤP ĐỘ BÀI HỌC: </b> Dễ</p>
-                    <p><b>ĐỐI TƯỢNG HỌC: </b> Học viên đã học qua các lớp Căn bản Màu online/offline tại Mỹ thuật Bụi hoặc có kỹ năng vẽ màu bột (gouache)</p>
-                    <p>Bạn có thể tải hoặc in mẫu vẽ để tiện quan sát khi học nhé. Cuối cùng là chuẩn bị một tâm hồn đẹp, đầy hứng khởi vào học cùng Bụi thôi nào!</p>
+                    <h1>{{ single_lop.tenlop }}</h1>
+                    <p><strong>Mã lớp học:</strong> {{ single_lop.malop }}</p>
+                    <p><strong>Sĩ số:</strong> {{ single_lop.siso }}</p>
+                    <p><strong>Địa điểm học:</strong> {{ single_lop.diadiemhoc }}</p>
+                    <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau }}</p>
+                    <p><strong>Tổng giờ học:</strong> {{ single_lop.tonggiohoc }}</p>
+                    <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0 }} VNĐ</p>
+                    
+                    <h2>Thông tin khóa học:</h2>
+                    <p><strong>Mã khóa học:</strong> {{ khoa_hoc.makh }}</p>
+                    <p><strong>Tên khóa học:</strong> {{ khoa_hoc.tenkh }}</p>
+                    <p><strong>Mô tả:</strong> {{ khoa_hoc.mota }}</p>
                 </div>
             </div>
         {% else %}
