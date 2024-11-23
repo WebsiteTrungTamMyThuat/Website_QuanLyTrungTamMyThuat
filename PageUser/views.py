@@ -28,6 +28,8 @@ def user(request):
         context = {'username': username}
         return render(request, 'pages/user.html', context)
 
+    return render(request, 'pages/user.html')
+
 def dangky(request):
     return render(request,'layout/dangky.html')
 
