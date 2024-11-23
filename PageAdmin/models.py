@@ -44,14 +44,14 @@ class HocVien(models.Model):
     DiaChi = models.CharField(max_length=255)
     class Meta:
         db_table = 'hocvien'
-        
+    
 class HoaDon(models.Model):
-    mahd = models.CharField(max_length=5, primary_key=True)
+    sohd = models.AutoField(primary_key=True)
     ngaylap = models.DateField()
     tongtien = models.DecimalField(max_digits=10, decimal_places=2)
     trangthai = models.CharField(max_length=20)
-    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE)
-    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE)
+    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE,db_column='malop')
+    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE, db_column='mahv')
     class Meta:
         db_table = 'hoadon'
         
@@ -74,7 +74,7 @@ class LichHoc(models.Model):
     ngayhoc = models.DateField()
     giohoc = models.TimeField()
     sogiohoc = models.IntegerField()
-    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE)
+    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE, db_column='malop')
     class Meta:
         db_table = 'lichhoc'
         
@@ -151,3 +151,31 @@ class HoaCu(models.Model):
     soluong = models.IntegerField()
     class Meta:
         db_table = 'hoacu'
+
+class NoiDungKhoaHoc(models.Model):
+    manoidung = models.AutoField(primary_key=True)
+    tieude = models.CharField(max_length=255)
+    class Meta:
+        db_table = 'noidungkhoahoc'
+    def __str__(self):
+        return self.tieude
+        
+class ChiTietKhoaHoc(models.Model):
+    id = models.AutoField(primary_key=True)
+    stt = models.IntegerField()
+    makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
+    manoidung = models.ForeignKey(NoiDungKhoaHoc, on_delete=models.CASCADE, db_column='manoidung')
+    class Meta:
+        db_table = 'chitietkhoahoc'
+
+class ChiTietPhieuNhap(models.Model):
+    soluong = models.IntegerField()
+    dongia = models.DecimalField(max_digits=10, decimal_places=2)
+    thanhtien = models.DecimalField(max_digits=10, decimal_places=2)
+    maphieunhap = models.ForeignKey(PhieuNhap, on_delete=models.CASCADE, db_column='maphieunhap')
+    mahoacu = models.ForeignKey(HoaCu, on_delete=models.CASCADE, db_column='mahoacu')
+    class Meta:
+        db_table = 'chitietphieunhap'
+        constraints = [
+            models.UniqueConstraint(fields=['maphieunhap', 'mahoacu'], name='unique_maphieunhap_mahoacu')
+        ]
