@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import TaiKhoanNhanVien, NhanVien, NhaCungCap, HoaCu, GiaoVien, HocVien, DanhGia
+from .models import *
 # Register your models here.
+
+
 
 
 @admin.register(NhanVien)
@@ -33,19 +35,44 @@ class HoaCuAdmin(admin.ModelAdmin):
     list_display = ('mahoacu', 'tenhoacu', 'soluong')
     search_fields = ('tenhoacu',)
     
+@admin.register(TaiKhoanNguoiDung)
+class TaiKhoanNguoiDungAdmin(admin.ModelAdmin):
+    list_display = ('idtaikhoan', 'username', 'quyen', 'trangthai',)
+    search_fields = ('username','quyen', 'trangthai', )
+    list_filter = ('quyen', 'trangthai')
 
 @admin.register(HocVien)
 class HocVienAdmin(admin.ModelAdmin):
     list_display = ('mahv', 'hoten', 'email', 'SDT', 'GioiTinh', 'NgaySinh', 'DiaChi',)
     search_fields = ('hoten', 'DiaChi', 'GioiTinh')
     list_filter = ('DiaChi', 'GioiTinh')
+    def save_model(self, request, obj, form, change):
+        if not change:
+            TaiKhoanNguoiDung.objects.create(
+                idtaikhoan=obj.mahv,
+                username=obj.email,
+                pass_word=obj.mahv,
+                quyen='HV',
+                trangthai='Mới tạo'
+            )
+        super().save_model(request,obj,form,change)
 
 @admin.register(GiaoVien)
 class GiaoVienAdmin(admin.ModelAdmin):
+    
     list_display = ('magv', 'hoten', 'email', 'SDT', 'GioiTinh', 'NgaySinh', 'DiaChi',)
     search_fields = ('hoten', 'DiaChi', 'GioiTinh')
     list_filter = ('DiaChi', 'GioiTinh')
-    
+    def save_model(self, request, obj, form, change):
+        if not change:
+            TaiKhoanNguoiDung.objects.create(
+                idtaikhoan=obj.magv,
+                username=obj.email,
+                pass_word=obj.magv,
+                quyen='GV',
+                trangthai='Hoạt động'
+            )
+        super().save_model(request,obj,form,change)
     
 @admin.register(DanhGia)
 class DanhGiaAdmin(admin.ModelAdmin):
