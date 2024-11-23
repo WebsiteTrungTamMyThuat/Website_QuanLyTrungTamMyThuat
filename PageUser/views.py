@@ -211,7 +211,7 @@ def thongtinhv(request):
 
             # Update the session username to reflect the new email
             request.session['user_username'] = email
-
+          
             messages.success(request, 'Cập nhật thông tin thành công!')
             return redirect('dangnhap')
 

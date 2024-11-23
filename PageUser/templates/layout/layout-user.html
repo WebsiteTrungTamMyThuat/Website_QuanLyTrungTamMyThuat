@@ -57,10 +57,10 @@
         <div id="loginSuccessNotification" class="notification deactive">
             <span class="notification-icon">&#10003;</span> 
             <span class="notification-message">
-                {% if messages %}
+                           {% if messages %}
                 <div class="error-messages">
                     {% for message in messages %}
-                        <p class="error-text">{{ messages.success }}</p>
+                        <p class="error-text">{{ message }}</p>
                     {% endfor %}
                 </div>
             {% endif %}

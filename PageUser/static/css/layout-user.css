@@ -1621,13 +1621,12 @@ h4, h2 {
 #logoutButton {
     cursor: pointer;
 }
-<<<<<<< HEAD
 
 /* Notification styling */
 .notification {
     position: fixed;
-    top: 20px;
-    left: 30%;
+    top: 40px;
+    left: 40%;
     transform: translateX(-50%);
     background-color: #4CAF50;
     color: white;
@@ -1659,6 +1658,3 @@ h4, h2 {
 .deactive {
     display: none;
 }
-=======
->>>>>>> 7f84a0139e49e2d6d2fa0e0255c202b1b8f1ad1e
->>>>>>> fb26cc0414bf521cdcc12000682d96bd0e1c2f43
