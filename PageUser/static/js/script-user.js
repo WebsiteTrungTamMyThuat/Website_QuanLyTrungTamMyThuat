@@ -1,11 +1,12 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () 
+{
     const loginRegister = document.getElementById('loginRegister');
     const userLoggedIn = document.getElementById('userLoggedIn');
     const dropdownMenu = document.createElement('div');
     dropdownMenu.classList.add('dropdown-menu', 'deactive');
     dropdownMenu.innerHTML = `
         <ul>
-            <li><a href="/user/tthocvien">Thông tin cá nhân</a></li>
+            <li><a href="/dieukhien/${idtaikhoan}">Bảng điều khiển</a></li>
             <li><a href="/user/lichsukh">Lịch sử mua hàng</a></li>
             <li><a id="logoutButton">Đăng xuất</a></li>
         </ul>

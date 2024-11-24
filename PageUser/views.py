@@ -85,14 +85,14 @@ def userlogin(request):
         pass_word = request.POST.get("pass")
 
         if username and pass_word:
-            try:
-                
+            try:                
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
 
                 if nguoidung.pass_word == pass_word:
                     
                     request.session['user_username'] = nguoidung.username
-                   
+                    request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
+                    
                     messages.success(request, f"Chào mừng {nguoidung.username}!")
                     return redirect('user')
                   
