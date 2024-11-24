@@ -180,10 +180,10 @@ def thongtinhv(request):
     if not request.session.get('user_username'):
         return redirect('dangnhap')
 
-    # Get the logged-in user's email
+
     username = request.session['user_username']
     
-    # Fetch the HocVien and TaiKhoanNguoiDung instances
+
     hoc_vien = get_object_or_404(HocVien, email=username)
     tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
     
@@ -262,24 +262,46 @@ def ChiTietLop(request,mlop):
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)
 
 
-## Chi Tiet Khoa Hoc
-def ChiKhoaHoc(request,mkh):
+### 
 
+def LoadPhieuDK(request):
 
+    if not request.session.get('user_username'):
+        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
+        return redirect('dangnhap')
 
    
-    khoa_hoc = ctkh.makh
-    ctkh = get_object_or_404(ChiTietKhoaHoc,makh=mkh)
-    ndkh = get_object_or_404(NoiDungKhoaHoc,manoidung = ctkh.manoidung)
+    username = request.session['user_username']
 
-    data = {
-        'single_ctkh': ctkh,
-        'khoa_hoc': khoa_hoc,
-        'ndkh': ndkh,
-        'giaovien': giaovien,
-    }
+    try:
+       
+        tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
+        hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
+    except Exception:
+        messages.error(request, "Không tìm thấy thông tin tài khoản hoặc học viên.")
+        return redirect('dangnhap')
 
-    return render(request, 'pages/thong-tin-khoa-hoc.html', data)
+
+    if request.method == 'POST':
+        form = HocVienForm(request.POST, instance=hoc_vien)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, "Thông tin đã được cập nhật thành công!")
+                return redirect('dang-ky-tu-van')  # Điều hướng tới trang khác (nếu cần)
+            except Exception as e:
+                messages.error(request, f"Có lỗi khi lưu dữ liệu: {e}")
+        else:
+            messages.error(request, "Thông tin nhập vào không hợp lệ. Vui lòng kiểm tra lại!")
+    else:
+        form = HocVienForm(instance=hoc_vien)
+
+    # Render form với dữ liệu
+    return render(request, 'pages/dang-ky-tu-van.html', {
+        'form': form,
+        'ds_lop': LopHoc.objects.all() 
+    })
+
 
 
 

@@ -7,6 +7,7 @@ class TaiKhoanNguoiDung(models.Model):
     pass_word = models.CharField(max_length=50, db_column='pass')
     quyen = models.CharField(max_length=10, choices=QUYEN_CHOICES, default='GV')
     trangthai = models.CharField(max_length=50)
+
     class Meta:
         db_table = 'taikhoannguoidung'
 

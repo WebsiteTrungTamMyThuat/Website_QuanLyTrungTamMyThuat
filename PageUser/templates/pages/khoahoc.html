@@ -33,7 +33,10 @@
                         </div>
                         <div class="price">
                             <h3>{{ lop.hocphi|floatformat:0 }} VNĐ</h3>
-                            <button class="btn btn-submit">Đăng ký</button>
+                            <form action="{% url 'dangkytuvan' %}" method="get">
+                                <button type="submit" class="btn btn-submit">Đăng ký</button>
+                            </form>
+
                         </div>
                     </div>
                 </a>
