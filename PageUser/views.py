@@ -262,3 +262,24 @@ def ChiTietLop(request,mlop):
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)
 
 
+## Chi Tiet Khoa Hoc
+def ChiKhoaHoc(request,mkh):
+
+
+
+   
+    khoa_hoc = ctkh.makh
+    ctkh = get_object_or_404(ChiTietKhoaHoc,makh=mkh)
+    ndkh = get_object_or_404(NoiDungKhoaHoc,manoidung = ctkh.manoidung)
+
+    data = {
+        'single_ctkh': ctkh,
+        'khoa_hoc': khoa_hoc,
+        'ndkh': ndkh,
+        'giaovien': giaovien,
+    }
+
+    return render(request, 'pages/thong-tin-khoa-hoc.html', data)
+
+
+

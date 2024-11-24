@@ -37,17 +37,10 @@
 
                 <div class="main-content">
                     <h1>{{ single_lop.tenlop }}</h1>
-                    <p><strong>Mã lớp học:</strong> {{ single_lop.malop }}</p>
-                    <p><strong>Sĩ số:</strong> {{ single_lop.siso }}</p>
                     <p><strong>Địa điểm học:</strong> {{ single_lop.diadiemhoc }}</p>
-                    <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau }}</p>
-                    <p><strong>Tổng giờ học:</strong> {{ single_lop.tonggiohoc }}</p>
-                    <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0 }} VNĐ</p>
-                    
-                    <h2>Thông tin khóa học:</h2>
-                    <p><strong>Mã khóa học:</strong> {{ khoa_hoc.makh }}</p>
-                    <p><strong>Tên khóa học:</strong> {{ khoa_hoc.tenkh }}</p>
+                    <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau |date:"d F Y"}}</p>
                     <p><strong>Mô tả:</strong> {{ khoa_hoc.mota }}</p>
+
                 </div>
             </div>
         {% else %}
