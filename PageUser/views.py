@@ -24,7 +24,7 @@ from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 
 # Create your views herede
-# @login_required(login_url="dangnhap") 
+
 def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
@@ -85,7 +85,7 @@ def userlogin(request):
         username = request.POST.get('username')
         pass_word = request.POST.get("pass_word")
 
-        request.session.flush()
+   #     request.session.flush()
 
         if username and pass_word:
             try:                
