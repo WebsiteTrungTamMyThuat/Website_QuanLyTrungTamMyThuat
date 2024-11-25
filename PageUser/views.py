@@ -25,12 +25,12 @@ from django.db import transaction
 # Create your views herede
 # @login_required(login_url="dangnhap") 
 def user(request):
-    username = request.session.get('user_username', None)  # Lấy username từ session
-    if username:
-        context = {'username': username}
-        return render(request, 'pages/user.html', context)
+    # Lấy username từ session
+    username = request.session.get('user_username', None)
 
-    return render(request, 'pages/user.html')
+    # Truyền context bao gồm username nếu có
+    context = {'username': username}
+    return render(request, 'pages/user.html', context)
 
 def dangky(request):
     return render(request,'layout/dangky.html')
@@ -82,7 +82,9 @@ def giohang(request):
 def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        pass_word = request.POST.get("pass")
+        pass_word = request.POST.get("pass_word")
+
+        request.session.flush()
 
         if username and pass_word:
             try:                
@@ -103,6 +105,8 @@ def userlogin(request):
                 
 
     return render(request, 'layout/dangnhap.html')
+
+
 
 
 

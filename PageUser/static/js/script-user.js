@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function ()
             <li><a href="/dieukhien/${idtaikhoan}">Bảng điều khiển</a></li>
             <li><a href="/user/lichsukh">Lịch sử mua hàng</a></li>
             <li><a id="logoutButton">Đăng xuất</a></li>
-             <li><a href="/user/tthocvien">Thông tin cá nhân</a></li>
         </ul>
     `;
     userLoggedIn.appendChild(dropdownMenu);
@@ -201,3 +200,4 @@ function changePage(i) {
     thisPage = i;
     loadItem();
 }
+
