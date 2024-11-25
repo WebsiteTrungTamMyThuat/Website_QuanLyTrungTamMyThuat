@@ -15,7 +15,7 @@ urlpatterns = [
     path('khoahoc/DSL/<str:ml>/', views.DSTheoKH, name='DSTheoKH'),
 
     path('khoahoc/ttkhoahoc/<str:mlop>',views.ChiTietLop,name='ttkhoahoc'),
-    
+    path('logout', views.logout_view, name='logout'),
     path('giaovien/', views.giaovien, name='giaovien'),
     path('chinhanh/',views.chinhanh,name='chinhanh'),
     path('giaovien/chitietgiaovien/', views.chitietgiaovien, name='chitietgiaovien'),
