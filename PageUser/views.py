@@ -73,7 +73,10 @@ def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
 
 def giohang(request):
-    return render(request, 'pages/gio-hang.html')
+    gio_hang = GioHang.objects.filter(user=request.user)
+
+    return render(request, 'gio-hang.html', {
+        'gio_hang': gio_hang })
 
 
 
@@ -204,22 +207,21 @@ def thongtinhv(request):
         email = request.POST.get('email')
         NgaySinh = request.POST.get('NgaySinh')
 
-        # Update the HocVien model
+       
         hoc_vien.hoten = hoten
         hoc_vien.SDT = SDT
         hoc_vien.email = email
         hoc_vien.NgaySinh = NgaySinh
 
         try:
-            # Save the updated HocVien
+           
             hoc_vien.save()
 
-            # Update the TaiKhoanNguoiDung username if the email changed
+           
             if tai_khoan.username != email:
                 tai_khoan.username = email
                 tai_khoan.save()
 
-            # Update the session username to reflect the new email
             request.session['user_username'] = email
             request.session.flush()
             messages.success(request, 'Cập nhật thông tin thành công!')
@@ -231,13 +233,7 @@ def thongtinhv(request):
 
     return render(request, 'pages/thong-tin-hoc-vien.html', {'form': HocVienForm(instance=hoc_vien)})
 
-### Danh sách khóa học - lớp
-def DSKhoaHoc(request):
-    dskh = {
-        'dm_kh' : KhoaHoc.objects.all(),
-        'ds_lop': LopHoc.objects.all(),
-    }
-    return render(request,'pages/khoahoc.html',dskh)
+
 
 
 ## Danh sách lớp theo khóa học
@@ -310,46 +306,156 @@ def LoadPhieuDK(request):
         'ds_lop': LopHoc.objects.all() 
     })
 
+### Danh sách khóa học - lớp
+def DSKhoaHoc(request):
+    dskh = {
+        'dm_kh' : KhoaHoc.objects.all(),
+        'ds_lop': LopHoc.objects.all(),
+    }
+    return render(request,'pages/khoahoc.html',dskh)
+
 
 ### Load Gio Hang 
 def LoadGioHang(request):
-    
     if not request.session.get('user_username'):
         messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
         return redirect('dangnhap')
 
-   
     username = request.session['user_username']
 
     try:
-       
         tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
         hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
     except Exception:
         messages.error(request, "Không tìm thấy thông tin tài khoản hoặc học viên.")
         return redirect('dangnhap')
 
+    gio_hang = request.session.get('gio_hang', {})
+    total_price = 0
 
-    if request.method == 'POST':
-        form = HocVienForm(request.POST, instance=hoc_vien)
-        if form.is_valid():
-            try:
-                form.save()
-                messages.success(request, "Thông tin đã được cập nhật thành công!")
-                return redirect('giohang')  # Điều hướng tới trang khác (nếu cần)
-            except Exception as e:
-                messages.error(request, f"Có lỗi khi lưu dữ liệu: {e}")
-        else:
-            messages.error(request, "Thông tin nhập vào không hợp lệ. Vui lòng kiểm tra lại!")
-    else:
-        form = HocVienForm(instance=hoc_vien)
+    for item in gio_hang.values():
+        total_price += float(item['hocphi']) 
 
-    return render(request, 'pages/dang-ky-tu-van.html', {
-        'form': form,
-        'ds_lop': LopHoc.objects.all() 
+    return render(request, 'pages/gio-hang.html', {
+        'hoc_vien': hoc_vien,
+        'gio_hang': gio_hang,
+        'total_price': total_price
     })
 
 
+### them gio hang
+def them_vao_gio_hang(request, malop):
+
+    try:
+        lop_hoc = LopHoc.objects.get(malop=malop)
+    except LopHoc.DoesNotExist:
+        messages.error(request, "Lớp học không tồn tại.")
+        return redirect('khoahoc') 
+
+    gio_hang = request.session.get('gio_hang', {})
 
 
+    if malop in gio_hang:
+      
+        gio_hang[malop]['so_luong'] += 1
+    else:
+      
+        gio_hang[malop] = {
+            'tenlop': lop_hoc.tenlop,
+            'hocphi': str(lop_hoc.hocphi),  
+            'so_luong': 1,
+            'malop': malop  
+        }
 
+  
+    request.session['gio_hang'] = gio_hang
+
+    messages.success(request, f"Lớp học {lop_hoc.tenlop} đã được thêm vào giỏ hàng!")
+    return redirect('giohang') 
+#def gio_hang(request):
+    gio_hang = request.session.get('gio_hang', {})
+    total_price = 0
+
+    # Tính tổng giá trị của giỏ hàng
+    for item in gio_hang.values():
+        total_price += float(item['hocphi']) 
+
+    return render(request, 'pages/gio-hang.html', {
+        'gio_hang': gio_hang,
+        'total_price': total_price
+    })  
+
+### xoa gio hang
+def xoa_hoan_tat(request, malop):
+ 
+    gio_hang = request.session.get('gio_hang', {})
+
+   
+    if malop in gio_hang:
+       
+        del gio_hang[malop]
+        request.session['gio_hang'] = gio_hang  
+
+        messages.success(request, "Lớp học đã được xóa khỏi giỏ hàng.")
+    else:
+        messages.error(request, "Lớp học không tồn tại trong giỏ hàng.")
+
+    return redirect('giohang') 
+####
+from django.utils.timezone import now
+
+from decimal import Decimal
+def thanh_toan(request):
+    # Kiểm tra nếu người dùng chưa đăng nhập
+    if not request.session.get('user_username'):
+        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
+        return redirect('dangnhap')  # Điều hướng đến trang đăng nhập
+
+    # Lấy giỏ hàng từ session
+    gio_hang = request.session.get('gio_hang', {})
+
+    # Kiểm tra giỏ hàng có trống không
+    if not gio_hang:
+        messages.error(request, "Giỏ hàng của bạn hiện đang trống!")
+        return redirect('giohang')
+
+    # Lấy thông tin người dùng từ session
+    username = request.session['user_username']
+    tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
+    hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
+
+    # Tính tổng giá trị của giỏ hàng
+    try:
+        total_price = Decimal(sum(Decimal(item['hocphi']) * item['so_luong'] for item in gio_hang.values()))
+    except Exception as e:
+        messages.error(request, f"Lỗi tính tổng giá trị: {e}")
+        return redirect('giohang')
+
+    # Tạo hóa đơn
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                # Tạo một hóa đơn mới
+                hoa_don = HoaDon.objects.create(
+                    ngaylap=now().date(),  # Ngày lập hóa đơn
+                    tongtien=total_price,
+                    trangthai='Chưa thanh toán',
+                    mahv=hoc_vien  # Liên kết học viên
+                )
+
+                # Duyệt qua các lớp học trong giỏ hàng
+                for malop, item in gio_hang.items():
+                    lop_hoc = get_object_or_404(LopHoc, malop=malop)
+                    # Gắn lớp học vào hóa đơn
+                    hoa_don.malop = lop_hoc
+                    hoa_don.save()
+
+                # Xóa giỏ hàng khỏi session
+                request.session['gio_hang'] = {}
+
+                messages.success(request, "Thanh toán thành công!")
+                return redirect('giohang')
+
+        except Exception as e:
+            messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
+            return redirect('giohang')

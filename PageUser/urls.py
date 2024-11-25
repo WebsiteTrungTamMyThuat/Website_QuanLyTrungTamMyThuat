@@ -19,7 +19,13 @@ urlpatterns = [
     path('giaovien/', views.giaovien, name='giaovien'),
     path('chinhanh/',views.chinhanh,name='chinhanh'),
     path('giaovien/chitietgiaovien/', views.chitietgiaovien, name='chitietgiaovien'),
-    path('giohang/', views.giohang, name='giohang'),
+    
     path('tthocvien/',views.thongtinhv,name='tthocvien'),
-    path('lichsukh/',views.lichsukh,name='lichsukh')
+    path('lichsukh/',views.lichsukh,name='lichsukh'),
+
+
+    path('giohang/', views.LoadGioHang, name='giohang'),
+    path('them-vao-gio-hang/<str:malop>/', views.them_vao_gio_hang, name='them_vao_gio_hang'),
+    path('xoa-giỏ-hàng/<str:malop>/', views.xoa_hoan_tat, name='xoa_hoan_tat'),
+    path('thanh-toan/', views.thanh_toan, name='thanh_toan'),
 ]

@@ -1,38 +1,39 @@
-{% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %}
+{% extends "layout/layout-user.html" %}
+
+{% block title %} Home {% endblock %}
+
 {% block content %}
     {% load static %}
-    <link rel="stylesheet" href="{% static "css/gio-hang.css" %}">
-    <script src="{% static "js/gio-hang.js" %}"></script>
+    <link rel="stylesheet" href="{% static 'css/gio-hang.css' %}">
+
     <div class="cart container">
         <h1>Tiến hành mua hàng</h1>
         <div class="cart__content row">
             <div class="cart__left col-8">
                 <div class="cart__user">
                     <h2>Thông tin khách hàng</h2>
-                    <form action="" class="row">
+                    <form class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="name">Họ và tên *</label>
-                                <input required type="text" class="input-field" id="name" name="name">
+                                <label for="hoten">Họ Tên</label>
+                                <input type="text" class="input-field" value="{{ hoc_vien.hoten }}" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="name">Địa chỉ email *</label>
-                                <input required type="text" id="name" name="name">
+                                <label for="email">Địa chỉ Email</label>
+                                <input type="text" class="input-field" value="{{ hoc_vien.email }}" readonly>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="name">Số điện thoại *</label>
-                                <input required type="text" id="name" name="name">
-                            </div>
-                            <div class="form-group">
-                                <label for="name">Người giới thiệu</label>
-                                <input type="text" id="name" name="name">
+                                <label for="SDT">Số điện thoại</label>
+                                <input type="tel" class="input-field" value="{{ hoc_vien.SDT }}" readonly>
                             </div>
                         </div>
                     </form>
-                    <span class="note">"Nếu bạn đã từng mua khóa học hoặc có tài khoản tại lopveonline.vn , bạn có thể đăng nhập để không phải nhập lại thông tin cá nhân"</span>
+                    <span class="note">"Nếu bạn đã từng mua khóa học hoặc có tài khoản tại lopveonline.vn, bạn có thể đăng nhập để không phải nhập lại thông tin cá nhân"</span>
                 </div>
+
+                <!-- Phương thức thanh toán -->
                 <div class="cart__payment">
                     <h2>Phương thức thanh toán</h2>
                     <div class="cart__payment-method">
@@ -42,7 +43,7 @@
                             <div class="panel-group">
                                 <div class="panel" id="collapseTransfer">
                                     <div class="panel__left">
-                                        <img src="{% static "img/tpbank.png" %}" alt="">
+                                        <img src="{% static 'img/tpbank.png' %}" alt="Ngân hàng TP Bank">
                                     </div>
                                     <div class="panel__right">
                                         <p>Ngân hàng: TP Bank</p>
@@ -69,23 +70,41 @@
                                     Thanh toán qua Momo
                                 </div>
                             </div>
-{#                            <div class="checkout__payment">#}
-{#                                <button class="btn btn-primary">#}
-{#                                    <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>#}
-{#                                    Thanh toán#}
-{#                                </button>#}
-{#                            </div>#}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Right Side Column -->
             <div class="cart__right col-4">
                 <h2>Đơn hàng</h2>
-                <div class="cart__order" id="cartOrder"></div>
+                <div class="cart">
+                   
+                    {% for malop,item in gio_hang.items %}
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <p>-----------------------------------</p>
+                                <h3 class="cart-item-name">Tên lớp: {{ item.tenlop }}</h3>
+                                <p class="cart-item-price">Học phí: {{ item.hocphi|floatformat:0 }} VND</p>
+                     
+                            </div>
+
+                            <a href="{% url 'xoa_hoan_tat' malop %}">Xóa</a>
+                        </div>
+                    {% empty %}
+                        <p>Giỏ hàng của bạn hiện đang trống.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Total Price Section -->
+                <div class="cart__total">
+                    <h2>Tổng giá trị: {{ total_price|floatformat:0 }} VND</h2>
+                    <form method="post" action="{% url 'thanh_toan' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Thanh toán</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
-    </div>
-
 {% endblock %}

@@ -198,3 +198,5 @@ class ChiTietPhieuNhap(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['maphieunhap', 'mahoacu'], name='unique_maphieunhap_mahoacu')
         ]
+
+
