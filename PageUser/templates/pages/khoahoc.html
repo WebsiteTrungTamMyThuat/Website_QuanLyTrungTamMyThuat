@@ -33,7 +33,7 @@
                         </div>
                         <div class="price">
                             <h3>{{ lop.hocphi|floatformat:0 }} VNĐ</h3>
-                            <form action="{% url 'dangkytuvan' %}" method="get">
+                            <form action="{% url 'ttkhoahoc' lop.malop  %}" method="get">
                                 <button type="submit" class="btn btn-submit">Đăng ký</button>
                             </form>
 

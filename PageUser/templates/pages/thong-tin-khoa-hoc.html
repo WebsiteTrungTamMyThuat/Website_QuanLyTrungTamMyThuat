@@ -40,10 +40,9 @@
                     <p><strong>Địa điểm học:</strong> {{ single_lop.diadiemhoc }}</p>
                     <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau |date:"d F Y"}}</p>
                     <p><strong>Mô tả:</strong> {{ khoa_hoc.mota }}</p>
+                 
+                    <a href="{% url 'them_vao_gio_hang' malop=single_lop.malop %}" class="btn btn-primary">Đăng Ký Lớp Học</a>
                     
-                    <form action="{% url 'dangkytuvan' %}" method="get">
-                        <button type="submit" class="btn btn-submit">Đăng ký</button>
-                    </form>
                 </div>
                 
             </div>
