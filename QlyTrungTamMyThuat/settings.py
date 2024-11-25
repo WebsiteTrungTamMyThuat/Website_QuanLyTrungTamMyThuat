@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'QlyTrungTamMyThuat.urls'
@@ -79,14 +80,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'QLyTTMyThuat',
-        'USER': 'avnadmin',
-        'PASSWORD': 'AVNS_W6S_6QQkkUnoEL9YRYh',
+        'USER': 'du',
+        'PASSWORD': 'AVNS_22TguLdYTe37qrZw2hw',
         'HOST': 'postgresql-server-vi-tranhoangvi21072003-f2c0.b.aivencloud.com',
         'PORT': '24035',
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -109,7 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'vi'
 
 TIME_ZONE = 'UTC'
 
@@ -117,6 +117,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+###
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Thư mục lưu trữ file dịch
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -127,3 +131,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

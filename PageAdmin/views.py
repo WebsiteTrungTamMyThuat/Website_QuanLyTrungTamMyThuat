@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 # Create your views herede
-@login_required
+#@login_required
 def admin(request, idtaikhoan):
     id = request.session.get('user_idtaikhoan')
     if id:

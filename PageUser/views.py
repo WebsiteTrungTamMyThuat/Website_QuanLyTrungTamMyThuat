@@ -18,17 +18,20 @@ from .forms import HocVienForm
 import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-
+import random
+from django.db import transaction
+from django.http import JsonResponse
+from django.views.decorators.cache import never_cache
 
 # Create your views herede
 
 def user(request):
-    username = request.session.get('user_username', None)  # Lấy username từ session
-    if username:
-        context = {'username': username}
-        return render(request, 'pages/user.html', context)
+    # Lấy username từ session
+    username = request.session.get('user_username', None)
 
-    return render(request, 'pages/user.html')
+    # Truyền context bao gồm username nếu có
+    context = {'username': username}
+    return render(request, 'pages/user.html', context)
 
 def dangky(request):
     return render(request,'layout/dangky.html')
@@ -82,6 +85,8 @@ def userlogin(request):
         username = request.POST.get('username')
         pass_word = request.POST.get("pass_word")
 
+   #     request.session.flush()
+
         if username and pass_word:
             try:                
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
@@ -104,27 +109,33 @@ def userlogin(request):
 
 
 
+####
+
+@never_cache
+def logout_view(request):
+    request.session.flush()  # Xóa toàn bộ session
+    logout(request)
+    return redirect('/user')
 
 
 ## Tạo id tai khoản theo hv
 def generate_unique_id():
-    last_id = TaiKhoanNguoiDung.objects.aggregate(max_id=Max('idtaikhoan'))['max_id']
-    if last_id:
-        # Chỉ lấy phần số từ id (vd: "hv003" -> 3), tăng giá trị
-        last_number = int(last_id.replace('hv', '').strip())
-        new_id = f"hv{last_number + 1:03d}"
-    else:
-        # Nếu chưa có bản ghi nào, bắt đầu từ "hv001"
-        new_id = "hv001"
-    return new_id
+    with transaction.atomic():
+        while True:
+            # Generate a random 5-digit numeric ID
+            new_id = f"{random.randint(1000000, 9999999)}"
+            
+            # Check if the ID already exists in the database
+            if not TaiKhoanNguoiDung.objects.filter(idtaikhoan=new_id).exists():
+                return new_id
 
 
 ## Đăng ký
 def register(request):
     if request.method == 'POST':
         hoten = request.POST.get('hoten')
-        sdt = request.POST.get('sdt')
         email = request.POST.get('email')
+        SDT = request.POST.get('SDT')
         password = request.POST.get('password')
         password_confirmation = request.POST.get('password_confirmation')
 
@@ -133,7 +144,7 @@ def register(request):
             return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
         
 
-        if not sdt.isdigit():
+        if not SDT.isdigit():
             return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
 
         try:
@@ -159,10 +170,9 @@ def register(request):
                 mahv=mahv,
                 hoten=hoten,
                 email=email,
-                gioitinh = "",
-                diachi ="",
-                sdt=sdt
+                SDT=SDT
             )
+            messages.success(request, 'Đăng ký thành công!')
             return redirect('dangnhap')  # Chuyển hướng sau khi đăng ký thành công
         except Exception as e:
             return render(request, 'layout/dangky.html', {'error': str(e)})
@@ -180,29 +190,166 @@ def thongtinhv(request):
     if not request.session.get('user_username'):
         return redirect('dangnhap')
 
+
     username = request.session['user_username']
+    
+
     hoc_vien = get_object_or_404(HocVien, email=username)
+    tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
+    
 
     if request.method == 'POST':
         hoten = request.POST.get('hoten')
         SDT = request.POST.get('SDT')
         email = request.POST.get('email')
         NgaySinh = request.POST.get('NgaySinh')
+
+        # Update the HocVien model
+        hoc_vien.hoten = hoten
+        hoc_vien.SDT = SDT
+        hoc_vien.email = email
+        hoc_vien.NgaySinh = NgaySinh
+
+        try:
+            # Save the updated HocVien
+            hoc_vien.save()
+
+            # Update the TaiKhoanNguoiDung username if the email changed
+            if tai_khoan.username != email:
+                tai_khoan.username = email
+                tai_khoan.save()
+
+            # Update the session username to reflect the new email
+            request.session['user_username'] = email
+            request.session.flush()
+            messages.success(request, 'Cập nhật thông tin thành công!')
+            return redirect('dangnhap')
+
+        except Exception as e:
+            print("Error:", str(e))
+            messages.error(request, 'Đã xảy ra lỗi, vui lòng thử lại!')
+
+    return render(request, 'pages/thong-tin-hoc-vien.html', {'form': HocVienForm(instance=hoc_vien)})
+
+### Danh sách khóa học - lớp
+def DSKhoaHoc(request):
+    dskh = {
+        'dm_kh' : KhoaHoc.objects.all(),
+        'ds_lop': LopHoc.objects.all(),
+    }
+    return render(request,'pages/khoahoc.html',dskh)
+
+
+## Danh sách lớp theo khóa học
+
+def DSTheoKH(request , ml):
+
+    Lop = LopHoc.objects.filter(makh=ml)
+    dskh = KhoaHoc.objects.all()
+    data = {
+        'ds_lop': Lop,
+        'dm_kh': dskh, 
+    }
+    return render(request, 'pages/khoahoc.html', data)
+
+### Chi tiet lop hoc
+
+def ChiTietLop(request,mlop):
+
+    lop = get_object_or_404(LopHoc, malop=mlop)
+
+   
+    khoa_hoc = lop.makh 
+    giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
+
+    data = {
+        'single_lop': lop,
+        'khoa_hoc': khoa_hoc,  
+        'giaovien': giaovien,
+    }
+
+    return render(request, 'pages/thong-tin-khoa-hoc.html', data)
+
+
+### 
+
+def LoadPhieuDK(request):
+
+    if not request.session.get('user_username'):
+        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
+        return redirect('dangnhap')
+
+   
+    username = request.session['user_username']
+
+    try:
+       
+        tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
+        hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
+    except Exception:
+        messages.error(request, "Không tìm thấy thông tin tài khoản hoặc học viên.")
+        return redirect('dangnhap')
+
+
+    if request.method == 'POST':
         form = HocVienForm(request.POST, instance=hoc_vien)
         if form.is_valid():
-            HocVien.objects.update(
-              
-                hoten=hoten,
-                SDT=SDT,
-                email=email,
-                NgaySinh=NgaySinh
-                
-                
-            )
-            messages.success(request, 'Cập nhật thông tin thành công!')
-            return redirect('thong-tin-hoc-vien')
+            try:
+                form.save()
+                messages.success(request, "Thông tin đã được cập nhật thành công!")
+                return redirect('giohang')  # Điều hướng tới trang khác (nếu cần)
+            except Exception as e:
+                messages.error(request, f"Có lỗi khi lưu dữ liệu: {e}")
         else:
-            messages.error(request, 'Cập nhật thất bại, vui lòng kiểm tra lại!')
+            messages.error(request, "Thông tin nhập vào không hợp lệ. Vui lòng kiểm tra lại!")
+    else:
+        form = HocVienForm(instance=hoc_vien)
 
-    form = HocVienForm(instance=hoc_vien)
-    return render(request, 'pages/thong-tin-hoc-vien.html', {'form': form})
+    return render(request, 'pages/dang-ky-tu-van.html', {
+        'form': form,
+        'ds_lop': LopHoc.objects.all() 
+    })
+
+
+### Load Gio Hang 
+def LoadGioHang(request):
+    
+    if not request.session.get('user_username'):
+        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
+        return redirect('dangnhap')
+
+   
+    username = request.session['user_username']
+
+    try:
+       
+        tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
+        hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
+    except Exception:
+        messages.error(request, "Không tìm thấy thông tin tài khoản hoặc học viên.")
+        return redirect('dangnhap')
+
+
+    if request.method == 'POST':
+        form = HocVienForm(request.POST, instance=hoc_vien)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, "Thông tin đã được cập nhật thành công!")
+                return redirect('giohang')  # Điều hướng tới trang khác (nếu cần)
+            except Exception as e:
+                messages.error(request, f"Có lỗi khi lưu dữ liệu: {e}")
+        else:
+            messages.error(request, "Thông tin nhập vào không hợp lệ. Vui lòng kiểm tra lại!")
+    else:
+        form = HocVienForm(instance=hoc_vien)
+
+    return render(request, 'pages/dang-ky-tu-van.html', {
+        'form': form,
+        'ds_lop': LopHoc.objects.all() 
+    })
+
+
+
+
+

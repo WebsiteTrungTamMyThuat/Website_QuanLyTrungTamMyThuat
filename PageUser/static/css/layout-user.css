@@ -1611,3 +1611,38 @@ h4, h2 {
 #logoutButton {
     cursor: pointer;
 }
+
+
+/* Notification styling */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 10%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px; /* Reduced padding */
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 250px; /* Reduced width */
+    z-index: 9999;
+    font-size: 14px; /* Reduced font size */
+}
+
+.notification-icon {
+    font-size: 18px; /* Adjusted icon size */
+    margin-right: 10px;
+}
+
+.notification-message {
+    flex-grow: 1;
+}
+
+.close-btn {
+    font-size: 18px; /* Adjusted close button size */
+    cursor: pointer;
+}
+
