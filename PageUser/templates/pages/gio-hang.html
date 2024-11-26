@@ -4,6 +4,7 @@
 
 {% block content %}
     {% load static %}
+    
     <link rel="stylesheet" href="{% static 'css/gio-hang.css' %}">
 
     <div class="cart container">
@@ -78,32 +79,33 @@
             <!-- Right Side Column -->
             <div class="cart__right col-4">
                 <h2>Đơn hàng</h2>
-                <div class="cart">
-                   
-                    {% for malop,item in gio_hang.items %}
-                        <div class="cart-item">
-                            <div class="cart-item-info">
-                                <p>-----------------------------------</p>
-                                <h3 class="cart-item-name">Tên lớp: {{ item.tenlop }}</h3>
-                                <p class="cart-item-price">Học phí: {{ item.hocphi|floatformat:0 }} VND</p>
-                     
-                            </div>
-
-                            <a href="{% url 'xoa_hoan_tat' malop %}">Xóa</a>
-                        </div>
+                <div class="cart-items">
+                    {% for item in gio_hang_display %}
+                    <div class="cart-item">
+                        <h3>{{ item.tenlop }}</h3>
+                        
+                        {% load humanize %} 
+                        <p>Học phí: {{ item.hocphi|floatformat:0|intcomma }} VND</p>
+                 
+                        <a href="{% url 'xoa_hoan_tat' item.malop %}" >Xóa</a>
+                    </div>
+                    
                     {% empty %}
-                        <p>Giỏ hàng của bạn hiện đang trống.</p>
+                    <p>Giỏ hàng của bạn hiện đang trống.</p>
                     {% endfor %}
                 </div>
+                
 
                 <!-- Total Price Section -->
                 <div class="cart__total">
-                    <h2>Tổng giá trị: {{ total_price|floatformat:0 }} VND</h2>
+                    
+                    <h2>Tổng tiền: {{ total_price|floatformat:0|intcomma }} VND</h2>
                     <form method="post" action="{% url 'thanh_toan' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-success">Thanh toán</button>
                     </form>
                 </div>
+                <!---->
             </div>
         </div>
     </div>

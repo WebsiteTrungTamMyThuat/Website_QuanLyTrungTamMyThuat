@@ -9,7 +9,7 @@
             <h3> Môn học: </h3>
             <div class="course-button">
                 <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
-                {% for tl in dm_kh %}
+                {% for tl in dm_kh|slice:":5" %}
                     <button class="btn btn-phong-canh"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.tenkh }}</a></button>
                 {% endfor %}
             </div>
@@ -32,7 +32,8 @@
                             <p class="card-text">{{ lop.makh.mota }}</p>
                         </div>
                         <div class="price">
-                            <h3>{{ lop.hocphi|floatformat:0 }} VNĐ</h3>
+                            {% load humanize %} 
+                            <h3>{{ lop.hocphi|floatformat:0|intcomma }} VNĐ</h3>
                             <form action="{% url 'ttkhoahoc' lop.malop  %}" method="get">
                                 <button type="submit" class="btn btn-submit">Đăng ký</button>
                             </form>

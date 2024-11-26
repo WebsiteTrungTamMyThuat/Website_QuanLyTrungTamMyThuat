@@ -54,6 +54,8 @@ class LopHoc(models.Model):
         db_table = 'lophoc'
     def __str__(self):
         return self.malop + " - " + self.tenlop
+    def clean(self):
+        self.malop = self.malop.strip()
         
 class HocVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
@@ -70,14 +72,19 @@ class HocVien(models.Model):
         return self.hoten
     
 class HoaDon(models.Model):
-    sohd = models.AutoField(primary_key=True)
+    sohd = models.IntegerField(primary_key=True)
     ngaylap = models.DateField()
     tongtien = models.DecimalField(max_digits=10, decimal_places=2)
     trangthai = models.CharField(max_length=20)
-    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE,db_column='malop')
-    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE, db_column='mahv')
+    malop = models.ForeignKey('LopHoc', on_delete=models.CASCADE,db_column='malop')
+    mahv = models.ForeignKey('HocVien', on_delete=models.CASCADE, db_column='mahv')
     class Meta:
         db_table = 'hoadon'
+
+    def __str__(self):
+        return f"Hoa Don {self.sohd} - Học viên: {self.mahv.hoten} - Lớp: {self.malop.tenlop}"
+
+
         
 class GiaoVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
