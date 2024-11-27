@@ -22,6 +22,61 @@
                 <button class="btn btn-nang-cao">Nâng cao</button>
             </div>
         </div>
+        <div class="list-button">
+            <h3>Ngày bắt đầu: </h3>
+            <div class="datepicker-container">
+                <input type="text" class="date-input" placeholder="Chọn ngày bắt đầu" />
+                <div class="datepicker" hidden>
+                  <!-- .datepicker-header -->
+                  <div class="datepicker-header">
+                    <button class="prev">Trước</button>
+          
+                    <div>
+                      <select class="month-input">
+                        <option>Tháng 1</option>
+                        <option>Tháng 2</option>
+                        <option>Tháng 3</option>
+                        <option>Tháng 4</option>
+                        <option>Tháng 5</option>
+                        <option>tháng 6</option>
+                        <option>Tháng 7</option>
+                        <option>Tháng 8</option>
+                        <option>Tháng 9</option>
+                        <option>Tháng 10</option>
+                        <option>Tháng 11</option>
+                        <option>Tháng 12</option>
+                      </select>
+                      <input type="number" class="year-input" />
+                    </div>
+          
+                    <button class="next">Tiếp</button>
+                  </div>
+                  <!-- /.datepicker-header -->
+          
+                  <!-- .days -->
+                  <div class="days">
+                    <span>C</span>
+                    <span>H</span>
+                    <span>B</span>
+                    <span>T</span>
+                    <span>N</span>
+                    <span>S</span>
+                    <span>B</span>
+                  </div>
+                  <!-- /.days -->
+          
+                  <!-- .dates -->
+                  <div class="dates"></div>
+                  <!-- /.dates -->
+          
+                  <!-- .datepicker-footer -->
+                  <div class="datepicker-footer">
+                    <button class="cancel">Hủy</button>
+                    <button class="apply">Xác nhận</button>
+                  </div>
+                </div>
+            </div>
+        </div>
         <div class="grid-container">
             {% for lop in ds_lop %}
                 <a class="card" href="{% url 'ttkhoahoc' lop.malop %}">
