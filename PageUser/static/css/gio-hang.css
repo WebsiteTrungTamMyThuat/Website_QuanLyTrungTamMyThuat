@@ -177,3 +177,46 @@
     font-size: 20px;
     transition: .3s;
 }
+
+
+
+.cart-items {
+    display: flex;
+    flex-direction: column; /* Hiển thị từng dòng riêng biệt */
+    gap: 10px; /* Khoảng cách giữa các dòng */
+}
+
+.cart-item-row {
+    display: flex; /* Sắp xếp các mục theo hàng ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: space-between; /* Giãn cách các mục đều */
+    padding: 15px;
+    border: 1px solid #ddd; /* Đường viền giữa các mục */
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.cart-item-title {
+    flex: 1; /* Tựa động độ rộng */
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.cart-item-price {
+    flex: 1; /* Tăng độ rộng của giá */
+    font-size: 1.2rem;
+    text-align: center;
+    color: #555;
+}
+
+.cart-item-remove {
+    text-decoration: none;
+    color: #d9534f; /* Màu đỏ */
+    font-weight: bold;
+}
+
+.cart-item-remove:hover {
+    text-decoration: underline;
+    color: #c9302c; /* Màu đỏ đậm hơn khi hover */
+}

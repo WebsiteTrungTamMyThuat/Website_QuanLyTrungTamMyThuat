@@ -81,15 +81,12 @@
                 <h2>Đơn hàng</h2>
                 <div class="cart-items">
                     {% for item in gio_hang_display %}
-                    <div class="cart-item">
-                        <h3>{{ item.tenlop }}</h3>
-                        
+                    <div class="cart-item-row">
+                        <h3 class="cart-item-title">{{ item.tenlop }}</h3>
                         {% load humanize %} 
-                        <p>Học phí: {{ item.hocphi|floatformat:0|intcomma }} VND</p>
-                 
-                        <a href="{% url 'xoa_hoan_tat' item.malop %}" >Xóa</a>
+                        <p class="cart-item-price">Học phí: {{ item.hocphi|floatformat:0|intcomma }} VND</p>
+                        <a href="{% url 'xoa_hoan_tat' item.malop %}" class="cart-item-remove">Xóa</a>
                     </div>
-                    
                     {% empty %}
                     <p>Giỏ hàng của bạn hiện đang trống.</p>
                     {% endfor %}
@@ -105,6 +102,7 @@
                         <button type="submit" class="btn btn-success">Thanh toán</button>
                     </form>
                 </div>
+         
                 <!---->
             </div>
         </div>

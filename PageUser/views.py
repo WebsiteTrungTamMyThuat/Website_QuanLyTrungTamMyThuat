@@ -181,7 +181,7 @@ def register(request):
                 idtaikhoan=mahv,
                 username=email,
                 pass_word=password,
-                quyen='Học Viên',
+                quyen='HV',
                 trangthai='Hoạt Động'
             )
             
