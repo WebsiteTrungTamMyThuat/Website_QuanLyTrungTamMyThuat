@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function ()
         <ul>
             <li><a href="/dieukhien/${idtaikhoan}">Bảng điều khiển</a></li>
             <li><a href="/user/lichsukh">Lịch sử mua hàng</a></li>
-            <li><a id="logoutButton">Đăng xuất</a></li>
+            <li><a id="logoutButton" href="/user/logout">Đăng xuất</a></li>
         </ul>
     `;
     userLoggedIn.appendChild(dropdownMenu);

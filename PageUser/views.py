@@ -302,8 +302,7 @@ def filter_khoahoc(request):
         'selected_date': selected_date
     })
 
-    # Truyền dữ liệu vào template
-
+  
 
 ### Chi tiet lop hoc
 
@@ -315,10 +314,21 @@ def ChiTietLop(request,mlop):
     khoa_hoc = lop.makh 
     giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
+    lich_hoc = LichHoc.objects.filter(malop=mlop)
+    lich_hoc_list = [
+        {
+            'ngayhoc': lh.ngayhoc.strftime("%d/%m/%Y"),
+            'giohoc': lh.giohoc.strftime("%H:%M"),
+            'sogiohoc': lh.sogiohoc
+        }
+        for lh in lich_hoc
+    ]
+
     data = {
         'single_lop': lop,
         'khoa_hoc': khoa_hoc,  
         'giaovien': giaovien,
+        'lichhoc': lich_hoc_list,
     }
 
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)
@@ -373,6 +383,8 @@ def DSKhoaHoc(request):
     }
     return render(request,'pages/khoahoc.html',dskh)
 
+### xoa gio hang
+
 def xoa_hoan_tat(request, malop):
  
     gio_hang = request.session.get('gio_hang', {})
@@ -405,7 +417,6 @@ def LoadGioHang(request):
 
     gio_hang = request.session.get('gio_hang', {})
     total_price = 0
-   
 
     gio_hang_display = [
         {
@@ -413,7 +424,8 @@ def LoadGioHang(request):
             'tenlop': item['tenlop'],
             'hocphi': float(item['hocphi']),
             'so_luong': item['so_luong'],
-            'mahv': item.get('mahv', '') 
+            'mahv': item.get('mahv', ''),
+            'lichhoc': item['lichhoc']  # Lịch học đã chọn
         }
         for malop, item in gio_hang.items()
     ]
@@ -425,22 +437,19 @@ def LoadGioHang(request):
         'hoc_vien': hoc_vien,
         'gio_hang': gio_hang,
         'total_price': total_price,
-        'gio_hang_display': gio_hang_display  
+        'gio_hang_display': gio_hang_display
     })
 
 ### them gio hang
 def them_vao_gio_hang(request, malop):
     malop = malop.strip()
 
-
-    # Lấy lớp học từ cơ sở dữ liệu
     try:
         lop_hoc = LopHoc.objects.get(malop=malop)
     except LopHoc.DoesNotExist:
         messages.error(request, "Lớp học không tồn tại.")
         return redirect('khoahoc')
 
-    # Kiểm tra đăng nhập và lấy thông tin học viên
     if not request.session.get('user_username'):
         messages.error(request, "Vui lòng đăng nhập để thêm lớp vào giỏ hàng.")
         return redirect('dangnhap')
@@ -449,46 +458,84 @@ def them_vao_gio_hang(request, malop):
     tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
     hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
 
-    # Lấy mã học viên
     mahv = hoc_vien.mahv.strip()
 
-    # Lấy giỏ hàng từ session
-    gio_hang = request.session.get('gio_hang', {})
+    if request.method == "POST":
+        selected_lich = request.POST.get('selected_lichhoc', None)
+        if not selected_lich:
+            messages.error(request, "Vui lòng chọn ít nhất một lịch học trước khi đăng ký.")
+            return redirect('ttkhoahoc', mlop=malop)
 
-    # Giới hạn chỉ 1 lớp học trong giỏ hàng
-#    gio_hang = {}  # Xóa mọi lớp học cũ
+       
+        ngayhoc, giohoc = selected_lich.split('|')
 
-    # Thêm lớp học và mã học viên vào giỏ hàng
-    gio_hang[malop] = {
-        'tenlop': lop_hoc.tenlop,
-        'hocphi': str(lop_hoc.hocphi),
-        'so_luong': 1,
-        'malop': malop,
-        'mahv': mahv  # Lưu mã học viên vào giỏ hàng
-    }
+        
+        gio_hang = request.session.get('gio_hang', {})
 
-    # Lưu lại giỏ hàng vào session
-    request.session['gio_hang'] = gio_hang
+       
+        gio_hang[malop] = {
+            'tenlop': lop_hoc.tenlop,
+            'hocphi': str(lop_hoc.hocphi),
+            'so_luong': 1,
+            'malop': malop,
+            'mahv': mahv,
+            'lichhoc': {  # Lưu lịch học đã chọn
+                'ngayhoc': ngayhoc,
+                'giohoc': giohoc
+            }
+        }
 
-    messages.success(request, f"Lớp học {lop_hoc.tenlop} đã được thêm vào giỏ hàng!")
-    return redirect('giohang')
+        # Lưu giỏ hàng vào session
+        request.session['gio_hang'] = gio_hang
 
-### xoa gio hang
+        messages.success(request, f"Lớp học {lop_hoc.tenlop} đã được thêm vào giỏ hàng!")
+        return redirect('giohang')
+
+    return redirect('ttkhoahoc', mlop=malop)
 
 ####
 
+def is_conflict_schedule(gio_hang):
+    """
+    Kiểm tra xem có lịch học trùng trong giỏ hàng không.
+    Trả về True nếu có trùng lặp, ngược lại trả về False.
+    """
+    schedule_set = set()
 
+    for item in gio_hang.values():
+        lichhoc = item.get('lichhoc', {})  
+        ngayhoc = lichhoc.get('ngayhoc')
+        giohoc = lichhoc.get('giohoc')
 
+        if not ngayhoc or not giohoc:
+            continue  
 
+       
+        ngay_gio = (ngayhoc, giohoc)
+
+       
+        if ngay_gio in schedule_set:
+           
+            return True
+
+        schedule_set.add(ngay_gio)
+
+    return False
+###
 def thanh_toan(request):
-    # Kiểm tra đăng nhập
+   
     if not request.session.get('user_username'):
         messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
         return redirect('dangnhap')
 
     gio_hang = request.session.get('gio_hang', {})
 
-    # Kiểm tra giỏ hàng có ít nhất 1 lớp học không
+   
+    if is_conflict_schedule(gio_hang):
+        messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
+        return redirect('giohang')
+
+
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
         return redirect('giohang')
@@ -496,11 +543,10 @@ def thanh_toan(request):
     username = request.session['user_username']
     hoc_vien = get_object_or_404(HocVien, email=username)
 
-    # Khởi tạo tổng giá tiền
     total_price = Decimal(0)
 
     try:
-        # Lặp qua các lớp học trong giỏ hàng và tính tổng học phí
+        # Tính tổng học phí cho giỏ hàng
         for malop, item in gio_hang.items():
             malop_cleaned = malop.strip()
             lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
@@ -510,35 +556,32 @@ def thanh_toan(request):
         messages.error(request, f"Lỗi khi lấy lớp học từ giỏ hàng: {e}")
         return redirect('giohang')
 
-    # Xử lý khi người dùng gửi yêu cầu thanh toán
+  
     if request.method == 'POST':
         try:
-            with transaction.atomic():
-                # Lặp qua từng lớp học trong giỏ hàng và tạo hóa đơn cho mỗi lớp học
+            with transaction.atomic():  
+               
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
                     lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-                    
-                    # Tính tổng tiền cho lớp học này
+             
                     total_price_per_class = Decimal(item['hocphi']) * item['so_luong']
 
-                    # Tạo hóa đơn cho từng lớp học (sohd sẽ tự động tăng lên)
+                
                     hoa_don = HoaDon.objects.create(
-                        mahv=hoc_vien,  # Mã học viên
-                        malop=lop_hoc,  # Lớp học
-                        ngaylap=date.today(),  # Ngày lập
-                        tongtien=total_price_per_class,  # Tổng tiền cho lớp học này
-                        trangthai='Chưa thanh toán'  # Trạng thái ban đầu
+                        mahv=hoc_vien,  
+                        malop=lop_hoc,  
+                        ngaylap=date.today(), 
+                        tongtien=total_price_per_class, 
+                        trangthai='Chưa thanh toán'  
                     )
 
-                   
-
-                # Xóa giỏ hàng sau khi thanh toán thành công
+                
                 request.session['gio_hang'] = {}
 
-                # Thông báo thanh toán thành công
+              
                 messages.success(request, "Thanh toán thành công! Bạn đã đăng ký các lớp học.")
-                return redirect('giohang')  
+                return redirect('user')  
 
         except Exception as e:
             messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
