@@ -1,76 +1,74 @@
-const weeksData = [
-    [
-        { date: "2024-11-20", time: "8:00 - 10:00", className: "Hội họa cơ bản", room: "Phòng Mỹ thuật 1", startTime: "8:00", totalTime: "2h", color: "orange" },
-        { date: "2024-11-21", time: "10:00 - 12:00", className: "Lịch sử nghệ thuật", room: "Phòng Mỹ thuật 2", startTime: "10:00", totalTime: "2h", color: "purple" },
-        { date: "2024-11-22", time: "14:00 - 16:00", className: "Điêu khắc", room: "Phòng Mỹ thuật 3", startTime: "14:00", totalTime: "2h", color: "green" },
-        { date: "2024-11-24", time: "16:00 - 18:00", className: "Thiết kế đồ họa", room: "Phòng Máy tính", startTime: "16:00", totalTime: "2h", color: "cyan" },
-    ],
-    [
-        { date: "2024-11-27", time: "10:00 - 12:00", className: "Hội họa nâng cao", room: "Phòng Mỹ thuật 1", startTime: "10:00", totalTime: "2h", color: "pink" },
-        { date: "2024-11-28", time: "12:00 - 14:00", className: "Kỹ thuật tô màu nước", room: "Phòng Mỹ thuật 2", startTime: "12:00", totalTime: "2h", color: "blue" },
-        { date: "2024-11-29", time: "8:00 - 10:00", className: "Thiết kế poster", room: "Phòng Thiết kế", startTime: "8:00", totalTime: "2h", color: "purple" },
-        { date: "2024-11-30", time: "14:00 - 16:00", className: "Nghệ thuật hiện đại", room: "Phòng Hội thảo", startTime: "14:00", totalTime: "2h", color: "orange" },
-    ],
-    [
-        { date: "2024-12-04", time: "8:00 - 10:00", className: "Phác thảo chân dung", room: "Phòng Mỹ thuật 3", startTime: "8:00", totalTime: "2h", color: "green" },
-        { date: "2024-12-05", time: "10:00 - 12:00", className: "Lịch sử mỹ thuật Việt Nam", room: "Phòng Mỹ thuật 2", startTime: "10:00", totalTime: "2h", color: "blue" },
-        { date: "2024-12-06", time: "16:00 - 18:00", className: "Thiết kế logo", room: "Phòng Máy tính", startTime: "16:00", totalTime: "2h", color: "cyan" },
-        { date: "2024-12-07", time: "18:00 - 20:00", className: "Nghệ thuật tranh tường", room: "Phòng Mỹ thuật 1", startTime: "18:00", totalTime: "2h", color: "pink" },
-    ],
-];
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Lấy mã tài khoản từ session được truyền từ Django
+    const mahv = idtaikhoan.trim(); 
+    fetchTimetable(mahv);
+});
 
 let currentWeekIndex = 0;
 
+
+
 function generateTimetable(weekIndex) {
+
+    // Tính ngày đầu tuần và cuối tuần
     const startOfWeek = getStartOfWeek(new Date(), weekIndex);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 7);
+
     const contentContainer = document.querySelector(".timetable .content");
     const weekNamesContainer = document.querySelector(".timetable .week-names");
-
-    // Cập nhật tiêu đề tuần
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    document.getElementById("current-week-label").innerText = `Tuần ${weekIndex + 1} (${formatDate(startOfWeek)} - ${formatDate(endOfWeek)})`;
 
     // Xóa nội dung cũ
     contentContainer.innerHTML = "";
     weekNamesContainer.innerHTML = "";
 
-    // Tạo tiêu đề ngày trong tuần
+    // Tạo tiêu đề các ngày trong tuần
     for (let i = 0; i < 7; i++) {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + i);
-
         const dayDiv = document.createElement("div");
         dayDiv.textContent = formatDate(date);
-        if (i === 5 || i === 6) dayDiv.classList.add("weekend");
         weekNamesContainer.appendChild(dayDiv);
+
+        const dayContent = document.createElement("div");
+        dayContent.classList.add("day-cell");
+        dayContent.dataset.date = formatDate(date);
+        contentContainer.appendChild(dayContent);
     }
 
-    // Tạo nội dung thời khóa biểu
-    const weekData = weeksData[weekIndex] || [];
-    for (let i = 0; i < 42; i++) { // 7 ngày x 6 khoảng thời gian
-        const cell = document.createElement("div");
+    // Lọc các lớp học trong tuần hiện tại
+    const currentWeekClasses = weeksData.filter(event => {
+        const classDate = new Date(event.date);
+        return classDate >= startOfWeek && classDate < endOfWeek;
+    });
 
-        const day = new Date(startOfWeek);
-        day.setDate(startOfWeek.getDate() + (i % 7));
-        const dateString = formatDate(day);
-        const timeInterval = getTimeInterval(Math.floor(i / 7));
+    // Hiển thị lịch học cho tuần hiện tại
+    currentWeekClasses.forEach(event => {
+        const classDate = formatDate(new Date(event.date));
 
-        const item = weekData.find((event) => event.date === dateString && event.time === timeInterval);
-        if (item) {
-            cell.innerHTML = `
-                <div class="accent-${item.color}-gradient">
+        // Tìm ô tương ứng với ngày
+        const targetCell = contentContainer.querySelector(`.day-cell[data-date="${classDate}"]`);
+
+        if (targetCell) {
+            // Tạo nội dung lịch học
+            const eventDiv = document.createElement("div");
+            eventDiv.innerHTML = `
+                <div class="accent-${event.color}-gradient">
                     <div class="course">
-                        <div class="className">${item.className}</div>
-                        <div class="location"><label>Phòng học: </label>${item.room}</div>
-                        <div class="startTime"><label>Thời gian: </label>${item.startTime}</div>
-                        <div class="totalTime"><label>Tổng thời gian: </label>${item.totalTime}</div>
+                        <div class="className">${event.className}</div>
+                        <div class="location">Phòng: ${event.room}</div>
+                        <div class="startTime">Bắt đầu: ${event.startTime}</div>
+                        <div class="totalTime">Thời lượng: ${event.totalTime}</div>
                     </div>
                 </div>
             `;
+
+            // Thêm lịch học vào ô tương ứng
+            targetCell.appendChild(eventDiv);
         }
-        contentContainer.appendChild(cell);
-    }
+    });
 }
 
 // Hàm định dạng ngày
@@ -81,32 +79,38 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-// Hàm lấy khoảng thời gian
-function getTimeInterval(index) {
+function generateTimeIntervals() {
+    const timeIntervalContainer = document.getElementById("time-interval-container");
+    timeIntervalContainer.innerHTML = ""; // Xóa nội dung cũ
+
     const intervals = [
-        "8:00 - 10:00",
-        "10:00 - 12:00",
-        "12:00 - 14:00",
-        "14:00 - 16:00",
-        "16:00 - 18:00",
-        "18:00 - 20:00",
+        "7:00 - 9:00", "9:30 - 11:30", "1:00 - 3:00", 
+        "3:30 - 5:30", "6:00 - 8:00"
     ];
-    return intervals[index] || "";
+
+    // Tạo các khung giờ
+    intervals.forEach(interval => {
+        const div = document.createElement("div");
+        div.textContent = interval;
+        timeIntervalContainer.appendChild(div);
+    });
 }
 
 // Hàm thay đổi tuần
 function changeWeek(direction) {
-    currentWeekIndex = Math.max(0, Math.min(currentWeekIndex + direction, weeksData.length - 1));
+    currentWeekIndex += direction;
+    console.log("Chuyển đến tuần:", currentWeekIndex);
     generateTimetable(currentWeekIndex);
 }
 
 // Hàm lấy ngày đầu tuần
 function getStartOfWeek(currentDate, weekOffset) {
     const date = new Date(currentDate);
-    date.setDate(date.getDate() - date.getDay() + 1 + weekOffset * 7); // Bắt đầu từ thứ Hai
+    const day = date.getDay();
+    const diffToMonday = day === 0 ? -6 : 1 - day; // Đưa về thứ Hai (1)
+    date.setDate(date.getDate() + diffToMonday + weekOffset * 7);
     return new Date(date.getFullYear(), date.getMonth(), date.getDate()); // Reset giờ phút
 }
-
 // Khởi tạo thời khóa biểu
 document.addEventListener("DOMContentLoaded", () => {
     generateTimetable(currentWeekIndex);

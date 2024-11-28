@@ -1,59 +1,75 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect
-from django.http import HttpResponse 
+from django.http import HttpResponse,Http404 
 from .models import *
 from django.db import transaction
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
 # Create your views herede
-#@login_required
+@login_required
 def admin(request, idtaikhoan):
-    id = request.session.get('user_idtaikhoan')
-    if id:
-        return render(request, 'pages/admin.html', {'idtaikhoan': idtaikhoan})
+    request.session['idtaikhoan'] = idtaikhoan.strip()
+    username = request.session.get('user_username', None)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    if taikhoan is None or taikhoan.username != username:
+        raise Http404("Không tìm thấy tài khoản hoặc bạn không có quyền truy cập.")
+    
+    
+    if idtaikhoan:
+        return render(request, 'pages/admin.html')
     return render(request, '403.html', status=403)
     
+    
+@api_view(['GET'])   
+def lichhoc(request, idtaikhoan):
+    
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    
+    username = request.session.get('user_username', None)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    if taikhoan is None or taikhoan.username != username:
+        return HttpResponse("Bạn không có quyền truy cập vào tài khoản này.", status=403)
+    
+    if taikhoan.quyen == 'GV':
+        malop_list = LopHoc.objects.filter(magv=idtaikhoan).values_list('malop', flat=True)
+        lich_hoc = LichHoc.objects.filter(malop__in=malop_list).select_related('malop')
+        if not lich_hoc.exists():
+            return Response({"message": "Không có lịch học cho học viên này."}, status=404)
+    
+    elif taikhoan.quyen == 'HV':
+        malop_list = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
+        lich_hoc = LichHoc.objects.filter(malop__in=malop_list).select_related('malop')
+        
+        if not lich_hoc.exists():
+            return Response({"message": "Không có lịch học cho học viên này."}, status=404)
+    
+    data = [
+        {
+            "date": lich.ngayhoc.strftime("%Y-%m-%d"),
+            "time": f"{lich.giohoc.strftime('%H:%M')} - {(lich.giohoc.hour + lich.sogiohoc):02}:00",
+            "className": lich.malop.tenlop,
+            "room": lich.malop.diadiemhoc,
+            "startTime": lich.giohoc.strftime("%H:%M"),
+            "totalTime": f"{lich.sogiohoc}h",
+            "color": "orange", 
+        }
+        for lich in lich_hoc
+    ]
+    #return Response(data)
+    return render(request, 'pages/admin-lichhoc.html', {'lich_hoc': data, 'idtaikhoan': idtaikhoan})
+
+
 
 def giaovien(request):
-    dsgv = GiaoVien.objects.all()
-    dstk = TaiKhoanNguoiDung.objects.all()
-    
-    data = [
-        {
-            'magv': gv.magv,
-            'hoten': gv.hoten,
-            'email': gv.email,
-            'GioiTinh':gv.GioiTinh,
-            'NgaySinh':gv.NgaySinh,
-            'SDT': gv.SDT,
-            'taikhoan': dstk.filter(idtaikhoan=gv.magv).values('trangthai').first()
-        }
-        for gv in dsgv
-    ]
-    
-    return render(request,'pages/admin-giaovien.html',{'ds_gv': data})
+    return render(request,'pages/admin-giaovien.html')
 
-def lichhoc(request):
-    return render(request,'pages/admin-khoahoc.html')
 
 def hocvien(request):
-    dshv = HocVien.objects.all()
-    dstk = TaiKhoanNguoiDung.objects.all()
-    
-    data = [
-        {
-            'magv':hv.mahv,
-            'hoten': hv.hoten,
-            'email': hv.email,
-            'GioiTinh':hv.GioiTinh,
-            'NgaySinh':hv.NgaySinh,
-            'SDT': hv.SDT,
-            'taikhoan': dstk.filter(idtaikhoan=hv.mahv).values('trangthai').first()
-        }
-        for hv in dshv
-    ]
-    return render(request,'pages/admin-hocvien.html', {'ds_hv':data})
+    return render(request,'pages/admin-hocvien.html')
 
 def thanhtoan(request):
     return render(request,'pages/admin-thanhtoan.html')
