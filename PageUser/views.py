@@ -23,6 +23,9 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 
+from datetime import date
+
+from decimal import Decimal
 # Create your views herede
 
 def user(request):
@@ -267,6 +270,41 @@ def DSTheoKH(request , ml):
     }
     return render(request, 'pages/khoahoc.html', data)
 
+from datetime import datetime
+def filter_khoahoc(request):
+   
+    dskh = KhoaHoc.objects.all()
+    ds_lop = LopHoc.objects.all()
+
+    selected_date = request.GET.get('ngaybatdau', None)
+
+
+    if selected_date:
+        try:
+            ngaybatdau = datetime.strptime(selected_date, "%Y-%m-%d").date()
+            ds_lop = ds_lop.filter(ngaybatdau=ngaybatdau)
+        except ValueError:
+         
+            return render(request, 'pages/khoahoc.html', {
+                'error': "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD.",
+                'ds_lop': ds_lop,
+                'dm_kh': dskh,
+
+                'selected_date': selected_date
+            })
+
+    # Truyền dữ liệu vào template
+    return render(request, 'pages/khoahoc.html', {
+        'ds_lop': ds_lop,
+        'dm_kh': dskh,
+        'ctkh': ChiTietKhoaHoc.objects.all(),
+        'ndkh': NoiDungKhoaHoc.objects.all(),
+        'selected_date': selected_date
+    })
+
+    # Truyền dữ liệu vào template
+
+
 ### Chi tiet lop hoc
 
 def ChiTietLop(request,mlop):
@@ -441,9 +479,6 @@ def them_vao_gio_hang(request, malop):
 
 
 
-from datetime import date
-
-from decimal import Decimal
 
 def thanh_toan(request):
     # Kiểm tra đăng nhập

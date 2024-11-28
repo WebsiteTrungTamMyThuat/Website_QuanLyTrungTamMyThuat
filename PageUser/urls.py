@@ -14,6 +14,9 @@ urlpatterns = [
     path('khoahoc/',views.DSKhoaHoc,name='khoahoc'),
     path('khoahoc/DSL/<str:ml>/', views.DSTheoKH, name='DSTheoKH'),
     path('khoahoc/ttkhoahoc/<str:mlop>',views.ChiTietLop,name='ttkhoahoc'),
+
+    path("filter-khoahoc", views.filter_khoahoc, name="filter_khoahoc"),
+
     path('logout', views.logout_view, name='logout'),
     path('giaovien/', views.giaovien, name='giaovien'),
     path('chinhanh/',views.chinhanh,name='chinhanh'),
