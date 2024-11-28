@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'PageAdmin',
-    'PageUser'
+    'PageUser',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -80,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'QLyTTMyThuat',
-        'USER': 'du',
-        'PASSWORD': 'AVNS_22TguLdYTe37qrZw2hw',
+        'USER': 'avnadmin',
+        'PASSWORD': 'AVNS_W6S_6QQkkUnoEL9YRYh',
         'HOST': 'postgresql-server-vi-tranhoangvi21072003-f2c0.b.aivencloud.com',
         'PORT': '24035',
     }
@@ -132,3 +133,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}

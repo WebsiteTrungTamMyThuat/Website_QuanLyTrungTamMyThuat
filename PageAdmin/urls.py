@@ -5,10 +5,12 @@ from . import views
 
 urlpatterns = [
     path('<str:idtaikhoan>/', views.admin, name='admin'),
+    path('lichhoc/<str:idtaikhoan>/',views.lichhoc,name='lichhoc_admin'),
+    
     path('giaovien/',views.giaovien, name='giaovien_admin'),
-    path('lichhoc/',views.lichhoc,name='lichhoc_admin'),
     path('hocvien/',views.hocvien,name='hocvien'),
     path('thanhtoan/',views.thanhtoan,name='thanhtoan'),
+    
     path('giaovien/them_gv/',views.them_gv,name='them_gv'),
     path('hocvien/them_hv/',views.them_hv,name='them_hv'),
     path('khoahoc/them_kh/',views.them_kh,name='them_kh'),
