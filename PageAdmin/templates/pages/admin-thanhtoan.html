@@ -46,7 +46,13 @@
                         <td>{{hd.ngaylap}}</td>
                         <td>{{hd.tongtien}}</td>
                         <td>{{hd.lop}}</td>
-                        <td><span class="status process">{{hd.trangthai}}</td>
+                        <td>
+                            {%if hd.trangthai == "Chưa thanh toán" %}
+                                <span class="status waiting">{{hd.trangthai}}
+                            {% else %}
+                                <span class="status success">{{hd.trangthai}}
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
