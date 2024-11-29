@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import HttpResponse,Http404 
 from .models import *
-from django.db import transaction
+from django.db import transaction, connection
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.contrib.messages import get_messages
+
 
 
 
@@ -44,7 +46,7 @@ def lichhoc(request, idtaikhoan):
         
     
     elif taikhoan.quyen == 'HV':
-        malop_list = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
+        malop_list = HoaDon.objects.filter(mahv=idtaikhoan, trangthai="Đã thanh toán").values_list('malop', flat=True)
         lich_hoc = LichHoc.objects.filter(malop__in=malop_list).select_related('malop')
     
     data = [
@@ -84,11 +86,12 @@ def lophoc(request, idtaikhoan):
             "tenlop" : item.tenlop,
             "diadiem" : item.diadiemhoc,
             "hocphi" : f"{item.hocphi} VNĐ",
-            "tinhtrang" : item.tinhtrang
+            "tinhtrang" : item.tinhtrang.strip(),
+            "status_btn": item.tinhtrang.strip() if item.tinhtrang.strip() == "Hoàn thành" else None
         }
         for item in lophoc
     ]
-        
+    print(data)
     return render(request,'pages/admin-lophoc.html', {'dslop': data})
 
 
@@ -120,38 +123,108 @@ def thongtincanhan(request, idtaikhoan):
     username = request.session.get('user_username', None)
     checklogin(idtaikhoan, username)
     taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    thongtincanhan = None
     
     if taikhoan.quyen == 'GV':
-        return render(request,'pages/admin-thanhtoan.html')
-    thongtincanhan = None
+        thongtincanhan = GiaoVien.objects.filter(magv=idtaikhoan).first()
+        data = {
+            "mahv" : thongtincanhan.magv,
+            "tenhv" : thongtincanhan.hoten,
+            "email" : thongtincanhan.email,
+            "SDT"   : thongtincanhan.SDT,
+            "GioiTinh": thongtincanhan.GioiTinh,
+            "NgaySinh" : thongtincanhan.NgaySinh.strftime("%Y-%m-%d"),
+            "DiaChi" : thongtincanhan.DiaChi
+        }
+    
     if taikhoan.quyen == 'HV':
         thongtincanhan = HocVien.objects.filter(mahv=idtaikhoan).first()
-
+        data = {
+            "mahv" : thongtincanhan.mahv,
+            "tenhv" : thongtincanhan.hoten,
+            "email" : thongtincanhan.email,
+            "SDT"   : thongtincanhan.SDT,
+            "GioiTinh": thongtincanhan.GioiTinh,
+            "NgaySinh" : thongtincanhan.NgaySinh.strftime("%Y-%m-%d"),
+            "DiaChi" : thongtincanhan.DiaChi
+        }
     if not thongtincanhan:
         return render(request, '404.html', status=404)
-    return render(request,'pages/admin-hocvien.html', {'thongtincanhan' : thongtincanhan})
+    
+    
+    return render(request,'pages/admin-hocvien.html', {'thongtincanhan' : data})
 
 
-def them_gv(request):
-    return render(request,'pages/Them-Xoa-Sua/them-giaovien.html')
+def luuthongtincanhan(request, idtaikhoan):
+  
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    if request.method == "POST":
+        # Lấy thông tin từ form
+        
+        gioitinh = request.POST.get('gioitinh')
+        sodienthoai = request.POST.get('sdt')
+        ngaysinh = request.POST.get('ngaysinh')
+        diachi = request.POST.get('diachi')
+        
+        print(f"Dữ liệu POST: {gioitinh}, {sodienthoai}, {ngaysinh}, {diachi}")
+        if taikhoan.quyen == 'GV':
+            giaovien = GiaoVien.objects.filter(magv=idtaikhoan).first()
+            if giaovien:
+                    giaovien.GioiTinh = gioitinh
+                    giaovien.SDT = sodienthoai
+                    giaovien.NgaySinh = ngaysinh
+                    giaovien.DiaChi = diachi
+                    giaovien.save()
+                    connection.commit()
+                    messages.success(request, "Cập nhật thông tin thành công.")
+                    return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
+            else:
+                    # Nếu không tìm thấy học viên
+                    messages.error(request, "Không tìm thấy thông tin giáo viên.")
+                    return render(request, '404.html', status=404)
+                
+        if taikhoan.quyen == 'HV':
+            hocvien = HocVien.objects.filter(mahv=idtaikhoan).first()
+            if hocvien:
+                    hocvien.GioiTinh = gioitinh
+                    hocvien.SDT = sodienthoai
+                    hocvien.NgaySinh = ngaysinh
+                    hocvien.DiaChi = diachi
+                    hocvien.save()
+                    connection.commit()
+                    messages.success(request, "Cập nhật thông tin thành công.")
+                    return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
+            else:
+                    # Nếu không tìm thấy học viên
+                    messages.error(request, "Không tìm thấy thông tin học viên.")
+                    return render(request, '404.html', status=404)
+            
+     # Xóa các messages còn tồn tại
+    storage = get_messages(request)
+    for _ in storage:
+        pass  # Xóa tất cả các messages
+    
+    return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
 
-def them_hv(request):
-    return render(request,'pages/Them-Xoa-Sua/them-hocvien.html')
-
-def them_kh(request):
-    return render(request,'pages/Them-Xoa-Sua/them-khoahoc.html')
-
-def them_hd(request):
-    return render(request,'pages/Them-Xoa-Sua/them-thanhtoan.html')
-
-def sua_gv(request):
-    return render(request,'pages/Them-Xoa-Sua/sua-giaovien.html')
-
-def sua_hv(request):
-    return render(request,'pages/Them-Xoa-Sua/sua-hocvien.html')
-
-def sua_kh(request):
-    return render(request,'pages/Them-Xoa-Sua/sua-khoahoc.html')
-
-def sua_hd(request):
-    return render(request,'pages/Them-Xoa-Sua/sua-thanhtoan.html')
+def doimatkhau(request, idtaikhoan):
+     # Xóa các messages còn tồn tại
+    storage = get_messages(request)
+    for _ in storage:
+        pass  # Xóa tất cả các messages
+    
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    if request.method == "POST":
+        mkcu = request.POST.get('matkhaucu')
+        mkmoi = request.POST.get('matkhaumoi')
+            
+        if taikhoan and taikhoan.pass_word == mkcu:
+            taikhoan.pass_word = mkmoi
+            taikhoan.save()
+            connection.commit()
+            messages.success(request, "Đổi mật khẩu thành công.")
+            return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
+        else:
+            messages.error(request, "Mật khẩu cũ không trùng khớp")
+            
+    
+    return render(request,'pages/doimatkhau.html')

@@ -55,13 +55,16 @@
                         <td>{{item.hocphi}}</td>
                         <td>{{item.tinhtrang}}</td>
                         <td>
+                        {% if item.status_btn == item.tinhtrang%}
                             <div class="form-button">
-                                <a href="{% url 'sua_gv' %}" class="btn-edit">
+                                <a href="#" class="btn-edit">
                                     <i class='bx bx-edit-alt' ></i>
                                     <span class="text">Đánh giá</span>
                                 </a> 
                             </div>
+                        {% endif %}
                         </td>
+                        
                     </tr>
                     {% endfor %}
                 </tbody>

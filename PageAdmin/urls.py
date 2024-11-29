@@ -10,14 +10,10 @@ urlpatterns = [
     path('lophoc/<str:idtaikhoan>/',views.lophoc, name='lophoc_admin'),
     
     path('thongtincanhan/<str:idtaikhoan>/',views.thongtincanhan,name='thongtincanhan'),
+    
     path('thanhtoan/<str:idtaikhoan>/',views.thanhtoan,name='thanhtoan'),
     
-    path('giaovien/them_gv/',views.them_gv,name='them_gv'),
-    path('hocvien/them_hv/',views.them_hv,name='them_hv'),
-    path('khoahoc/them_kh/',views.them_kh,name='them_kh'),
-    path('thanhtoan/them_hd/',views.them_hd,name='them_hd'),
-    path('giaovien/sua_gv/',views.sua_gv,name='sua_gv'),
-    path('hocvien/sua_hv/',views.sua_hv,name='sua_hv'),
-    path('khoahoc/sua_kh/',views.sua_kh,name='sua_kh'),
-    path('thanhtoan/sua_hd/',views.sua_hd,name='sua_hd'),
+    path('luuthongtincanhan/<str:idtaikhoan>/',views.luuthongtincanhan,name='luuthongtincanhan'),
+    
+    path('doimatkhau/<str:idtaikhoan>/',views.doimatkhau,name='doimatkhau'),
 ]

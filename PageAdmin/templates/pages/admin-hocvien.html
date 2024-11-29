@@ -17,7 +17,7 @@
             </ul>
         </div>
         <div class="button-group">
-            <a href="{% url 'them_hv' %}" class="btn-add">
+            <a href="{% url 'doimatkhau' request.session.user_idtaikhoan%}" class="btn-add">
                 <i class='bx bx-edit'></i>
                 <span class="text">Đổi mật khẩu</span>
             </a>
@@ -29,14 +29,15 @@
         <div class="order">
             <section class="container">
                 {% if thongtincanhan %}
-                <form action="#" class="form">
+                <form action="{% url 'luuthongtincanhan' request.session.user_idtaikhoan%}" method="POST" class="form">
+                    {% csrf_token %}
                     <div class="input-box">
                         <label>Mã học viên</label>
                         <input type="text" value={{ thongtincanhan.mahv }} readonly >
                     </div>
                     <div class="input-box">
                         <label>Họ tên</label>
-                        <input type="text" value={{ thongtincanhan.hoten }} readonly >
+                        <input type="text" value="{{ thongtincanhan.tenhv }}" readonly >
                     </div>
                     <div class="column">
                         <div class="input-box">
@@ -45,25 +46,24 @@
                         </div>
                         <div class="input-box">
                             <label>Giới tính</label>
-                            <input type="text" value={{ thongtincanhan.gioitinh }} >
+                            <input name="gioitinh" type="text" value={{ thongtincanhan.GioiTinh }} >
                         </div>
                     </div>
                     <div class="column">
                         <div class="input-box">
                             <label>Số điện thoại</label>
-                            <input type="text" value={{ thongtincanhan.sodienthoai }} >
+                            <input name="sdt" type="text" value={{ thongtincanhan.SDT }} >
                             </div>
                         <div class="input-box">
                             <label>Ngày sinh</label>
-                            <input type="text" value={{ thongtincanhan.ngaysinh|date:"d/m/Y" }} >
+                            <input name="ngaysinh" type="date" value={{ thongtincanhan.NgaySinh }} >
                         </div>
                     </div>
-                    
                     <div class="input-box address">
                         <label>Địa chỉ</label>
-                        <input type="text" value={{ thongtincanhan.diachi }} >
+                        <input name="diachi" type="text" value="{{ thongtincanhan.DiaChi }}" >
                     </div>
-                    <button>Lưu</button>
+                    <button type="submit">Lưu</button>
                     {% else %}
                     <p>Không tìm thấy thông tin cá nhân.</p>
                 {% endif %}
