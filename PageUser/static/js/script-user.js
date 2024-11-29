@@ -27,10 +27,13 @@ document.addEventListener('DOMContentLoaded', function ()
         dropdownMenu.classList.toggle('deactive');
     });
 
-    document.getElementById('logoutButton').addEventListener('click', function() {
-        localStorage.removeItem('isLoggedIn');
-        window.location.href = '/user';
-    });
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = '/user/dangnhap';  // Chuyển hướng về trang đăng nhập
+        });
+    }
 });
 
 /**

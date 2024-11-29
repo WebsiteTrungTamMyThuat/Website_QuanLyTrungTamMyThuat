@@ -5,10 +5,12 @@ from django.db import transaction, connection
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate ,login,logout
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.messages import get_messages
+from django.views.decorators.cache import never_cache
 
 
 
@@ -156,7 +158,8 @@ def thongtincanhan(request, idtaikhoan):
 
 
 def luuthongtincanhan(request, idtaikhoan):
-  
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
     taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
     if request.method == "POST":
         # Lấy thông tin từ form
@@ -211,7 +214,8 @@ def doimatkhau(request, idtaikhoan):
     storage = get_messages(request)
     for _ in storage:
         pass  # Xóa tất cả các messages
-    
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
     taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
     if request.method == "POST":
         mkcu = request.POST.get('matkhaucu')
@@ -228,3 +232,12 @@ def doimatkhau(request, idtaikhoan):
             
     
     return render(request,'pages/doimatkhau.html')
+
+
+@never_cache
+def dangxuat(request,idtaikhoan):
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    request.session.flush()  # Xóa toàn bộ session
+    logout(request)
+    return redirect('logout')
