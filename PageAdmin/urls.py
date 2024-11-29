@@ -16,4 +16,7 @@ urlpatterns = [
     path('luuthongtincanhan/<str:idtaikhoan>/',views.luuthongtincanhan,name='luuthongtincanhan'),
     
     path('doimatkhau/<str:idtaikhoan>/',views.doimatkhau,name='doimatkhau'),
+    
+    path('dangxuat/<str:idtaikhoan>/',views.dangxuat,name='dangxuat'),
+    
 ]
