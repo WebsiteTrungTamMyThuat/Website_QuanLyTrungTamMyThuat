@@ -52,6 +52,7 @@ class LopHoc(models.Model):
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     magv = models.CharField(max_length=10, db_column='magv')
     urlhinh = models.CharField(max_length=255)
+    tinhtrang = models.CharField(max_length=255)
     class Meta:
         db_table = 'lophoc'
     def __str__(self):

@@ -49,47 +49,20 @@
                         <th>Mã</th>
                         <th>Ngày lập</th>
                         <th>Tổng tiền</th>
+                        <th>Lớp</th>
                         <th>Trạng thái</th>
-                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for hd in dshd %}
                     <tr>
-                        <td>hd01</td>
-                        <td>01/01/2023</td>
-                        <td>10000000</td>
-                        <td><span class="status process">Chưa hoàn tất</td>
-                        <td>
-                            <div class="form-button">
-                                <a href="#" class="btn-delete">
-                                    <i class='bx bx-minus'></i>
-                                    <span class="text">Xóa</span>
-                                </a>
-                                <a href="{% url 'sua_hd' %}" class="btn-edit">
-                                    <i class='bx bx-edit-alt' ></i>
-                                    <span class="text">Sửa</span>
-                                </a> 
-                            </div>
-                        </td>
+                        <td>{{hd.sohd}}</td>
+                        <td>{{hd.ngaylap}}</td>
+                        <td>{{hd.tongtien}}</td>
+                        <td>{{hd.lop}}</td>
+                        <td><span class="status process">{{hd.trangthai}}</td>
                     </tr>
-                    <tr>
-                        <td>hd01</td>
-                        <td>01/01/2023</td>
-                        <td>10000000</td>
-                        <td><span class="status process">Hoàn tất</td>
-                        <td>
-                            <div class="form-button">
-                                <a href="#" class="btn-delete">
-                                    <i class='bx bx-minus'></i>
-                                    <span class="text">Xóa</span>
-                                </a>
-                                <a href="#" class="btn-edit">
-                                    <i class='bx bx-edit-alt' ></i>
-                                    <span class="text">Sửa</span>
-                                </a> 
-                            </div>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

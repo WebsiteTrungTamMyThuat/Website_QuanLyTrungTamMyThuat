@@ -7,9 +7,10 @@ urlpatterns = [
     path('<str:idtaikhoan>/', views.admin, name='admin'),
     path('lichhoc/<str:idtaikhoan>/',views.lichhoc,name='lichhoc_admin'),
     
-    path('giaovien/',views.giaovien, name='giaovien_admin'),
-    path('hocvien/',views.hocvien,name='hocvien'),
-    path('thanhtoan/',views.thanhtoan,name='thanhtoan'),
+    path('lophoc/<str:idtaikhoan>/',views.lophoc, name='lophoc_admin'),
+    
+    path('thongtincanhan/<str:idtaikhoan>/',views.thongtincanhan,name='thongtincanhan'),
+    path('thanhtoan/<str:idtaikhoan>/',views.thanhtoan,name='thanhtoan'),
     
     path('giaovien/them_gv/',views.them_gv,name='them_gv'),
     path('hocvien/them_hv/',views.them_hv,name='them_hv'),

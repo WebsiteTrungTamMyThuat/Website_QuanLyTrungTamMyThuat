@@ -5,14 +5,14 @@
 <main>
     <div class="head-title">
         <div class="left">
-            <h1>Giáo viên</h1>
+            <h1>Danh sách lớp học</h1>
             <ul class="breadcrumb">
                 <li>
                     <a href="#">Dashboard</a>
                 </li>
                 <li><i class='bx bx-chevron-right' ></i></li>
                 <li>
-                    <a class="active" href="#">Giáo viên</a>
+                    <a class="active" href="#">Danh sách lớp học đã đăng ký</a>
                 </li>
             </ul>
         </div>
@@ -35,7 +35,7 @@
     <div class="table-data">
         <div class="order">
             <div class="head">
-                <h3>Danh sách giáo viên</h3>
+                <h3></h3>
                 <form action="#" method="GET">
                     <div class="form-input">
                         <input name="seachsb" type="search" placeholder="Search...">
@@ -46,35 +46,27 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Mã</th>
-                        <th>Tên</th>
-                        <th>Giới tính</th>
-                        <th>Ngày sinh</th>
-                        <th>SDT</th>
-                        <th>Email</th>
+                        <th>Mã lớp</th>
+                        <th>Tên lớp</th>
+                        <th>Địa điểm học</th>
+                        <th>Học phí</th>
                         <th>Trạng thái</th>
-                        <th>Hành động</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for gv in ds_gv %}
-                    <tr>
-                        <td>{{gv.magv}}</td>
-                        <td>{{gv.hoten}}</td>
-                        <td><span class="status process">{{gv.GioiTinh}}</td>
-                        <td>{{gv.NgaySinh}}</td>
-                        <td>{{gv.SDT}}</td>
-                        <td>{{gv.email}}</td>
-                        <td><span class="status process">{{gv.taikhoan.trangthai}}</span></td>
+                    {% for item in dslop %}
+                    <tr styles="">
+                        <td>{{item.malop}}</td>
+                        <td>{{item.tenlop}}</td>
+                        <td>{{item.diadiem}}</td>
+                        <td>{{item.hocphi}}</td>
+                        <td>{{item.tinhtrang}}</td>
                         <td>
                             <div class="form-button">
-                                <a href="#" class="btn-delete">
-                                    <i class='bx bx-minus'></i>
-                                    <span class="text">Xóa</span>
-                                </a>
                                 <a href="{% url 'sua_gv' %}" class="btn-edit">
                                     <i class='bx bx-edit-alt' ></i>
-                                    <span class="text">Sửa</span>
+                                    <span class="text">Đánh giá</span>
                                 </a> 
                             </div>
                         </td>
