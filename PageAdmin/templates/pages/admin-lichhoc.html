@@ -29,7 +29,7 @@
                         <button id="prev-week" onclick="changeWeek(-1)" class="btn-nav">
                             <span>&larr;</span> Tuần trước
                         </button>
-                        <div id="current-week-label">Tuần hiện tại (20/11 - 26/11)</div>
+                        <div id="current-week-label"></div>
                         <button id="next-week" onclick="changeWeek(1)" class="btn-nav">
                             Tuần sau <span>&rarr;</span>
                         </button>
@@ -37,14 +37,14 @@
                     <div class="timetable">
                         <div class="week-names">
                         </div>
-                        <div class="time-interval">
-                            <div>8:00 - 10:00</div>
-                            <div>10:00 - 12:00</div>
-                            <div>12:00 - 14:00</div>
-                            <div>14:00 - 16:00</div>
-                            <div>16:00 - 18:00</div>
-                            <div>18:00 - 20:00</div>
-                        </div>
+                        <!-- <div class="time-interval" id="time-interval-container">
+                            Các khoảng thời gian sẽ được tạo bằng JavaScript 
+                            <div>7:00 - 9:00</div>
+                            <div>9:30 - 11:30</div>
+                            <div>1:00 - 3:00</div>
+                            <div>3:30 - 5:30</div>
+                            <div>6:00 - 8:00</div>
+                        </div>-->
                         <div class="content">
                         </div>
                     </div>
@@ -52,4 +52,9 @@
             </div>
         </div>
     </main>
+
+    <script>
+        const weeksData = {{ lich_hoc|safe }};
+        console.log("Dữ liệu lịch học:", weeksData);
+    </script>
 {% endblock %}
