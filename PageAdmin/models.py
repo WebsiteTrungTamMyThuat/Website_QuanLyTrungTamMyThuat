@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 class TaiKhoanNguoiDung(models.Model):
     QUYEN_CHOICES = [('GV', 'Giáo Viên'), ('HV', 'Học Viên'),]
@@ -51,7 +52,7 @@ class LopHoc(models.Model):
     hocphi = models.DecimalField(max_digits=10, decimal_places=2)
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     magv = models.CharField(max_length=10, db_column='magv')
-    urlhinh = models.CharField(max_length=255)
+    urlhinh = models.ImageField(upload_to='PageUser/static/img/', null=True, blank=True)
     tinhtrang = models.CharField(max_length=255)
     class Meta:
         db_table = 'lophoc'
@@ -59,6 +60,10 @@ class LopHoc(models.Model):
         return self.malop + " - " + self.tenlop
     def clean(self):
         self.malop = self.malop.strip()
+    def save(self, *args, **kwargs):
+        if self.urlhinh:
+            self.urlhinh.name = os.path.basename(self.urlhinh.name)
+        super().save(*args, **kwargs)
         
 class HocVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
@@ -73,9 +78,7 @@ class HocVien(models.Model):
         db_table = 'hocvien'
     def __str__(self):
         return self.hoten
-    def save(self, *args, **kwargs):
-        print("Đã gọi save()")
-        super().save(*args, **kwargs)
+    
     
 class HoaDon(models.Model):
     sohd = models.AutoField(primary_key=True)

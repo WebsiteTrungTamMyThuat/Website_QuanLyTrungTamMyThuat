@@ -130,7 +130,7 @@ class LichHocAdmin(admin.ModelAdmin):
 class LopHocAdmin(admin.ModelAdmin):
     list_display = ('malop','tenlop','siso','tonggiohoc','hocphi','makh',)
     search_fields = ('tenlop','makh',)
-    list_filter = ('tenlop','makh','tonggiohoc',)
+    list_filter = ('tenlop','makh',)
     
     
     

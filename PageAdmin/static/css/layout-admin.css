@@ -366,7 +366,7 @@ textarea, input {
 #content main .table-data .order table tr td .form-button .btn-edit {
   padding: 5px 10px;
   border-radius: 36px;
-  background: var(--yellow);
+  background: green;
   color: var(--light);
   font-weight: 400;
   width: fit-content;

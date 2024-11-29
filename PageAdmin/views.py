@@ -77,7 +77,7 @@ def lophoc(request, idtaikhoan):
     checklogin(idtaikhoan, username)
     
     if taikhoan.quyen == 'GV':
-        lophoc = LopHoc.objects.filter(magv=idtaikhoan).values_list(flat=True)
+        lophoc = LopHoc.objects.filter(magv=idtaikhoan)
     if taikhoan.quyen == 'HV':
         so_hoadon = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
         lophoc = LopHoc.objects.filter(malop__in=so_hoadon)
@@ -94,7 +94,7 @@ def lophoc(request, idtaikhoan):
         for item in lophoc
     ]
     print(data)
-    return render(request,'pages/admin-lophoc.html', {'dslop': data})
+    return render(request,'pages/admin-lophoc.html', {'dslop': data, 'taikhoan': taikhoan})
 
 
 def thanhtoan(request, idtaikhoan):
@@ -112,7 +112,7 @@ def thanhtoan(request, idtaikhoan):
             "sohd" : hd.sohd,
             "ngaylap" : hd.ngaylap.strftime("%d-%m-%Y"),
             "lop": hd.malop.tenlop if hd.malop else "",
-            "tongtien": hd.tongtien,
+            "tongtien": f"{hd.tongtien} VNĐ ",
             "trangthai" : hd.trangthai
         }
         for hd in hoadon
@@ -234,6 +234,46 @@ def doimatkhau(request, idtaikhoan):
     return render(request,'pages/doimatkhau.html')
 
 
+def danhsachhocvien(request, idtaikhoan, malop):
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    
+    so_hoadon = HoaDon.objects.filter(malop=malop).values_list('mahv', flat=True)
+    hocvien = HocVien.objects.filter(mahv__in=so_hoadon)
+    
+    return render(request,'pages/admin-danhsachhocvien.html', {'dshv' : hocvien})
+
+def danhgia(request, idtaikhoan, malop):
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    
+    danhgia_list = DanhGia.objects.filter(mahv=idtaikhoan, malop=malop)
+    if danhgia_list.exists():
+        messages.error(request, "Bạn đã đánh giá lớp học này rồi!")
+        return redirect('lophoc_admin', idtaikhoan=idtaikhoan)   
+     
+    if request.method == "POST":
+        danhgia = request.POST.get('danhgia')
+        
+        try:
+            hocvien = HocVien.objects.get(mahv=idtaikhoan)  
+        except HocVien.DoesNotExist:
+            return HttpResponse("Học viên không tồn tại", status=404)
+
+        try:
+            lop = LopHoc.objects.get(malop=malop) 
+        except LopHoc.DoesNotExist:
+            return HttpResponse("Lớp học không tồn tại", status=404)
+            
+        DanhGia.objects.create(
+                mahv=hocvien,
+                malop=lop,  
+                mota=danhgia
+            )
+        messages.success(request, "Đánh giá lớp học thành công.")
+        return redirect('lophoc_admin', idtaikhoan=idtaikhoan)
+    return render(request,'pages/danhgia.html', {'idtaikhoan':idtaikhoan, 'malop':malop})
+    
 @never_cache
 def dangxuat(request,idtaikhoan):
     username = request.session.get('user_username', None)
