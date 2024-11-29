@@ -290,14 +290,16 @@ def filter_khoahoc(request):
         except ValueError:
             error = "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD."
 
-    if not danh_sach_lop.exists():  # Nếu danh sách lớp rỗng
-        has_courses = False
     # Sắp xếp theo tùy chọn
     if sort_option == 'priceLowToHigh':
         danh_sach_lop = danh_sach_lop.order_by('hocphi')  # Học phí tăng dần
     elif sort_option == 'priceHighToLow':
         danh_sach_lop = danh_sach_lop.order_by('-hocphi')  # Học phí giảm dần
 
+
+    
+    if not danh_sach_lop.exists():  # Nếu danh sách lớp rỗng
+        has_courses = False
     # Truyền dữ liệu vào template
     return render(request, 'pages/khoahoc.html', {
         'ds_lop': danh_sach_lop,
