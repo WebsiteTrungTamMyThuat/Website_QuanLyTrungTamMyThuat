@@ -1,5 +1,5 @@
 .list-course {
-  padding: min(50px, 7%);
+  padding: min(30px, 7%);
   margin-top: -30px;
 }
 
@@ -7,7 +7,6 @@
   text-align: center;
   margin: 30px 0;
 }
-
 
 .grid-container {
   display: grid;
@@ -126,6 +125,7 @@ h3 {
   border-radius: 10px;
   padding: 5px 10px;
   background-color: var(--camel);
+  min-height: 40px;
 }
 
 .course-button button:hover {
@@ -136,6 +136,7 @@ h3 {
   border-radius: 10px;
   padding: 5px 10px;
   background-color: var(--granite-gray);
+  min-height: 40px;
 }
 
 .level-button button:hover {
@@ -156,7 +157,7 @@ h3 {
 }
 
 .list-button h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   margin: 0;
   color: #333;
@@ -204,4 +205,9 @@ h3 {
     outline: none;
     border-color: #007bff; 
     background-color: #ffffff; 
+}
+
+.list-filter{
+  display: flex;
+
 }
