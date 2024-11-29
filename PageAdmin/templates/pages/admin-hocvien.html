@@ -18,34 +18,57 @@
         </div>
         <div class="button-group">
             <a href="{% url 'them_hv' %}" class="btn-add">
-                <i class='bx bx-plus'></i>
-                <span class="text">Lưu</span>
+                <i class='bx bx-edit'></i>
+                <span class="text">Đổi mật khẩu</span>
             </a>
         </div>
     </div>
 
+
     <div class="table-data">
         <div class="order">
-            <div class="head">
-                
-            </div>
-            <div class="body">
+            <section class="container">
                 {% if thongtincanhan %}
-                    <p>Mã học viên: {{ thongtincanhan.mahv }}</p>
-                    <p>Họ tên: {{ thongtincanhan.hoten }}</p>
-                    <p>Email: {{ thongtincanhan.email }}</p>
-                    <p>Số điện thoại: {{ thongtincanhan.sodienthoai }}</p>
-                    <p>Giới tính: {{ thongtincanhan.gioitinh }}</p>
-                    <p>Ngày sinh: {{ thongtincanhan.ngaysinh|date:"d/m/Y" }}</p>
-                    <p>Địa chỉ: {{ thongtincanhan.diachi }}</p>
-                    <a href="{% url 'them_hv' %}" class="btn-add">
-                        <i class='bx bx-plus'></i>
-                        <span class="text">Đổi mật khẩu</span>
-                    </a>
-                {% else %}
+                <form action="#" class="form">
+                    <div class="input-box">
+                        <label>Mã học viên</label>
+                        <input type="text" value={{ thongtincanhan.mahv }} readonly >
+                    </div>
+                    <div class="input-box">
+                        <label>Họ tên</label>
+                        <input type="text" value={{ thongtincanhan.hoten }} readonly >
+                    </div>
+                    <div class="column">
+                        <div class="input-box">
+                            <label>Email</label>
+                            <input type="email" value={{ thongtincanhan.email }} readonly>
+                        </div>
+                        <div class="input-box">
+                            <label>Giới tính</label>
+                            <input type="text" value={{ thongtincanhan.gioitinh }} >
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="input-box">
+                            <label>Số điện thoại</label>
+                            <input type="text" value={{ thongtincanhan.sodienthoai }} >
+                            </div>
+                        <div class="input-box">
+                            <label>Ngày sinh</label>
+                            <input type="text" value={{ thongtincanhan.ngaysinh|date:"d/m/Y" }} >
+                        </div>
+                    </div>
+                    
+                    <div class="input-box address">
+                        <label>Địa chỉ</label>
+                        <input type="text" value={{ thongtincanhan.diachi }} >
+                    </div>
+                    <button>Lưu</button>
+                    {% else %}
                     <p>Không tìm thấy thông tin cá nhân.</p>
                 {% endif %}
-            </div>
+                </form>
+              </section>
         </div>
     </div>
 </main>

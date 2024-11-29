@@ -572,7 +572,7 @@ textarea, input {
 }
 .form button {
   height: 55px;
-  width: 100%;
+  width: 100px;
   color: #fff;
   font-size: 1rem;
   font-weight: 400;
