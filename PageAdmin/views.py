@@ -9,15 +9,20 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-# Create your views herede
-@login_required
-def admin(request, idtaikhoan):
-    request.session['idtaikhoan'] = idtaikhoan.strip()
-    username = request.session.get('user_username', None)
+
+
+
+def checklogin(idtaikhoan, username):
     taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
     if taikhoan is None or taikhoan.username != username:
         raise Http404("Không tìm thấy tài khoản hoặc bạn không có quyền truy cập.")
-    
+
+# Create your views herede
+def admin(request, idtaikhoan):
+    request.session['idtaikhoan'] = idtaikhoan.strip()
+    username = request.session.get('user_username', None)
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
     
     if idtaikhoan:
         return render(request, 'pages/admin.html')
@@ -30,22 +35,17 @@ def lichhoc(request, idtaikhoan):
     taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
     
     username = request.session.get('user_username', None)
-    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
-    if taikhoan is None or taikhoan.username != username:
-        return HttpResponse("Bạn không có quyền truy cập vào tài khoản này.", status=403)
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
     
     if taikhoan.quyen == 'GV':
         malop_list = LopHoc.objects.filter(magv=idtaikhoan).values_list('malop', flat=True)
         lich_hoc = LichHoc.objects.filter(malop__in=malop_list).select_related('malop')
-        if not lich_hoc.exists():
-            return Response({"message": "Không có lịch học cho học viên này."}, status=404)
+        
     
     elif taikhoan.quyen == 'HV':
         malop_list = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
         lich_hoc = LichHoc.objects.filter(malop__in=malop_list).select_related('malop')
-        
-        if not lich_hoc.exists():
-            return Response({"message": "Không có lịch học cho học viên này."}, status=404)
     
     data = [
         {
@@ -64,58 +64,75 @@ def lichhoc(request, idtaikhoan):
 
 
 
-def giaovien(request):
-    return render(request,'pages/admin-giaovien.html')
+def lophoc(request, idtaikhoan):
+    request.session['idtaikhoan'] = idtaikhoan.strip()
+    username = request.session.get('user_username', None)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    
+    if taikhoan.quyen == 'GV':
+        lophoc = LopHoc.objects.filter(magv=idtaikhoan).values_list(flat=True)
+    if taikhoan.quyen == 'HV':
+        so_hoadon = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
+        lophoc = LopHoc.objects.filter(malop__in=so_hoadon)
+        
+    data = [
+        {
+            "malop": item.malop,
+            "tenlop" : item.tenlop,
+            "diadiem" : item.diadiemhoc,
+            "hocphi" : f"{item.hocphi} VNĐ",
+            "tinhtrang" : item.tinhtrang
+        }
+        for item in lophoc
+    ]
+        
+    return render(request,'pages/admin-lophoc.html', {'dslop': data})
 
 
-def hocvien(request):
-    return render(request,'pages/admin-hocvien.html')
+def thanhtoan(request, idtaikhoan):
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    
+    if taikhoan.quyen == 'GV':
+        return render(request,'pages/admin-thanhtoan.html')
+    if taikhoan.quyen == 'HV':
+        hoadon = HoaDon.objects.filter(mahv=idtaikhoan).select_related('malop')
+        
+    data = [
+        {
+            "sohd" : hd.sohd,
+            "ngaylap" : hd.ngaylap.strftime("%d-%m-%Y"),
+            "lop": hd.malop.tenlop if hd.malop else "",
+            "tongtien": hd.tongtien,
+            "trangthai" : hd.trangthai
+        }
+        for hd in hoadon
+    ]
+      
+    return render(request,'pages/admin-thanhtoan.html', {'dshd':data})
 
-def thanhtoan(request):
-    return render(request,'pages/admin-thanhtoan.html')
+
+def thongtincanhan(request, idtaikhoan):
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    
+    if taikhoan.quyen == 'GV':
+        return render(request,'pages/admin-thanhtoan.html')
+    thongtincanhan = None
+    if taikhoan.quyen == 'HV':
+        thongtincanhan = HocVien.objects.filter(mahv=idtaikhoan).first()
+
+    if not thongtincanhan:
+        return render(request, '404.html', status=404)
+    return render(request,'pages/admin-hocvien.html', {'thongtincanhan' : thongtincanhan})
 
 
 def them_gv(request):
-    
-    if request.method == 'POST':
-        try:
-            with transaction.atomic():
-                    data = request.POST
-                    magv = data.get("magv")
-                    hoten = data.get("hoten")
-                    email = data.get("email")
-                    SDT = data.get("SDT")
-                    GioiTinh = data.get("GioiTinh")
-                    NgaySinh = data.get("NgaySinh")
-                    
-                    if magv and hoten and email and SDT and GioiTinh and NgaySinh:
-                        TaiKhoanNguoiDung.objects.create(
-                            idtaikhoan = magv,
-                            username = email,
-                            pass_word = "123456",
-                            quyen = "GV",
-                            trangthai = "Đang hoạt động"
-                        )
-                        
-                        GiaoVien.objects.create(
-                        magv=magv,
-                        hoten=hoten,
-                        email=email,
-                        SDT=SDT,
-                        GioiTinh=GioiTinh,
-                        NgaySinh=NgaySinh
-                        )
-                        messages.success(request, 'Thêm giáo viên thành công!')
-                        return HttpResponseRedirect(reverse('giaovien_admin')) 
-                    else:
-                        return render(request, 'pages/Them-Xoa-Sua/them-giaovien.html', {
-                        'error_message': 'Vui lòng điền đầy đủ thông tin!'
-                        })
-        except Exception as e:
-            return render(request, 'pages/Them-Xoa-Sua/them-giaovien.html', {
-                'error_message': f"Đã xảy ra lỗi: {str(e)}"
-            })
-    
     return render(request,'pages/Them-Xoa-Sua/them-giaovien.html')
 
 def them_hv(request):

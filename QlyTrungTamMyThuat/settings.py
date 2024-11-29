@@ -82,8 +82,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'QLyTTMyThuat',
-        'USER': 'du',
-        'PASSWORD': 'AVNS_22TguLdYTe37qrZw2hw',
+        'USER': 'avnadmin',
+        'PASSWORD': 'AVNS_W6S_6QQkkUnoEL9YRYh',
         'HOST': 'postgresql-server-vi-tranhoangvi21072003-f2c0.b.aivencloud.com',
         'PORT': '24035',
     }

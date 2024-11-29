@@ -27,6 +27,12 @@
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
+			<li id="hocvien">
+				<a href="{% url 'thongtincanhan' request.session.user_idtaikhoan%}">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Thông tin cá nhân</span>
+				</a>
+			</li>
 			<li id="khoahoc_admin">
 				<a href="{% url 'lichhoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-calendar-check' ></i>
@@ -34,19 +40,13 @@
 				</a>
 			</li>
 			<li id="giaovien">
-				<a href="{% url 'giaovien_admin' %}">
+				<a href="{% url 'lophoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-graduation'></i>
 					<span class="text">Danh sách lớp học</span>
 				</a>
 			</li>
-			<li id="hocvien">
-				<a href="{% url 'hocvien' %}">
-					<i class='bx bxs-group' ></i>
-					<span class="text">Học viên</span>
-				</a>
-			</li>
 			<li id="thanhtoan">
-				<a href="{% url 'thanhtoan' %}">
+				<a href="{% url 'thanhtoan' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-dollar-circle' ></i>
 					<span class="text">Lịch sử giao dịch</span>
 				</a>
