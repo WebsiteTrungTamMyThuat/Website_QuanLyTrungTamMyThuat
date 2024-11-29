@@ -272,36 +272,43 @@ def DSTheoKH(request , ml):
 
 from datetime import datetime
 def filter_khoahoc(request):
-   
-    dskh = KhoaHoc.objects.all()
-    ds_lop = LopHoc.objects.all()
+    danh_sach_khoa_hoc = KhoaHoc.objects.all()
+    danh_sach_lop = LopHoc.objects.all()
 
+    # Lấy thông tin lọc từ request
     selected_date = request.GET.get('ngaybatdau', None)
+    sort_option = request.GET.get('sortOptions', None)
+
     error = None
-    has_courses = False
+    has_courses = True
 
-
+    # Lọc theo ngày bắt đầu
     if selected_date:
         try:
             ngaybatdau = datetime.strptime(selected_date, "%Y-%m-%d").date()
-            ds_lop = ds_lop.filter(ngaybatdau=ngaybatdau)
-           
+            danh_sach_lop = danh_sach_lop.filter(ngaybatdau=ngaybatdau)
         except ValueError:
-            error=   "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD.",
-            
-    has_courses = ds_lop.exists()
+            error = "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD."
+
+    if not danh_sach_lop.exists():  # Nếu danh sách lớp rỗng
+        has_courses = False
+    # Sắp xếp theo tùy chọn
+    if sort_option == 'priceLowToHigh':
+        danh_sach_lop = danh_sach_lop.order_by('hocphi')  # Học phí tăng dần
+    elif sort_option == 'priceHighToLow':
+        danh_sach_lop = danh_sach_lop.order_by('-hocphi')  # Học phí giảm dần
+
     # Truyền dữ liệu vào template
     return render(request, 'pages/khoahoc.html', {
-        'ds_lop': ds_lop,
-        'dm_kh': dskh,
+        'ds_lop': danh_sach_lop,
+        'dm_kh': danh_sach_khoa_hoc,
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
         'selected_date': selected_date,
-         'error': error,
+        'sort_option': sort_option,
+        'error': error,
         'has_courses': has_courses,
-
     })
-
   
 
 ### Chi tiet lop hoc

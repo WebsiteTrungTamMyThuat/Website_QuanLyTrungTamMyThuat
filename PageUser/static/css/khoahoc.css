@@ -169,30 +169,39 @@ h3 {
   gap: 10px; /* Khoảng cách giữa ô chọn ngày và nút lọc */
 }
 
+
+.date-input,
+#sorting {
+    width: 100%; 
+    padding: 8px 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    background-color: #f8f9fa; 
+    font-size: 14px; 
+    box-shadow: none; 
+}
+
+
 .date-input {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  width: 180px; /* Điều chỉnh chiều rộng của input */
+    height: 38px; 
 }
 
-.filter-btn {
-  padding: 8px 16px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+#sorting {
+    height: 38px; 
 }
 
-.filter-btn:hover {
-  background-color: #0056b3;
+
+
+.date-input:hover,
+#sorting:hover {
+    border-color: #007bff; 
+    background-color: #e9ecef; 
 }
 
-input[type="date"]:focus {
-  outline: none;
-  border-color: #007bff;
+
+.date-input:focus,
+#sorting:focus {
+    outline: none;
+    border-color: #007bff; 
+    background-color: #ffffff; 
 }
