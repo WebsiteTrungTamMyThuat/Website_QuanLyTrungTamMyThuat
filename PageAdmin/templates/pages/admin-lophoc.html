@@ -42,30 +42,45 @@
                         <th>Tên lớp</th>
                         <th>Địa điểm học</th>
                         <th>Học phí</th>
-                        <th>Trạng thái</th>
+                        <th></th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in dslop %}
-                    <tr styles="">
-                        <td>{{item.malop}}</td>
-                        <td>{{item.tenlop}}</td>
-                        <td>{{item.diadiem}}</td>
-                        <td>{{item.hocphi}}</td>
-                        <td>{{item.tinhtrang}}</td>
-                        <td>
-                        {% if item.status_btn == item.tinhtrang%}
+                        {%if taikhoan.quyen == "HV"%}
+                        <tr styles="">
+                            <td>{{item.malop}}</td>
+                            <td>{{item.tenlop}}</td>
+                            <td>{{item.diadiem}}</td>
+                            <td>{{item.hocphi}}</td>
+                            <td>{{item.tinhtrang}}</td>
+                            <td>
+                            {% if item.status_btn == item.tinhtrang%}
+                                <div class="form-button">
+                                    <a href="{%url 'danhgia' request.session.user_idtaikhoan item.malop%}" class="btn-edit">
+                                        <i class='bx bx-edit-alt' ></i>
+                                        <span class="text">Đánh giá</span>
+                                    </a> 
+                                </div>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% elif  taikhoan.quyen == "GV"%}
+                        <tr styles="">
+                            <td>{{item.malop}}</td>
+                            <td>{{item.tenlop}}</td>
+                            <td>{{item.diadiem}}</td>
+                            <td>{{item.tinhtrang}}</td>
+                            <td>
                             <div class="form-button">
-                                <a href="#" class="btn-edit">
-                                    <i class='bx bx-edit-alt' ></i>
-                                    <span class="text">Đánh giá</span>
+                                <a href="{%url 'danhsachhocvien' request.session.user_idtaikhoan item.malop %}" class="btn-edit">
+                                    <span class="text" >Danh sách học viên</span>
                                 </a> 
                             </div>
-                        {% endif %}
-                        </td>
-                        
-                    </tr>
+                            </td>
+                        </tr>
+                        {%endif%}
                     {% endfor %}
                 </tbody>
             </table>

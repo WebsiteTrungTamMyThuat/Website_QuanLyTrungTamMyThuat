@@ -1,0 +1,58 @@
+{% extends "layout/layout.html" %} {% block title %} Thanh toán {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel=stylesheet href="{% static "css/admin-thanhtoan.css" %}">
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Danh sách học viên</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="{% url 'lophoc' request.session.user_idtaikhoan %}">Danh sách lớp học</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Danh sách học viên</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="table-data">
+        <div class="order">
+            <div class="head">
+                <h3>Danh sách hóa đơn</h3>
+                <form action="#" method="GET">
+                    <div class="form-input">
+                        <input name="seachsb" type="search" placeholder="Search...">
+                        <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                    </div>
+                </form>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã học viên</th>
+                        <th>Họ tên</th>
+                        <th>Giới tính</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hv in dshv %}
+                    <tr>
+                        <td>{{hv.mahv}}</td>
+                        <td>{{hv.hoten}}</td>
+                        <td>{{hv.GioiTinh}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

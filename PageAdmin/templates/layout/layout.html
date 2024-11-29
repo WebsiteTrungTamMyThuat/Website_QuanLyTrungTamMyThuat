@@ -49,24 +49,28 @@
 					<span class="text">Thông tin cá nhân</span>
 				</a>
 			</li>
+			
 			<li id="khoahoc_admin">
 				<a href="{% url 'lichhoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-calendar-check' ></i>
-					<span class="text">Lịch học</span>
+					<span class="text">{% if  request.session.quyen == "HV" %} Lịch học {% else %} Lịch dạy  {% endif %}</span>
 				</a>
 			</li>
+			
 			<li id="giaovien">
 				<a href="{% url 'lophoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-graduation'></i>
 					<span class="text">Danh sách lớp học</span>
 				</a>
 			</li>
+			{% if request.session.quyen != "GV"%}
 			<li id="thanhtoan">
 				<a href="{% url 'thanhtoan' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-dollar-circle' ></i>
 					<span class="text">Lịch sử giao dịch</span>
 				</a>
 			</li>
+			{% endif %}
 		</ul>
 		<ul class="side-menu">
 			<li>
@@ -88,8 +92,8 @@
 			<i class='bx bx-menu' ></i>
 			<form action="#">
 				<div class="form-input">
-					<input type="search" placeholder="Search...">
-					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+					<!--<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>-->
 				</div>
 			</form>
 			<a href="#" class="notification">

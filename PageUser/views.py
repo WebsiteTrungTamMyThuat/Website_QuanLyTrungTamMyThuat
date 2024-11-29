@@ -105,7 +105,7 @@ def userlogin(request):
                     
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
-
+                    request.session['quyen'] = nguoidung.quyen
                     
                     if nguoidung.quyen == 'GV': 
                         return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))

@@ -139,3 +139,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     )
 }
+
+import os
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'PageUser/static'),  # Đảm bảo đường dẫn này đúng
+]
