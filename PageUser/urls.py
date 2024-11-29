@@ -13,13 +13,14 @@ urlpatterns = [
     path('chinhsachdichvu/',views.chinhsachdichvu,name='chinhsachdichvu'),
     path('khoahoc/',views.DSKhoaHoc,name='khoahoc'),
     path('khoahoc/DSL/<str:ml>/', views.DSTheoKH, name='DSTheoKH'),
-
     path('khoahoc/ttkhoahoc/<str:mlop>',views.ChiTietLop,name='ttkhoahoc'),
+
+    path("filter-khoahoc", views.filter_khoahoc, name="filter_khoahoc"),
+
     path('logout', views.logout_view, name='logout'),
     path('giaovien/', views.giaovien, name='giaovien'),
     path('chinhanh/',views.chinhanh,name='chinhanh'),
     path('giaovien/chitietgiaovien/', views.chitietgiaovien, name='chitietgiaovien'),
-    
     path('tthocvien/',views.thongtinhv,name='tthocvien'),
     path('lichsukh/',views.lichsukh,name='lichsukh'),
 

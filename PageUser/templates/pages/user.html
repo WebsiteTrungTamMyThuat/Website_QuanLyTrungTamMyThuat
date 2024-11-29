@@ -1,3 +1,4 @@
+
 {% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
 {%block content %} 
 {% load static%}
@@ -55,36 +56,16 @@
     <section class="section course" aria-label="course">
       <p class="course-title">25 khóa học từ căn bản đến nâng cao, đa dạng chất liệu, chủ đề, đáp ứng mọi sở thích, định hướng của bạn</p>
         <div class="container">
+          {% for tl in dm_kh|slice:":5" %}
           <div class="card">
               <div class="img-bx" style="--img:url({% static "img/tranh-phong-canh.jpg" %})"></div>
+              
               <div class="content">
-                  <h3>Phong cảnh <br><span>Tìm hiểu thêm</span></h3>
+                  <h3>{{ tl.tenkh }}<br><span><a href="{% url 'khoahoc'  %}">Tìm hiểu thêm</a></span></h3>
               </div>
+             
           </div>
-          <div class="card">
-              <div class="img-bx" style="--img:url({% static "img/tranh-ky-hoa.jpg" %})"></div>
-              <div class="content">
-                  <h3>Ký họa<br><span>Tìm hiểu thêm</span></h3>   
-              </div>
-          </div>
-          <div class="card">
-            <div class="img-bx" style="--img:url({% static "img/tranh-chan-dung.jpeg" %})"></div>
-            <div class="content">
-                <h3>Chân dung <br><span>Tìm hiểu thêm</span></h3>
-            </div>
-        </div>
-        <div class="card">
-          <div class="img-bx" style="--img:url({% static "img/tranh-mau-nuoc.jpg" %})"></div>
-          <div class="content">
-              <h3>Màu nước<br><span>Tìm hiểu thêm</span></h3>
-          </div>
-        </div>
-        <div class="card">
-          <div class="img-bx" style="--img:url({% static "img/tranh-son-dau.jpg" %})"></div>
-          <div class="content">
-              <h3>Sơn dầu<br><span>Tìm hiểu thêm</span></h3>
-          </div>
-        </div>
+          {% endfor %}
       </div>
     </section>
 

@@ -15,24 +15,67 @@
             </div>
         </div>
         <div class="list-button">
-            <h3>Trình độ: </h3>
+            <h3>Độ tuổi: </h3>
             <div class="level-button">
-                <button class="btn btn-all">Tất cả</button>
-                <button class="btn btn-co-ban">Cơ bản</button>
-                <button class="btn btn-nang-cao">Nâng cao</button>
+                <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
+                
+                {% for tl in dm_kh %}
+                <button class="btn btn-co-ban"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.dotuoi }}</a></button>
+                {% endfor %}
+     
             </div>
         </div>
+
+        <div class="list-button">
+            <h3>Ngày bắt đầu:</h3>
+            <form method="get" action="{% url 'filter_khoahoc' %}">
+                <div>
+                <input 
+                    type="date" 
+                    name="ngaybatdau" 
+                    value="{{ selected_date|default:'' }}" 
+                    class="date-input" 
+                    placeholder="Chọn ngày bắt đầu" 
+                    onchange="this.form.submit()"
+                />
+               
+            </div>
+            </form>
+
+           
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% else %}
+                {% if not has_courses %}
+                <div><h2>Không có lớp nào phù hợp </h2></div>
+                    
+                {% endif %}
+            {% endif %}
+        </div>
+
         <div class="grid-container">
             {% for lop in ds_lop %}
                 <a class="card" href="{% url 'ttkhoahoc' lop.malop %}">
                     <div>
-                        <img src="{% static "img/tranh-chan-dung.jpeg" %}" class="card-img-top" alt="...">
+                        <img src="{% static 'img/'|add:lop.urlhinh %}" class="card-img-top" alt="{{ lop.tenlop }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ lop.tenlop }}</h5>
-                            <p class="card-text">{{ lop.makh.mota }}</p>
+                            <p class="card-text">
+                                {% for ct in ctkh %}
+                                    {% if ct.makh.makh == lop.makh.makh %}
+                                        {{ ct.manoidung.tieude }}
+                                    {% endif %}
+                                {% empty %}
+                                    No description available
+                                {% endfor %}
+                            </p>
+                            
+                            <p >Ngày bắt đầu: {{ lop.ngaybatdau|date:"d F Y" }}</p>
+                           
                         </div>
                         <div class="price">
-                            <h3>{{ lop.hocphi|floatformat:0 }} VNĐ</h3>
+                            {% load humanize %} 
+                            <h3>{{ lop.hocphi|floatformat:0|intcomma }} VNĐ</h3>
                             <form action="{% url 'ttkhoahoc' lop.malop  %}" method="get">
                                 <button type="submit" class="btn btn-submit">Đăng ký</button>
                             </form>

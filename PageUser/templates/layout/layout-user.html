@@ -55,19 +55,19 @@
         </div>
 
         <div id="loginSuccessNotification" class="notification deactive">
-            <span class="notification-icon">&#10003;</span> 
+            <span class="notification-icon">&#10003;</span>
             <span class="notification-message">
-                           {% if messages %}
-                <div class="error-messages">
-                    {% for message in messages %}
-                        <p class="error-text">{{ message }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                {% if messages %}
+                    <div class="message-content">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </span>
             <span class="close-btn" onclick="closeNotification()">×</span>
         </div>
-
+        
         <nav class="navbar" data-navbar>
             <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
                 <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
@@ -91,7 +91,7 @@
                 <li class="navbar-item">
                     <a href="{% url "khoahoc" %}" class="navbar-link">Lớp học</a>
                     <ul class="submenu">
-                        {% for tl in dm_kh %}
+                        {% for tl in dm_kh|slice:":5" %}
                         <li><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.tenkh }}</a></li>
                         {% endfor %}
                     </ul>
@@ -241,21 +241,32 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Kiểm tra nếu có thông báo đăng nhập thành công
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    // Hiển thị thông báo thành công
-                    document.getElementById('loginSuccessNotification').classList.remove('deactive');
-                    
-                    // Ẩn thông báo sau 3 giây
-                    setTimeout(function () {
-                        document.getElementById('loginSuccessNotification').classList.add('deactive');
-                    }, 3000);  // 3 giây
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    });
+    // Kiểm tra nếu có thông báo đăng nhập thành công
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                // Thêm class success cho thông báo thành công
+                document.getElementById('loginSuccessNotification').classList.remove('deactive');
+                document.getElementById('loginSuccessNotification').classList.add('success'); // Thêm class success
+
+                // Ẩn thông báo sau 3 giây
+                setTimeout(function () {
+                    document.getElementById('loginSuccessNotification').classList.add('deactive');
+                }, 3000);  // 3 giây
+
+            {% elif message.tags == 'error' %}
+                // Thêm class error cho thông báo lỗi
+                document.getElementById('loginSuccessNotification').classList.remove('deactive');
+                document.getElementById('loginSuccessNotification').classList.add('error'); // Thêm class error
+
+                // Ẩn thông báo sau 3 giây
+                setTimeout(function () {
+                    document.getElementById('loginSuccessNotification').classList.add('deactive');
+                }, 3000);  // 3 giây
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+});
 </script>
 
 <!--
@@ -271,11 +282,6 @@
 </script>
 
 
-<script>
-    function getCSRFToken() {
-        return document.querySelector('[name=csrfmiddlewaretoken]').value;
-    }
-</script>
 
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

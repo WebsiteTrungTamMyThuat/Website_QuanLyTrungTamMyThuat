@@ -23,15 +23,25 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 
+from datetime import date
+
+from decimal import Decimal
 # Create your views herede
 
 def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
 
-    # Truyền context bao gồm username nếu có
-    context = {'username': username}
+    # Prepare the context dictionary
+    context = {
+        'username': username,
+        'dm_kh': KhoaHoc.objects.all()  # Add the list of courses to the context
+    }
+
+    # Render the template with the combined context
     return render(request, 'pages/user.html', context)
+
+
 
 def dangky(request):
     return render(request,'layout/dangky.html')
@@ -72,7 +82,7 @@ def chitietgiaovien(request):
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
 
-def giohang(request):
+#def giohang(request):
     gio_hang = GioHang.objects.filter(user=request.user)
 
     return render(request, 'gio-hang.html', {
@@ -81,32 +91,42 @@ def giohang(request):
 
 
 #### Đăng nhập
-
+from django.urls import reverse
 
 def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        pass_word = request.POST.get("pass_word")
+        pass_word = request.POST.get('pass_word')
 
-   #     request.session.flush()
+     
+        # request.session.flush()
 
         if username and pass_word:
-            try:                
+            try:
+               
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
 
+
+
+               
                 if nguoidung.pass_word == pass_word:
                     
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
+
                     
-                    messages.success(request, f"Chào mừng {nguoidung.username}!")
-                    return redirect('user')
-                  
+                    if nguoidung.quyen == 'GV': 
+                        return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
+                    elif nguoidung.quyen == 'HV':
+                        messages.success(request, f"Chào mừng {nguoidung.username}!") 
+                        return redirect('user')
+                    else:
+                        messages.error(request, 'Thông tin đăng nhập không chính xác')
+                        return redirect('login')
                 else:
                     messages.error(request, 'Mật khẩu không chính xác!')
             except TaiKhoanNguoiDung.DoesNotExist:
                 messages.error(request, 'Người dùng không tồn tại!')
-                
 
     return render(request, 'layout/dangnhap.html')
 
@@ -164,7 +184,7 @@ def register(request):
                 idtaikhoan=mahv,
                 username=email,
                 pass_word=password,
-                quyen='Học Viên',
+                quyen='HV',
                 trangthai='Hoạt Động'
             )
             
@@ -245,8 +265,44 @@ def DSTheoKH(request , ml):
     data = {
         'ds_lop': Lop,
         'dm_kh': dskh, 
+        'ctkh': ChiTietKhoaHoc.objects.all(),
+        'ndkh': NoiDungKhoaHoc.objects.all(),
     }
     return render(request, 'pages/khoahoc.html', data)
+
+from datetime import datetime
+def filter_khoahoc(request):
+   
+    dskh = KhoaHoc.objects.all()
+    ds_lop = LopHoc.objects.all()
+
+    selected_date = request.GET.get('ngaybatdau', None)
+    error = None
+    has_courses = False
+
+
+    if selected_date:
+        try:
+            ngaybatdau = datetime.strptime(selected_date, "%Y-%m-%d").date()
+            ds_lop = ds_lop.filter(ngaybatdau=ngaybatdau)
+           
+        except ValueError:
+            error=   "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD.",
+            
+    has_courses = ds_lop.exists()
+    # Truyền dữ liệu vào template
+    return render(request, 'pages/khoahoc.html', {
+        'ds_lop': ds_lop,
+        'dm_kh': dskh,
+        'ctkh': ChiTietKhoaHoc.objects.all(),
+        'ndkh': NoiDungKhoaHoc.objects.all(),
+        'selected_date': selected_date,
+         'error': error,
+        'has_courses': has_courses,
+
+    })
+
+  
 
 ### Chi tiet lop hoc
 
@@ -258,10 +314,21 @@ def ChiTietLop(request,mlop):
     khoa_hoc = lop.makh 
     giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
+    lich_hoc = LichHoc.objects.filter(malop=mlop)
+    lich_hoc_list = [
+        {
+            'ngayhoc': lh.ngayhoc.strftime("%d/%m/%Y"),
+            'giohoc': lh.giohoc.strftime("%H:%M"),
+            'sogiohoc': lh.sogiohoc
+        }
+        for lh in lich_hoc
+    ]
+
     data = {
         'single_lop': lop,
         'khoa_hoc': khoa_hoc,  
         'giaovien': giaovien,
+        'lichhoc': lich_hoc_list,
     }
 
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)
@@ -311,10 +378,28 @@ def DSKhoaHoc(request):
     dskh = {
         'dm_kh' : KhoaHoc.objects.all(),
         'ds_lop': LopHoc.objects.all(),
+        'ctkh': ChiTietKhoaHoc.objects.all(),
+        'ndkh': NoiDungKhoaHoc.objects.all(),
     }
     return render(request,'pages/khoahoc.html',dskh)
 
+### xoa gio hang
 
+def xoa_hoan_tat(request, malop):
+ 
+    gio_hang = request.session.get('gio_hang', {})
+
+   
+    if malop in gio_hang:
+       
+        del gio_hang[malop]
+        request.session['gio_hang'] = gio_hang  
+
+        messages.success(request, "Lớp học đã được xóa khỏi giỏ hàng.")
+    else:
+        messages.error(request, "Lớp học không tồn tại trong giỏ hàng.")
+
+    return redirect('giohang') 
 ### Load Gio Hang 
 def LoadGioHang(request):
     if not request.session.get('user_username'):
@@ -333,129 +418,175 @@ def LoadGioHang(request):
     gio_hang = request.session.get('gio_hang', {})
     total_price = 0
 
+    gio_hang_display = [
+        {
+            'malop': malop,
+            'tenlop': item['tenlop'],
+            'hocphi': float(item['hocphi']),
+            'so_luong': item['so_luong'],
+            'mahv': item.get('mahv', ''),
+            'lichhoc': item['lichhoc']  # Lịch học đã chọn
+        }
+        for malop, item in gio_hang.items()
+    ]
+
     for item in gio_hang.values():
-        total_price += float(item['hocphi']) 
+        total_price += float(item['hocphi'])
 
     return render(request, 'pages/gio-hang.html', {
         'hoc_vien': hoc_vien,
         'gio_hang': gio_hang,
-        'total_price': total_price
+        'total_price': total_price,
+        'gio_hang_display': gio_hang_display
     })
-
 
 ### them gio hang
 def them_vao_gio_hang(request, malop):
+    malop = malop.strip()
 
     try:
         lop_hoc = LopHoc.objects.get(malop=malop)
     except LopHoc.DoesNotExist:
         messages.error(request, "Lớp học không tồn tại.")
-        return redirect('khoahoc') 
+        return redirect('khoahoc')
 
-    gio_hang = request.session.get('gio_hang', {})
-
-
-    if malop in gio_hang:
-      
-        gio_hang[malop]['so_luong'] += 1
-    else:
-      
-        gio_hang[malop] = {
-            'tenlop': lop_hoc.tenlop,
-            'hocphi': str(lop_hoc.hocphi),  
-            'so_luong': 1,
-            'malop': malop  
-        }
-
-  
-    request.session['gio_hang'] = gio_hang
-
-    messages.success(request, f"Lớp học {lop_hoc.tenlop} đã được thêm vào giỏ hàng!")
-    return redirect('giohang') 
-#def gio_hang(request):
-    gio_hang = request.session.get('gio_hang', {})
-    total_price = 0
-
-    # Tính tổng giá trị của giỏ hàng
-    for item in gio_hang.values():
-        total_price += float(item['hocphi']) 
-
-    return render(request, 'pages/gio-hang.html', {
-        'gio_hang': gio_hang,
-        'total_price': total_price
-    })  
-
-### xoa gio hang
-def xoa_hoan_tat(request, malop):
- 
-    gio_hang = request.session.get('gio_hang', {})
-
-   
-    if malop in gio_hang:
-       
-        del gio_hang[malop]
-        request.session['gio_hang'] = gio_hang  
-
-        messages.success(request, "Lớp học đã được xóa khỏi giỏ hàng.")
-    else:
-        messages.error(request, "Lớp học không tồn tại trong giỏ hàng.")
-
-    return redirect('giohang') 
-####
-from django.utils.timezone import now
-
-from decimal import Decimal
-def thanh_toan(request):
-    # Kiểm tra nếu người dùng chưa đăng nhập
     if not request.session.get('user_username'):
-        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
-        return redirect('dangnhap')  # Điều hướng đến trang đăng nhập
+        messages.error(request, "Vui lòng đăng nhập để thêm lớp vào giỏ hàng.")
+        return redirect('dangnhap')
 
-    # Lấy giỏ hàng từ session
-    gio_hang = request.session.get('gio_hang', {})
-
-    # Kiểm tra giỏ hàng có trống không
-    if not gio_hang:
-        messages.error(request, "Giỏ hàng của bạn hiện đang trống!")
-        return redirect('giohang')
-
-    # Lấy thông tin người dùng từ session
     username = request.session['user_username']
     tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
     hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
 
-    # Tính tổng giá trị của giỏ hàng
-    try:
-        total_price = Decimal(sum(Decimal(item['hocphi']) * item['so_luong'] for item in gio_hang.values()))
-    except Exception as e:
-        messages.error(request, f"Lỗi tính tổng giá trị: {e}")
+    mahv = hoc_vien.mahv.strip()
+
+    if request.method == "POST":
+        selected_lich = request.POST.get('selected_lichhoc', None)
+        if not selected_lich:
+            messages.error(request, "Vui lòng chọn ít nhất một lịch học trước khi đăng ký.")
+            return redirect('ttkhoahoc', mlop=malop)
+
+       
+        ngayhoc, giohoc = selected_lich.split('|')
+
+        
+        gio_hang = request.session.get('gio_hang', {})
+
+       
+        gio_hang[malop] = {
+            'tenlop': lop_hoc.tenlop,
+            'hocphi': str(lop_hoc.hocphi),
+            'so_luong': 1,
+            'malop': malop,
+            'mahv': mahv,
+            'lichhoc': {  # Lưu lịch học đã chọn
+                'ngayhoc': ngayhoc,
+                'giohoc': giohoc
+            }
+        }
+
+        # Lưu giỏ hàng vào session
+        request.session['gio_hang'] = gio_hang
+
+        messages.success(request, f"Lớp học {lop_hoc.tenlop} đã được thêm vào giỏ hàng!")
         return redirect('giohang')
 
-    # Tạo hóa đơn
+    return redirect('ttkhoahoc', mlop=malop)
+
+####
+
+def is_conflict_schedule(gio_hang):
+    """
+    Kiểm tra xem có lịch học trùng trong giỏ hàng không.
+    Trả về True nếu có trùng lặp, ngược lại trả về False.
+    """
+    schedule_set = set()
+
+    for item in gio_hang.values():
+        lichhoc = item.get('lichhoc', {})  
+        ngayhoc = lichhoc.get('ngayhoc')
+        giohoc = lichhoc.get('giohoc')
+
+        if not ngayhoc or not giohoc:
+            continue  
+
+       
+        ngay_gio = (ngayhoc, giohoc)
+
+       
+        if ngay_gio in schedule_set:
+           
+            return True
+
+        schedule_set.add(ngay_gio)
+
+    return False
+###
+def thanh_toan(request):
+   
+    if not request.session.get('user_username'):
+        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
+        return redirect('dangnhap')
+
+    gio_hang = request.session.get('gio_hang', {})
+
+   
+    if is_conflict_schedule(gio_hang):
+        messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
+        return redirect('giohang')
+
+
+    if not gio_hang:
+        messages.error(request, "Giỏ hàng không có lớp học nào.")
+        return redirect('giohang')
+
+    username = request.session['user_username']
+    hoc_vien = get_object_or_404(HocVien, email=username)
+
+    total_price = Decimal(0)
+
+    try:
+        # Tính tổng học phí cho giỏ hàng
+        for malop, item in gio_hang.items():
+            malop_cleaned = malop.strip()
+            lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
+            total_price += Decimal(item['hocphi']) * item['so_luong']  # Tính tổng tiền
+
+    except Exception as e:
+        messages.error(request, f"Lỗi khi lấy lớp học từ giỏ hàng: {e}")
+        return redirect('giohang')
+
+  
     if request.method == 'POST':
         try:
-            with transaction.atomic():
-                # Tạo một hóa đơn mới
-                hoa_don = HoaDon.objects.create(
-                    ngaylap=now().date(),  # Ngày lập hóa đơn
-                    tongtien=total_price,
-                    trangthai='Chưa thanh toán',
-                    mahv=hoc_vien  # Liên kết học viên
-                )
-
-                # Duyệt qua các lớp học trong giỏ hàng
+            with transaction.atomic():  
+               
                 for malop, item in gio_hang.items():
-                    lop_hoc = get_object_or_404(LopHoc, malop=malop)
-                    # Gắn lớp học vào hóa đơn
-                    hoa_don.malop = lop_hoc
-                    hoa_don.save()
+                    malop_cleaned = malop.strip()
+                    lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
+             
+                    total_price_per_class = Decimal(item['hocphi']) * item['so_luong']
 
-                # Xóa giỏ hàng khỏi session
+                
+                    hoa_don = HoaDon.objects.create(
+                        mahv=hoc_vien,  
+                        malop=lop_hoc,  
+                        ngaylap=date.today(), 
+                        tongtien=total_price_per_class, 
+                        trangthai='Chưa thanh toán'  
+                    )
+
+                
                 request.session['gio_hang'] = {}
 
-                messages.success(request, "Thanh toán thành công!")
-                return redirect('giohang')
+              
+                messages.success(request, "Thanh toán thành công! Bạn đã đăng ký các lớp học.")
+                return redirect('user')  
 
         except Exception as e:
             messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
             return redirect('giohang')
+
+    else:
+        messages.error(request, "Vui lòng gửi yêu cầu thanh toán.")
+        return redirect('giohang')

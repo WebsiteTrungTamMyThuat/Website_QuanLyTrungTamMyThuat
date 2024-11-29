@@ -18,6 +18,7 @@ class KhoaHoc(models.Model):
     tenkh = models.CharField(max_length=255)
     mota = models.TextField()
     hinhthuc = models.CharField(max_length=50)
+    dotuoi = models.IntegerField()
     class Meta:
         db_table = 'khoahoc'
     def __str__(self):
@@ -35,7 +36,7 @@ class ChiTietKhoaHoc(models.Model):
     stt = models.IntegerField()
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     manoidung = models.ForeignKey(NoiDungKhoaHoc, on_delete=models.CASCADE, db_column='manoidung')
-    id = models.AutoField(primary_key=True, db_column='id')
+    id = models.IntegerField(primary_key=True, db_column='id')
     class Meta:
         db_table = 'chitietkhoahoc'
     
@@ -50,10 +51,13 @@ class LopHoc(models.Model):
     hocphi = models.DecimalField(max_digits=10, decimal_places=2)
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     magv = models.CharField(max_length=10, db_column='magv')
+    urlhinh = models.CharField(max_length=255)
     class Meta:
         db_table = 'lophoc'
     def __str__(self):
         return self.malop + " - " + self.tenlop
+    def clean(self):
+        self.malop = self.malop.strip()
         
 class HocVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
@@ -74,10 +78,15 @@ class HoaDon(models.Model):
     ngaylap = models.DateField()
     tongtien = models.DecimalField(max_digits=10, decimal_places=2)
     trangthai = models.CharField(max_length=20)
-    malop = models.ForeignKey(LopHoc, on_delete=models.CASCADE,db_column='malop')
-    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE, db_column='mahv')
+    malop = models.ForeignKey('LopHoc', on_delete=models.CASCADE,db_column='malop')
+    mahv = models.ForeignKey('HocVien', on_delete=models.CASCADE, db_column='mahv')
     class Meta:
         db_table = 'hoadon'
+
+    def __str__(self):
+        return f"Hoa Don {self.sohd} - Học viên: {self.mahv.hoten} - Lớp: {self.malop.tenlop}"
+
+
         
 class GiaoVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]

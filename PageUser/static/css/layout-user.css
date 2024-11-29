@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald&family=Quicksand:wght@300..700&display=swap');
+
 :root {
 
     /**
@@ -114,7 +116,7 @@ ion-icon {
 }
 
 html {
-    font-family: var(--ff-poppins);
+    font-family: "Quicksand";
     font-size: 10px;
     scroll-behavior: smooth;
 }
@@ -1614,22 +1616,31 @@ h4, h2 {
 
 
 /* Notification styling */
+.notification.success {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+/* Error Notification (Red) */
+.notification.error {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
 .notification {
     position: fixed;
     top: 20px;
     left: 10%;
     transform: translateX(-50%);
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px; /* Reduced padding */
+    padding: 10px 20px;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 250px; /* Reduced width */
+    width: 250px;
     z-index: 9999;
-    font-size: 14px; /* Reduced font size */
+    font-size: 14px;
 }
 
 .notification-icon {
@@ -1645,4 +1656,3 @@ h4, h2 {
     font-size: 18px; /* Adjusted close button size */
     cursor: pointer;
 }
-
