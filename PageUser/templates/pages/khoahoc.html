@@ -41,8 +41,15 @@
                
             </div>
             </form>
+
+           
             {% if error %}
                 <p class="error-message">{{ error }}</p>
+            {% else %}
+                {% if not has_courses %}
+                <div><h2>Không có lớp nào phù hợp </h2></div>
+                    
+                {% endif %}
             {% endif %}
         </div>
 

@@ -91,7 +91,7 @@ def chinhanh(request):
 
 
 #### Đăng nhập
-
+from django.urls import reverse
 
 def userlogin(request):
     if request.method == 'POST':
@@ -116,7 +116,7 @@ def userlogin(request):
 
                     
                     if nguoidung.quyen == 'GV': 
-                        return redirect('giaovien_admin')
+                        return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
                     elif nguoidung.quyen == 'HV':
                         messages.success(request, f"Chào mừng {nguoidung.username}!") 
                         return redirect('user')
@@ -277,29 +277,29 @@ def filter_khoahoc(request):
     ds_lop = LopHoc.objects.all()
 
     selected_date = request.GET.get('ngaybatdau', None)
+    error = None
+    has_courses = False
 
 
     if selected_date:
         try:
             ngaybatdau = datetime.strptime(selected_date, "%Y-%m-%d").date()
             ds_lop = ds_lop.filter(ngaybatdau=ngaybatdau)
+           
         except ValueError:
-         
-            return render(request, 'pages/khoahoc.html', {
-                'error': "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD.",
-                'ds_lop': ds_lop,
-                'dm_kh': dskh,
-
-                'selected_date': selected_date
-            })
-
+            error=   "Định dạng ngày không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM-DD.",
+            
+    has_courses = ds_lop.exists()
     # Truyền dữ liệu vào template
     return render(request, 'pages/khoahoc.html', {
         'ds_lop': ds_lop,
         'dm_kh': dskh,
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
-        'selected_date': selected_date
+        'selected_date': selected_date,
+         'error': error,
+        'has_courses': has_courses,
+
     })
 
   
