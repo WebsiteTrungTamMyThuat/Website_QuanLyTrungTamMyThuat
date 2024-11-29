@@ -73,6 +73,9 @@ class HocVien(models.Model):
         db_table = 'hocvien'
     def __str__(self):
         return self.hoten
+    def save(self, *args, **kwargs):
+        print("Đã gọi save()")
+        super().save(*args, **kwargs)
     
 class HoaDon(models.Model):
     sohd = models.AutoField(primary_key=True)

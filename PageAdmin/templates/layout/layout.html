@@ -20,6 +20,22 @@
 			<i class='bx bxs-palette'></i>
 			<span class="text">Mỹ thuật</span>
 		</a>
+
+		<div id="loginSuccessNotification" class="notification1 deactive">
+            <span class="notification-icon">&#10003;</span>
+            <span class="notification-message">
+				{% if messages %}
+                    <div class="message-content">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+				{% endif %}
+            </span>
+            <span class="close-btn" onclick="closeNotification()">×</span>
+        </div>
+		
+		
 		<ul class="side-menu top">
 			<li id="dashboard">
 				<a href="{% url 'admin' request.session.user_idtaikhoan%}">
@@ -96,4 +112,37 @@
 
 	<script src="{% static 'js/script.js' %}"></script>
 </body>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const notificationElement = document.getElementById('loginSuccessNotification');
+		if (notificationElement) {
+			{% if messages %}
+				{% for message in messages %}
+					{% if message.tags == 'success' %}
+						notificationElement.classList.remove('deactive');
+						notificationElement.classList.add('success');
+					{% elif message.tags == 'error' %}
+						notificationElement.classList.remove('deactive');
+						notificationElement.classList.add('error');
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+	
+			// Tự động ẩn thông báo sau 3 giây
+			setTimeout(function () {
+				notificationElement.classList.add('deactive');
+			}, 3000);
+		}
+	});
+	
+	// Hàm ẩn thông báo khi nhấn nút ×
+	function closeNotification() {
+		console.log("Nút × đã được bấm!"); // In ra console khi gọi hàm
+		const notificationElement = document.getElementById('loginSuccessNotification');
+		if (notificationElement) {
+			notificationElement.classList.add('deactive');
+		}
+	}
+</script>
 </html>

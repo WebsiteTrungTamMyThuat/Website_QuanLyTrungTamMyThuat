@@ -1,0 +1,48 @@
+{% extends "layout/layout.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Sửa giáo viên</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="{% url 'thongtincanhan' request.session.user_idtaikhoan %}">Thông tin cá nhân</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Đổi mật khẩu</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="table-data">
+        <div class="order">
+            
+            
+            <section class="container">
+                <form action="{%url 'doimatkhau' request.session.user_idtaikhoan%}" class="form" method="POST">
+                    {% csrf_token %}
+                    <div class="input-box">
+                        <label>Mật khẩu cũ</label>
+                        <input name="matkhaucu" type="password" placeholder="Nhập mật khẩu cũ" required />
+                    </div>
+
+                    <div class="input-box">
+                        <label>Mật khẩu mới</label>
+                        <input name="matkhaumoi" type="password" placeholder="Nhập mật khẩu mới" required />
+                    </div>
+                  <button type="submit">Sửa</button>
+                </form>
+              </section>
+              
+        </div>
+        
+    </div>
+</main>
+{% endblock %}

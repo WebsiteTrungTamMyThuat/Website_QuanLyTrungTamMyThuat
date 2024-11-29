@@ -97,18 +97,10 @@ def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         pass_word = request.POST.get('pass_word')
-
-     
         # request.session.flush()
-
         if username and pass_word:
-            try:
-               
+            try:         
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
-
-
-
-               
                 if nguoidung.pass_word == pass_word:
                     
                     request.session['user_username'] = nguoidung.username
@@ -125,6 +117,7 @@ def userlogin(request):
                         return redirect('login')
                 else:
                     messages.error(request, 'Mật khẩu không chính xác!')
+                    
             except TaiKhoanNguoiDung.DoesNotExist:
                 messages.error(request, 'Người dùng không tồn tại!')
 
