@@ -35,6 +35,7 @@ def admin(request, idtaikhoan):
     end_of_week = start_of_week + timedelta(days=6) # Chủ Nhật
         
     taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    request.session['quyen'] = taikhoan.quyen
     
     if taikhoan.quyen == 'GV':
         lop_dang_hoc = LopHoc.objects.filter(magv=idtaikhoan, tinhtrang="Đang học")
