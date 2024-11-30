@@ -35,6 +35,5 @@ urlpatterns = [
     path('momo-payment/', views.momo_payment, name='momo_payment'),
     path('thank-you/', views.momo_return, name='thank-you'),
     path('momo-notify/', views.momo_notify, name='momo_notify'),
-    path('chon-phuong-thuc-thanh-toan/<total_price>/', views.chon_phuong_thuc_thanh_toan, name='chon_phuong_thuc_thanh_toan'),
-    path('thanh-toan-phuong-thuc/', views.thanh_toan_phuong_thuc, name='thanh_toan_phuong_thuc'),
+   
 ]

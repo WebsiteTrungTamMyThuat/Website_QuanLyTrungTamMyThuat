@@ -665,15 +665,8 @@ def thanh_toan(request):
 
 ####
 
-def chon_phuong_thuc_thanh_toan(request, total_price):
-    return render(request, 'pages/chon_phuong_thuc_thanh_toan.html', {
-        'total_price': total_price
-    })
 
 
-####
-
-def thanh_toan_phuong_thuc(request):
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         total_price = request.POST.get('total_price')

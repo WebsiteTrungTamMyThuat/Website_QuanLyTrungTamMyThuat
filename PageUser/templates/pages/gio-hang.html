@@ -58,36 +58,37 @@
                             <input type="radio" name="payment" value="onepay" id="payment3">
                             <label for="payment3">Thanh toán online qua Momo - Ngân hàng</label>
                             <div class="panel" id="collapseOnePay">
-                                <div class="onepay" aria-label="atm">
-                                    <i class="fa fa-university"></i>
-                                    Thanh toán bằng thẻ ATM
-                                </div>
-                                <div class="onepay" aria-label="visa">
-                                    <i class="fa fa-cc-visa"></i>
-                                    Thanh toán bằng thẻ Visa/Master
-                                </div>
-                                <div class="onepay" aria-label="momo">
+                                
+                               
                                     <form method="post" action="{% url 'momo_payment' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="amount" value="{{ total_price|floatformat:0 }}">
                                         
                                         <h4>Chọn phương thức thanh toán:</h4>
-                                        <div class="cart__payment-method-item">
-                                            <input type="radio" name="payment_method" value="captureWallet" id="momo_wallet" checked>
-                                            <label for="momo_wallet">Thanh toán qua ví Momo</label>
-                                        </div>
-                                        <div class="cart__payment-method-item">
-                                            <input type="radio" name="payment_method" value="payWithATM" id="momo_atm">
-                                            <label for="momo_atm">Thanh toán qua thẻ ATM nội địa</label>
-                                        </div>
-                                        <div class="cart__payment-method-item">
-                                            <input type="radio" name="payment_method" value="payWithVisa" id="momo_visa">
-                                            <label for="momo_visa">Thanh toán qua thẻ Visa/MasterCard</label>
-                                        </div>
+                                       
+                                            <div class="cart__payment-method-item">
+                                                <input type="radio" name="payment_method" value="captureWallet" id="momo_wallet" checked>
+                                                <label for="momo_wallet" class="payment-button momo-wallet">
+                                                    Thanh toán qua ví Momo
+                                                </label>
+                                            </div>
+                                            <div class="cart__payment-method-item">
+                                                <input type="radio" name="payment_method" value="payWithATM" id="momo_atm">
+                                                <label for="momo_atm" class="payment-button momo-atm">
+                                                    Thanh toán qua thẻ ATM nội địa
+                                                </label>
+                                            </div>
+                                            <div class="cart__payment-method-item">
+                                                <input type="radio" name="payment_method" value="payWithVisa" id="momo_visa">
+                                                <label for="momo_visa" class="payment-button momo-visa">
+                                                    Thanh toán qua thẻ Visa/MasterCard
+                                                </label>
+                                            </div>
+                                       
                                 
                                         <button type="submit" class="btn btn-success">Thanh toán </button>
                                     </form>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -132,4 +133,20 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // JavaScript để quản lý hiển thị các phương thức thanh toán của Momo
+        document.querySelectorAll('input[name="payment_method"]').forEach(input => {
+            input.addEventListener('change', () => {
+                // Ẩn tất cả các bảng điều khiển của phương thức thanh toán
+                document.querySelectorAll('.panel').forEach(panel => panel.style.display = 'none');
+                
+                // Nếu chọn phương thức thanh toán Momo, hiển thị các lựa chọn cho Momo
+                if (document.getElementById('payment_momo').checked) {
+                    document.getElementById('collapseMomo').style.display = 'block';
+                }
+            });
+        });
+    </script>
+    
 {% endblock %}
