@@ -52,6 +52,7 @@ class LopHoc(models.Model):
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     magv = models.CharField(max_length=10, db_column='magv')
     urlhinh = models.CharField(max_length=255)
+    tinhtrang = models.CharField(max_length=255)
     class Meta:
         db_table = 'lophoc'
     def __str__(self):
@@ -157,12 +158,12 @@ class DanhGia(models.Model):
     
         
 class LichSuGiaoDich(models.Model):
-    magiaodich = models.AutoField(primary_key=True)
+    magiaodich = models.OneToOneField('HoaDon', on_delete=models.CASCADE, primary_key=True)
     ngaygiaodich = models.DateField()
     sotien = models.DecimalField(max_digits=10, decimal_places=2)
     loaigiaodich = models.CharField(max_length=20)
     ghichu = models.TextField()
-    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE)
+
     class Meta:
         db_table = 'lichsugiaodich'
         

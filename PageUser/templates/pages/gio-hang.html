@@ -67,8 +67,26 @@
                                     Thanh toán bằng thẻ Visa/Master
                                 </div>
                                 <div class="onepay" aria-label="momo">
-                                    <i class="fa fa-qrcode" aria-hidden="true"></i>
-                                    Thanh toán qua Momo
+                                    <form method="post" action="{% url 'momo_payment' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="amount" value="{{ total_price|floatformat:0 }}">
+                                        
+                                        <h4>Chọn phương thức thanh toán:</h4>
+                                        <div class="cart__payment-method-item">
+                                            <input type="radio" name="payment_method" value="captureWallet" id="momo_wallet" checked>
+                                            <label for="momo_wallet">Thanh toán qua ví Momo</label>
+                                        </div>
+                                        <div class="cart__payment-method-item">
+                                            <input type="radio" name="payment_method" value="payWithATM" id="momo_atm">
+                                            <label for="momo_atm">Thanh toán qua thẻ ATM nội địa</label>
+                                        </div>
+                                        <div class="cart__payment-method-item">
+                                            <input type="radio" name="payment_method" value="payWithVisa" id="momo_visa">
+                                            <label for="momo_visa">Thanh toán qua thẻ Visa/MasterCard</label>
+                                        </div>
+                                
+                                        <button type="submit" class="btn btn-success">Thanh toán qua Momo</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

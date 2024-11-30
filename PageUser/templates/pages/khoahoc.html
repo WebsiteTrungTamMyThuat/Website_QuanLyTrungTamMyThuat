@@ -3,70 +3,68 @@
 {% block content %}
     {% load static %}
     <link rel="stylesheet" href="{% static "css/khoahoc.css" %}">
+<div>
     <div class="list-course">
         <h1>Danh sách khóa học </h1>
-        <div class="list-button">
-            <h3> Môn học: </h3>
-            <div class="course-button">
-                <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
-                {% for tl in dm_kh %}
-                    <button class="btn btn-phong-canh"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.tenkh }}</a></button>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="list-button">
-            <h3>Độ tuổi: </h3>
-            <div class="level-button">
-                <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
-                
-                {% for tl in dm_kh %}
-                <button class="btn btn-co-ban"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.dotuoi }}</a></button>
-                {% endfor %}
-     
-            </div>
-        </div>
-
-        <div class="list-button">
-            <h3>Ngày bắt đầu:</h3>
-            <form method="get" action="{% url 'filter_khoahoc' %}">
-                <div>
-                    <input 
-                        type="date" 
-                        name="ngaybatdau" 
-                        value="{{ selected_date|default:'' }}" 
-                        class="date-input" 
-                        onchange="this.form.submit()"
-                    />
+            <div class="list-button">
+                <h3> Môn học: </h3>
+                <div class="course-button">
+                    <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
+                    {% for tl in dm_kh %}
+                        <button class="btn btn-phong-canh"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.tenkh }}</a></button>
+                    {% endfor %}
                 </div>
-            </form>
-            {% if error %}
-            <p class="error-message">{{ error }}</p>
-        {% endif %}
-        
-
-        </div>
-  
-        
-       
-        <div class="list-button">
-            <h3>Sắp Xếp Mặc Định:</h3>
-            <form id="sortForm" method="get" action="{% url 'filter_khoahoc' %}">
-                <!-- Giữ lại giá trị ngày bắt đầu nếu đã chọn -->
-                <input type="hidden" name="ngaybatdau" value="{{ selected_date|default:'' }}" />
-        
-                <div class="col-xl-3">
-                    <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                        <select id="sorting" name="sortOptions" class="border-0 form-select-sm bg-light me-3" onchange="this.form.submit()">
-                            <option value="" {% if not sort_option %}selected{% endif %}>Mặc định</option>
-                            <option value="priceLowToHigh" {% if sort_option == 'priceLowToHigh' %}selected{% endif %}>Học phí Tăng Dần</option>
-                            <option value="priceHighToLow" {% if sort_option == 'priceHighToLow' %}selected{% endif %}>Học phí Giảm Dần</option>
-                        </select>
+            </div>
+            <div class="list-filter">
+                <div class="list-button">
+                    <h3>Độ tuổi: </h3>
+                    <div class="level-button">
+                        <button class="btn btn-all"><a href="{% url 'khoahoc' %}">Tất cả</a></button>
+                        
+                        {% for tl in dm_kh %}
+                        <button class="btn btn-co-ban"><a href="{% url 'DSTheoKH' tl.makh %}">{{ tl.dotuoi }}</a></button>
+                        {% endfor %}
                     </div>
                 </div>
-            </form>
-        </div>
 
+                <div class="list-button">
+                    <h3>Ngày bắt đầu:</h3>
+                    <form method="get" action="{% url 'filter_khoahoc' %}">
+                        <div>
+                            <input 
+                                type="date" 
+                                name="ngaybatdau" 
+                                value="{{ selected_date|default:'' }}" 
+                                class="date-input" 
+                                onchange="this.form.submit()"
+                            />
+                        </div>
+                    </form>
+                    {% if error %}
+                    <p class="error-message">{{ error }}</p>
+                {% endif %}
+                </div>
+        
+                <div class="list-button">
+                    <h3>Sắp Xếp Mặc Định:</h3>
+                    <form id="sortForm" method="get" action="{% url 'filter_khoahoc' %}">
+                        <!-- Giữ lại giá trị ngày bắt đầu nếu đã chọn -->
+                        <input type="hidden" name="ngaybatdau" value="{{ selected_date|default:'' }}" />
+                
+                        <div class="col-xl-3">
+                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                <select id="sorting" name="sortOptions" class="border-0 form-select-sm bg-light me-3" onchange="this.form.submit()">
+                                    <option value="" {% if not sort_option %}selected{% endif %}>Mặc định</option>
+                                    <option value="priceLowToHigh" {% if sort_option == 'priceLowToHigh' %}selected{% endif %}>Học phí Tăng Dần</option>
+                                    <option value="priceHighToLow" {% if sort_option == 'priceHighToLow' %}selected{% endif %}>Học phí Giảm Dần</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
+    <div class="side-content">
         <div class="grid-container">
             {% for lop in ds_lop %}
                 <a class="card" href="{% url 'ttkhoahoc' lop.malop %}">
@@ -85,6 +83,7 @@
                             </p>
                             
                             <p >Ngày bắt đầu: {{ lop.ngaybatdau|date:"d F Y" }}</p>
+                            <p>Tình trạng: {{lop.tinhtrang}}</p>
                            
                         </div>
                         <div class="price">
@@ -98,8 +97,7 @@
                     </div>
                 </a>
             {% endfor %}
-        </div>
-        
+        </div>  
     </div>
 
     <ul class="list-page">
