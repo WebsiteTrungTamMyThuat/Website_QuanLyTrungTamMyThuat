@@ -11,7 +11,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.messages import get_messages
 from django.views.decorators.cache import never_cache
-
+from datetime import timedelta
+from django.utils.timezone import now
+from django.db.models import Sum
 
 
 
@@ -28,8 +30,78 @@ def admin(request, idtaikhoan):
     username = request.session.get('user_username', None)
     checklogin(idtaikhoan, username)
     
-    if idtaikhoan:
-        return render(request, 'pages/admin.html')
+    today = now().date()
+    start_of_week = today - timedelta(days=today.weekday())  # Thứ Hai
+    end_of_week = start_of_week + timedelta(days=6) # Chủ Nhật
+        
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    
+    if taikhoan.quyen == 'GV':
+        lop_dang_hoc = LopHoc.objects.filter(magv=idtaikhoan, tinhtrang="Đang học")
+        so_luong_lop_dang_hoc = lop_dang_hoc.count()
+        
+        so_luong_lich_trong_tuan = LichHoc.objects.filter(
+            malop__in=lop_dang_hoc,
+            ngayhoc__range=[start_of_week, end_of_week]
+        ).select_related('malop')
+        
+        danh_sach_lop = []
+        for lich in so_luong_lich_trong_tuan:
+            danh_sach_lop.append({
+                "malop": lich.malop.malop,
+                "tenlop": lich.malop.tenlop,
+                "ngayhoc": lich.ngayhoc.strftime("%d-%m-%Y"),
+                "giohoc": lich.giohoc.strftime("%H:%M"),
+                "diadiem": lich.malop.diadiemhoc,
+            })
+            
+        return render(request, 'pages/admin.html', {
+            'so_luong_lop_dang_hoc': so_luong_lop_dang_hoc,
+            'so_luong_lich_trong_tuan': so_luong_lich_trong_tuan.count(),
+            'taikhoan': taikhoan,
+            'dslop' : danh_sach_lop
+        })
+        
+    if taikhoan.quyen == 'HV':
+        # Hóa đơn chưa thanh toán
+        hoadon_chua_tt = HoaDon.objects.filter(mahv=idtaikhoan, trangthai="Chưa thanh toán")
+        hoadon_da_tt = HoaDon.objects.filter(mahv=idtaikhoan, trangthai="Đã thanh toán")
+        
+        tong_tien_chua_tt = hoadon_chua_tt.aggregate(total=Sum('tongtien'))['total'] or 0
+
+        # Mã lớp từ hóa đơn chưa thanh toán
+        ma_lop_chua_tt = hoadon_chua_tt.values_list('malop', flat=True)
+        ma_lop_da_tt = hoadon_da_tt.values_list('malop', flat=True)
+        
+        # Lớp học đang học
+        hoadon = HoaDon.objects.filter(mahv=idtaikhoan, trangthai="Đã thanh toán").values_list('malop', flat=True)
+        lop_dang_hoc = LopHoc.objects.filter(malop__in=hoadon, tinhtrang="Đang học")
+        so_luong_lop_dang_hoc = lop_dang_hoc.count()
+        
+        
+        
+        so_luong_lich_trong_tuan = LichHoc.objects.filter(
+            malop__in=ma_lop_da_tt,
+            ngayhoc__range=[start_of_week, end_of_week]
+        ).select_related('malop')
+        
+        danh_sach_lop = []
+        for lich in so_luong_lich_trong_tuan:
+            danh_sach_lop.append({
+                "malop": lich.malop.malop,
+                "tenlop": lich.malop.tenlop,
+                "ngayhoc": lich.ngayhoc.strftime("%d-%m-%Y"),
+                "giohoc": lich.giohoc.strftime("%H:%M"),
+                "diadiem": lich.malop.diadiemhoc,
+            })
+            
+        return render(request, 'pages/admin.html', {
+            'tong_tien_chua_tt': tong_tien_chua_tt,
+            'so_luong_lop_dang_hoc': so_luong_lop_dang_hoc,
+            'so_luong_lich_trong_tuan': so_luong_lich_trong_tuan.count(),
+            'taikhoan': taikhoan
+        })
+
     return render(request, '403.html', status=403)
     
     
@@ -79,7 +151,7 @@ def lophoc(request, idtaikhoan):
     if taikhoan.quyen == 'GV':
         lophoc = LopHoc.objects.filter(magv=idtaikhoan)
     if taikhoan.quyen == 'HV':
-        so_hoadon = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
+        so_hoadon = HoaDon.objects.filter(mahv=idtaikhoan, trangthai="Đã thanh toán").values_list('malop', flat=True)
         lophoc = LopHoc.objects.filter(malop__in=so_hoadon)
         
     data = [
@@ -89,7 +161,8 @@ def lophoc(request, idtaikhoan):
             "diadiem" : item.diadiemhoc,
             "hocphi" : f"{item.hocphi} VNĐ",
             "tinhtrang" : item.tinhtrang.strip(),
-            "status_btn": item.tinhtrang.strip() if item.tinhtrang.strip() == "Hoàn thành" else None
+            "status_btn": item.tinhtrang.strip() if item.tinhtrang.strip() == "Hoàn thành" else None,
+            "taikhoan" : taikhoan
         }
         for item in lophoc
     ]
@@ -281,3 +354,65 @@ def dangxuat(request,idtaikhoan):
     request.session.flush()  # Xóa toàn bộ session
     logout(request)
     return redirect('logout')
+
+
+def search_dslop(request, idtaikhoan):
+    from django.db.models import Q
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    
+    if request.method == "POST":
+        tenlop = request.POST.get('search_ten')
+
+    if taikhoan.quyen == 'GV':
+        lophoc = LopHoc.objects.filter(magv=idtaikhoan)
+    if taikhoan.quyen == 'HV':
+        so_hoadon = HoaDon.objects.filter(mahv=idtaikhoan).values_list('malop', flat=True)
+        lophoc = LopHoc.objects.filter(malop__in=so_hoadon)
+    else:
+        lophoc = LopHoc.objects.none()
+    
+    if tenlop != None:
+        lophoc = LopHoc.objects.filter(Q(tenlop__icontains=tenlop))
+    data = [
+        {
+            "malop": item.malop,
+            "tenlop" : item.tenlop,
+            "diadiem" : item.diadiemhoc,
+            "hocphi" : f"{item.hocphi} VNĐ",
+            "tinhtrang" : item.tinhtrang.strip(),
+            "status_btn": item.tinhtrang.strip() if item.tinhtrang.strip() == "Hoàn thành" else None
+        }
+        for item in lophoc
+    ]
+    return render(request,'pages/admin-lophoc.html', {'dslop': data, 'taikhoan': taikhoan})
+
+
+def search_lsgd(request, idtaikhoan):
+    from django.db.models import Q
+    username = request.session.get('user_username', None)
+    checklogin(idtaikhoan, username)
+    taikhoan = TaiKhoanNguoiDung.objects.filter(idtaikhoan=idtaikhoan).first()
+    if request.method == "POST":
+        tenlop = request.POST.get('seach_lsgd')
+        
+    if taikhoan.quyen == 'GV':
+        return render(request,'pages/admin-thanhtoan.html')
+    if taikhoan.quyen == 'HV':
+        hoadon = HoaDon.objects.filter(mahv=idtaikhoan).select_related('malop')
+        
+    if tenlop:
+        hoadon = hoadon.filter(malop__tenlop__icontains=tenlop)
+    data = [
+        {
+            "sohd" : hd.sohd,
+            "ngaylap" : hd.ngaylap.strftime("%d-%m-%Y"),
+            "lop": hd.malop.tenlop if hd.malop else "",
+            "tongtien": f"{hd.tongtien} VNĐ ",
+            "trangthai" : hd.trangthai
+        }
+        for hd in hoadon
+    ]
+      
+    return render(request,'pages/admin-thanhtoan.html', {'dshd':data})

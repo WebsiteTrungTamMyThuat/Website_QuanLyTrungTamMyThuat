@@ -6,7 +6,7 @@ CREATE TABLE NhaCC (
 );
 
 CREATE TABLE NhanVien (
-    MaNV CHAR(5) PRIMARY KEY,
+    MaNV CHAR(20) PRIMARY KEY,
     HoTen VARCHAR(40),
 	GioiTinh VARCHAR(5),
 	NgaySinh DATE,
@@ -62,14 +62,6 @@ CREATE TABLE ChiTietPhieuNhap (
 	MaPhieuNhap INT REFERENCES PhieuNhap(MaPhieuNhap),
     MaHoaCu INT REFERENCES HoaCu(MaHoaCu),
     PRIMARY KEY (MaPhieuNhap, MaHoaCu)
-);
-
-CREATE TABLE TaiKhoanNhanVien (
-	UserName CHAR(5) REFERENCES NhanVien(MaNV),
-    Pass VARCHAR(50),
-    Quyen VARCHAR(50),
-    TrangThai VARCHAR(50),
-	PRIMARY KEY(UserName) 
 );
 
 CREATE TABLE TaiKhoanNguoiDung (

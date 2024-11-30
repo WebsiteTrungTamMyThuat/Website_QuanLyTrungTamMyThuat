@@ -12,7 +12,7 @@
                 </li>
                 <li><i class='bx bx-chevron-right' ></i></li>
                 <li>
-                    <a class="active" href="{% url 'lophoc' request.session.user_idtaikhoan %}">Danh sách lớp học</a>
+                    <a class="active" href="{% url 'lophoc_admin' request.session.user_idtaikhoan %}">Danh sách lớp học</a>
                 </li>
                 <li><i class='bx bx-chevron-right' ></i></li>
                 <li>
@@ -26,9 +26,9 @@
         <div class="order">
             <div class="head">
                 <h3>Danh sách hóa đơn</h3>
-                <form action="#" method="GET">
+                <form action="#" method="POST">
                     <div class="form-input">
-                        <input name="seachsb" type="search" placeholder="Search...">
+                        <input name="search_ten" type="search" placeholder="Search...">
                         <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                     </div>
                 </form>
@@ -39,7 +39,6 @@
                         <th>Mã học viên</th>
                         <th>Họ tên</th>
                         <th>Giới tính</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>

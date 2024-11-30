@@ -28,9 +28,10 @@
         <div class="order">
             <div class="head">
                 <h3></h3>
-                <form action="#" method="GET">
-                    <div class="form-input">
-                        <input name="seachsb" type="search" placeholder="Search...">
+                <form action="{%url 'search_dslop' request.session.user_idtaikhoan%}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-input" >
+                        <input name="search_ten" type="search" placeholder="Tìm theo tên lớp...">
                         <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                     </div>
                 </form>
@@ -41,8 +42,8 @@
                         <th>Mã lớp</th>
                         <th>Tên lớp</th>
                         <th>Địa điểm học</th>
-                        <th>Học phí</th>
-                        <th></th>
+                        {% if taikhoan.quyen == "HV" %}<th>Học phí</th>{% endif %}
+                        <th>Tình trạng</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -53,7 +54,7 @@
                             <td>{{item.malop}}</td>
                             <td>{{item.tenlop}}</td>
                             <td>{{item.diadiem}}</td>
-                            <td>{{item.hocphi}}</td>
+                            {% if taikhoan.quyen == "HV" %}<td>{{item.hocphi}}</td>{% endif %}
                             <td>{{item.tinhtrang}}</td>
                             <td>
                             {% if item.status_btn == item.tinhtrang%}
