@@ -1,0 +1,90 @@
+{% extends "layout/layout.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<link rel=stylesheet href="{% static "css/admin-giaovien.css" %}">
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Danh sách lớp học</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Danh sách lớp học đã đăng ký</a>
+                </li>
+            </ul>
+        </div>
+        {% comment %} <div class="button-group">
+            <a href="{% url 'them_gv' %}" class="btn-add">
+                <i class='bx bx-plus'></i>
+                <span class="text">Thêm</span>
+            </a>
+        </div> {% endcomment %}
+    </div>
+
+    <div class="table-data">
+        <div class="order">
+            <div class="head">
+                <h3></h3>
+                <form action="#" method="GET">
+                    <div class="form-input">
+                        <input name="seachsb" type="search" placeholder="Search...">
+                        <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                    </div>
+                </form>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã lớp</th>
+                        <th>Tên lớp</th>
+                        <th>Địa điểm học</th>
+                        <th>Học phí</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in dslop %}
+                        {%if taikhoan.quyen == "HV"%}
+                        <tr styles="">
+                            <td>{{item.malop}}</td>
+                            <td>{{item.tenlop}}</td>
+                            <td>{{item.diadiem}}</td>
+                            <td>{{item.hocphi}}</td>
+                            <td>{{item.tinhtrang}}</td>
+                            <td>
+                            {% if item.status_btn == item.tinhtrang%}
+                                <div class="form-button">
+                                    <a href="{%url 'danhgia' request.session.user_idtaikhoan item.malop%}" class="btn-edit">
+                                        <i class='bx bx-edit-alt' ></i>
+                                        <span class="text">Đánh giá</span>
+                                    </a> 
+                                </div>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% elif  taikhoan.quyen == "GV"%}
+                        <tr styles="">
+                            <td>{{item.malop}}</td>
+                            <td>{{item.tenlop}}</td>
+                            <td>{{item.diadiem}}</td>
+                            <td>{{item.tinhtrang}}</td>
+                            <td>
+                            <div class="form-button">
+                                <a href="{%url 'danhsachhocvien' request.session.user_idtaikhoan item.malop %}" class="btn-edit">
+                                    <span class="text" >Danh sách học viên</span>
+                                </a> 
+                            </div>
+                            </td>
+                        </tr>
+                        {%endif%}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

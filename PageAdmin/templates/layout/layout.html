@@ -20,6 +20,22 @@
 			<i class='bx bxs-palette'></i>
 			<span class="text">Mỹ thuật</span>
 		</a>
+
+		<div id="loginSuccessNotification" class="notification1 deactive">
+            <span class="notification-icon">&#10003;</span>
+            <span class="notification-message">
+				{% if messages %}
+                    <div class="message-content">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+				{% endif %}
+            </span>
+            <span class="close-btn" onclick="closeNotification()">×</span>
+        </div>
+		
+		
 		<ul class="side-menu top">
 			<li id="dashboard">
 				<a href="{% url 'admin' request.session.user_idtaikhoan%}">
@@ -27,36 +43,40 @@
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
+			<li id="hocvien">
+				<a href="{% url 'thongtincanhan' request.session.user_idtaikhoan%}">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Thông tin cá nhân</span>
+				</a>
+			</li>
+			
 			<li id="khoahoc_admin">
 				<a href="{% url 'lichhoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-calendar-check' ></i>
-					<span class="text">Lịch học</span>
+					<span class="text">{% if  request.session.quyen == "HV" %} Lịch học {% else %} Lịch dạy  {% endif %}</span>
 				</a>
 			</li>
+			
 			<li id="giaovien">
-				<a href="{% url 'giaovien_admin' %}">
+				<a href="{% url 'lophoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-graduation'></i>
 					<span class="text">Danh sách lớp học</span>
 				</a>
 			</li>
-			<li id="hocvien">
-				<a href="{% url 'hocvien' %}">
-					<i class='bx bxs-group' ></i>
-					<span class="text">Học viên</span>
-				</a>
-			</li>
+			{% if request.session.quyen != "GV"%}
 			<li id="thanhtoan">
-				<a href="{% url 'thanhtoan' %}">
+				<a href="{% url 'thanhtoan' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-dollar-circle' ></i>
 					<span class="text">Lịch sử giao dịch</span>
 				</a>
 			</li>
+			{% endif %}
 		</ul>
 		<ul class="side-menu">
 			<li>
-				<a href="#" class="logout">
+				<a href="{% url 'dangxuat' request.session.user_idtaikhoan%}" class="logout">
 					<i class='bx bxs-log-out-circle' ></i>
-					<span class="text">Logout</span>
+					<span class="logoutButtonAdmin">Đăng xuất</span>
 				</a>
 			</li>
 		</ul>
@@ -72,8 +92,8 @@
 			<i class='bx bx-menu' ></i>
 			<form action="#">
 				<div class="form-input">
-					<input type="search" placeholder="Search...">
-					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+					<!--<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>-->
 				</div>
 			</form>
 			<a href="#" class="notification">
@@ -96,4 +116,48 @@
 
 	<script src="{% static 'js/script.js' %}"></script>
 </body>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const notificationElement = document.getElementById('loginSuccessNotification');
+		if (notificationElement) {
+			{% if messages %}
+				{% for message in messages %}
+					{% if message.tags == 'success' %}
+						notificationElement.classList.remove('deactive');
+						notificationElement.classList.add('success');
+					{% elif message.tags == 'error' %}
+						notificationElement.classList.remove('deactive');
+						notificationElement.classList.add('error');
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+	
+			// Tự động ẩn thông báo sau 3 giây
+			setTimeout(function () {
+				notificationElement.classList.add('deactive');
+			}, 3000);
+		}
+	});
+	
+	// Hàm ẩn thông báo khi nhấn nút ×
+	function closeNotification() {
+		console.log("Nút × đã được bấm!"); // In ra console khi gọi hàm
+		const notificationElement = document.getElementById('loginSuccessNotification');
+		if (notificationElement) {
+			notificationElement.classList.add('deactive');
+		}
+	}
+
+
+	document.addEventListener('DOMContentLoaded', function () {
+		const logoutButtonAdmin = document.querySelector('.logoutButtonAdmin');
+	
+		logoutButtonAdmin.addEventListener('click', function() {
+			localStorage.removeItem('isLoggedIn');
+			window.location.href = '/user/dangnhap';  // Chuyển hướng đến App User để đăng nhập lại
+		});
+	});
+	
+</script>
 </html>

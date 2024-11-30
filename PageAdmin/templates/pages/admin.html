@@ -24,35 +24,25 @@
 
     <ul class="box-info">
         <li>
-            <a href="{% url 'giaovien_admin' %}">
-                <i class='bx bxs-graduation'></i>
-                <span class="text">
-                    <h3>2834</h3>
-                    <p>Giáo viên</p>
-                </span>
-            </a>
-        </li>
-        <li>
             <a href="{% url 'lichhoc_admin' request.session.user_idtaikhoan%}">
                 <i class='bx bxs-calendar-check' ></i>
                 <span class="text">
                     <h3>1020</h3>
-                    <p>Khóa học</p>
+                    <p>lịch học</p>
                 </span>
             </a>
         </li>
-        
         <li>
-            <a href="{% url 'hocvien' %}">
-                <i class='bx bxs-group' ></i>
+            <a href="{% url 'lophoc_admin' request.session.user_idtaikhoan%}">
+                <i class='bx bxs-graduation'></i>
                 <span class="text">
-                    <h3>2543</h3>
-                    <p>Học viên</p>
+                    <h3>2834</h3>
+                    <p>Lớp học</p>
                 </span>
             </a>
         </li>
         <li>
-            <a href="{% url 'thanhtoan' %}">
+            <a href="{% url 'thanhtoan' request.session.user_idtaikhoan%}">
                 <i class='bx bxs-dollar-circle' ></i>
                 <span class="text">
                     <h3>$2543</h3>
@@ -60,6 +50,16 @@
                 </span>
             </a>
         </li>
+        <li>
+            <a href="{% url 'thongtincanhan' request.session.user_idtaikhoan%}">
+                <i class='bx bxs-group' ></i>
+                <span class="text">
+                    <h3>2543</h3>
+                    <p>Học viên</p>
+                </span>
+            </a>
+        </li>
+        
     </ul>
 
 
@@ -122,35 +122,6 @@
                 </tbody>
             </table>
         </div>
-        {% comment %} <div class="todo">
-            <div class="head">
-                <h3>Todos</h3>
-                <i class='bx bx-plus' ></i>
-                <i class='bx bx-filter' ></i>
-            </div>
-            <ul class="todo-list">
-                <li class="completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded' ></i>
-                </li>
-                <li class="completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded' ></i>
-                </li>
-                <li class="not-completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded' ></i>
-                </li>
-                <li class="completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded' ></i>
-                </li>
-                <li class="not-completed">
-                    <p>Todo List</p>
-                    <i class='bx bx-dots-vertical-rounded' ></i>
-                </li>
-            </ul>
-        </div> {% endcomment %}
     </div>
 </main>
 <!-- MAIN -->

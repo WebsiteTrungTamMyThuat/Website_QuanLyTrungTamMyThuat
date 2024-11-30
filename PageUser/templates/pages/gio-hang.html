@@ -85,7 +85,7 @@
                                             <label for="momo_visa">Thanh toán qua thẻ Visa/MasterCard</label>
                                         </div>
                                 
-                                        <button type="submit" class="btn btn-success">Thanh toán qua Momo</button>
+                                        <button type="submit" class="btn btn-success">Thanh toán </button>
                                     </form>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
                     <h2>Tổng tiền: {{ total_price|floatformat:0|intcomma }} VND</h2>
                     <form method="post" action="{% url 'thanh_toan' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-success">Thanh toán</button>
+                        <button type="submit" class="btn btn-success">Tạo đơn hàng</button>
                     </form>
                 </div>
          

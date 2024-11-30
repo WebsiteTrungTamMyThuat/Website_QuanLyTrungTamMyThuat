@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 class TaiKhoanNguoiDung(models.Model):
     QUYEN_CHOICES = [('GV', 'Giáo Viên'), ('HV', 'Học Viên'),]
@@ -59,6 +60,10 @@ class LopHoc(models.Model):
         return self.malop + " - " + self.tenlop
     def clean(self):
         self.malop = self.malop.strip()
+    def save(self, *args, **kwargs):
+        if self.urlhinh:
+            self.urlhinh.name = os.path.basename(self.urlhinh.name)
+        super().save(*args, **kwargs)
         
 class HocVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
@@ -73,6 +78,7 @@ class HocVien(models.Model):
         db_table = 'hocvien'
     def __str__(self):
         return self.hoten
+    
     
 class HoaDon(models.Model):
     sohd = models.AutoField(primary_key=True)
@@ -158,7 +164,7 @@ class DanhGia(models.Model):
     
         
 class LichSuGiaoDich(models.Model):
-    magiaodich = models.OneToOneField('HoaDon', on_delete=models.CASCADE, primary_key=True)
+    magiaodich = models.IntegerField(primary_key=True)
     ngaygiaodich = models.DateField()
     sotien = models.DecimalField(max_digits=10, decimal_places=2)
     loaigiaodich = models.CharField(max_length=20)
@@ -166,7 +172,18 @@ class LichSuGiaoDich(models.Model):
 
     class Meta:
         db_table = 'lichsugiaodich'
-        
+
+    @classmethod
+    def get_next_magiaodich(cls):
+        last_entry = cls.objects.all().order_by('-magiaodich').first()
+        if last_entry:
+            return last_entry.magiaodich + 1
+        return 1  # Nếu chưa có dữ liệu, bắt đầu từ 1
+    
+    def save(self, *args, **kwargs):
+        if not self.magiaodich:  # Chỉ tự động gán giá trị khi magiaodich chưa có
+            self.magiaodich = self.get_next_magiaodich()
+        super().save(*args, **kwargs)
 class PhieuNhap(models.Model):
     maphieunhap = models.AutoField(primary_key=True)
     ngaynhap = models.DateField()

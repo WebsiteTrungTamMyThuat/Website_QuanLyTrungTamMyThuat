@@ -97,23 +97,15 @@ def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         pass_word = request.POST.get('pass_word')
-
-     
         # request.session.flush()
-
         if username and pass_word:
-            try:
-               
+            try:         
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
-
-
-
-               
                 if nguoidung.pass_word == pass_word:
                     
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
-
+                    request.session['quyen'] = nguoidung.quyen
                     
                     if nguoidung.quyen == 'GV': 
                         return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
@@ -125,6 +117,7 @@ def userlogin(request):
                         return redirect('login')
                 else:
                     messages.error(request, 'Mật khẩu không chính xác!')
+                    
             except TaiKhoanNguoiDung.DoesNotExist:
                 messages.error(request, 'Người dùng không tồn tại!')
 
@@ -531,75 +524,6 @@ def is_conflict_schedule(gio_hang):
 
     return False
 ###
-def thanh_toan(request):
-   
-    if not request.session.get('user_username'):
-        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
-        return redirect('dangnhap')
-
-    gio_hang = request.session.get('gio_hang', {})
-
-   
-    if is_conflict_schedule(gio_hang):
-        messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
-        return redirect('giohang')
-
-
-    if not gio_hang:
-        messages.error(request, "Giỏ hàng không có lớp học nào.")
-        return redirect('giohang')
-
-    username = request.session['user_username']
-    hoc_vien = get_object_or_404(HocVien, email=username)
-
-    total_price = Decimal(0)
-
-    try:
-        # Tính tổng học phí cho giỏ hàng
-        for malop, item in gio_hang.items():
-            malop_cleaned = malop.strip()
-            lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-            total_price += Decimal(item['hocphi']) * item['so_luong']  # Tính tổng tiền
-
-    except Exception as e:
-        messages.error(request, f"Lỗi khi lấy lớp học từ giỏ hàng: {e}")
-        return redirect('giohang')
-
-  
-    if request.method == 'POST':
-        try:
-            with transaction.atomic():  
-               
-                for malop, item in gio_hang.items():
-                    malop_cleaned = malop.strip()
-                    lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-             
-                    total_price_per_class = Decimal(item['hocphi']) * item['so_luong']
-
-                
-                    hoa_don = HoaDon.objects.create(
-                        mahv=hoc_vien,  
-                        malop=lop_hoc,  
-                        ngaylap=date.today(), 
-                        tongtien=total_price_per_class, 
-                        trangthai='Chưa thanh toán'  
-                    )
-
-                
-                request.session['gio_hang'] = {}
-
-              
-                messages.success(request, "Thanh toán thành công! Bạn đã đăng ký các lớp học.")
-                return redirect('user')  
-
-        except Exception as e:
-            messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
-            return redirect('giohang')
-
-    else:
-        messages.error(request, "Vui lòng gửi yêu cầu thanh toán.")
-        return redirect('giohang')
-    
 
 import hmac
 import hashlib
@@ -667,11 +591,105 @@ def momo_payment(request):
     else:
         return render(request, 'pages/payment.html')
 
-def payment(request):
-    # Tính tổng tiền từ giỏ hàng hoặc thông tin cần thiết
-    total_price = 1000000  # Ví dụ: tổng tiền là 1,000,000 VND
-    return render(request, 'pages/payment.html', {'total_price': total_price})
 
+####
+def thanh_toan(request):
+   
+    if not request.session.get('user_username'):
+        messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
+        return redirect('dangnhap')
+
+    gio_hang = request.session.get('gio_hang', {})
+
+   
+    if is_conflict_schedule(gio_hang):
+        messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
+        return redirect('giohang')
+
+
+    if not gio_hang:
+        messages.error(request, "Giỏ hàng không có lớp học nào.")
+        return redirect('giohang')
+
+    username = request.session['user_username']
+    hoc_vien = get_object_or_404(HocVien, email=username)
+
+    total_price = Decimal(0)
+
+    try:
+        # Tính tổng học phí cho giỏ hàng
+        for malop, item in gio_hang.items():
+            malop_cleaned = malop.strip()
+            lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
+            total_price += Decimal(item['hocphi']) * item['so_luong']  # Tính tổng tiền
+
+    except Exception as e:
+        messages.error(request, f"Lỗi khi lấy lớp học từ giỏ hàng: {e}")
+        return redirect('giohang')
+
+  
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():  
+               
+                for malop, item in gio_hang.items():
+                    malop_cleaned = malop.strip()
+                    lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
+             
+                    total_price_per_class = Decimal(item['hocphi']) * item['so_luong']
+
+                
+                    hoa_don = HoaDon.objects.create(
+                        mahv=hoc_vien,  
+                        malop=lop_hoc,  
+                        ngaylap=date.today(), 
+                        tongtien=total_price_per_class, 
+                        trangthai='Chưa thanh toán'  
+                    )
+
+                
+           #     request.session['gio_hang'] = {}
+
+              
+                messages.success(request, " Đơn hàng của bạn đã được tạo vui lòng thanh toán !")
+                return redirect('giohang')  
+
+        except Exception as e:
+            messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
+            return redirect('giohang')
+
+    else:
+        messages.error(request, "Vui lòng gửi yêu cầu thanh toán.")
+        return redirect('giohang')
+    
+
+####
+
+def chon_phuong_thuc_thanh_toan(request, total_price):
+    return render(request, 'pages/chon_phuong_thuc_thanh_toan.html', {
+        'total_price': total_price
+    })
+
+
+####
+
+def thanh_toan_phuong_thuc(request):
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+        total_price = request.POST.get('total_price')
+
+        if payment_method == 'momo':
+            # Chuyển đến logic thanh toán qua Momo
+            return redirect('momo_payment')
+        elif payment_method == 'bank_transfer':
+            # Hiển thị thông tin chuyển khoản ngân hàng
+            return render(request, 'pages/thong_tin_chuyen_khoan.html', {
+                'total_price': total_price
+            })
+        else:
+            messages.error(request, "Phương thức thanh toán không hợp lệ.")
+            return redirect('chon_phuong_thuc_thanh_toan')
+###
 def momo_return(request):
     if request.method == 'GET':
         data = request.GET
@@ -683,43 +701,40 @@ def momo_return(request):
 
         if result_code == '0':  # Thanh toán thành công
             try:
-                # Lấy thông tin học viên từ session
-                hoc_vien = HocVien.objects.get(email=mahv)
+                with transaction.atomic():
+                    # Lấy học viên
+                    hoc_vien = HocVien.objects.get(email=mahv)
 
-                # Lấy thông tin lớp học và tổng tiền
-                lop_hoc = None  # Thay thế bằng giá trị thực
-                tong_tien = Decimal(amount)
+                    # Lấy hóa đơn cần cập nhật
+                    hoa_don = HoaDon.objects.filter(mahv=hoc_vien, tongtien=Decimal(amount), trangthai='Chưa thanh toán').first()
+                    if not hoa_don:
+                        return HttpResponse("Hóa đơn không tồn tại hoặc đã thanh toán.")
 
-                # Tạo hóa đơn
-                hoa_don = HoaDon.objects.create(
-                    ngaylap=date.today(),
-                    tongtien=tong_tien,
-                    trangthai='Đã thanh toán',
-                    malop=lop_hoc,
-                    mahv=hoc_vien
-                )
+                    # Cập nhật trạng thái hóa đơn
+                    hoa_don.trangthai = 'Đã thanh toán'
+                    hoa_don.save()
 
-                # Lưu vào lịch sử giao dịch
-                giao_dich = LichSuGiaoDich.objects.create(
-                    magiaodich=hoa_don,  # Sử dụng đối tượng HoaDon thay vì chỉ gán số
-                    ngaygiaodich=date.today(),
-                    sotien=tong_tien,
-                    loaigiaodich="Thanh toán qua Momo",
-                    ghichu=f"Giao dịch thành công: {message}",
-                )
+                    # Lưu lịch sử giao dịch
+                    LichSuGiaoDich.objects.create(
+                        magiaodich=hoa_don,
+                        ngaygiaodich=date.today(),
+                        sotien=Decimal(amount),
+                        loaigiaodich="Thanh toán qua Momo",
+                        ghichu=f"Giao dịch thành công: {message}"
+                    )
 
-                # Chuyển hướng tới trang thông báo thành công
-                return render(request, 'payment_success.html', {
-                    'giao_dich': giao_dich,
-                    'hoa_don': hoa_don
-                })
-            except HocVien.DoesNotExist:
-                return HttpResponse("Học viên không tồn tại.")
+                    # Thông báo thành công
+                    return render(request, 'payment_success.html', {
+                        'hoa_don': hoa_don,
+                        'message': "Thanh toán thành công!"
+                    })
             except Exception as e:
                 return HttpResponse(f"Đã xảy ra lỗi: {str(e)}")
         else:
-            # Xử lý khi thanh toán thất bại
+            # Thanh toán thất bại
             return HttpResponse(f"Thanh toán thất bại: {message}")
+
+        
 
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt

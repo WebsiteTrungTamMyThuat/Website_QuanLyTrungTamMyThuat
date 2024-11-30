@@ -5,14 +5,18 @@
 <main>
     <div class="head-title">
         <div class="left">
-            <h1>Thanh toán</h1>
+            <h1>Danh sách học viên</h1>
             <ul class="breadcrumb">
                 <li>
                     <a href="#">Dashboard</a>
                 </li>
                 <li><i class='bx bx-chevron-right' ></i></li>
                 <li>
-                    <a class="active" href="#">Thanh toán</a>
+                    <a class="active" href="{% url 'lophoc' request.session.user_idtaikhoan %}">Danh sách lớp học</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Danh sách học viên</a>
                 </li>
             </ul>
         </div>
@@ -32,27 +36,18 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Mã</th>
-                        <th>Ngày lập</th>
-                        <th>Tổng tiền</th>
-                        <th>Lớp</th>
-                        <th>Trạng thái</th>
+                        <th>Mã học viên</th>
+                        <th>Họ tên</th>
+                        <th>Giới tính</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for hd in dshd %}
+                    {% for hv in dshv %}
                     <tr>
-                        <td>{{hd.sohd}}</td>
-                        <td>{{hd.ngaylap}}</td>
-                        <td>{{hd.tongtien}}</td>
-                        <td>{{hd.lop}}</td>
-                        <td>
-                            {%if hd.trangthai == "Chưa thanh toán" %}
-                                <span class="status waiting">{{hd.trangthai}}
-                            {% else %}
-                                <span class="status success">{{hd.trangthai}}
-                            {% endif %}
-                        </td>
+                        <td>{{hv.mahv}}</td>
+                        <td>{{hv.hoten}}</td>
+                        <td>{{hv.GioiTinh}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

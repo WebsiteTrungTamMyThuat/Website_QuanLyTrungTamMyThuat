@@ -1,0 +1,18 @@
+{% extends "layout/layout-user.html" %}
+
+{% block title %}Thông Tin Chuyển Khoản{% endblock %}
+
+{% block content %}
+<div class="bank-transfer container">
+    <h1>Thông Tin Chuyển Khoản</h1>
+    <p>Vui lòng chuyển khoản theo thông tin sau:</p>
+    <ul>
+        <li>Ngân hàng: TPBank</li>
+        <li>Chủ tài khoản: Công ty TNHH Mỹ thuật Bụi</li>
+        <li>Số tài khoản: 123456789</li>
+        {% load humanize %} 
+        <li>Số tiền: {{ total_price|floatformat:0|intcomma }} VND</li>
+    </ul>
+    <p>Ghi chú: Mã hóa đơn của bạn</p>
+</div>
+{% endblock %}

@@ -366,7 +366,7 @@ textarea, input {
 #content main .table-data .order table tr td .form-button .btn-edit {
   padding: 5px 10px;
   border-radius: 36px;
-  background: var(--yellow);
+  background: green;
   color: var(--light);
   font-weight: 400;
   width: fit-content;
@@ -482,8 +482,12 @@ textarea, input {
   border-radius: 20px;
   font-weight: 700;
 }
-#content main .table-data .order table tr td .status.process {
-  background: var(--orange);
+#content main .table-data .order table tr td .status.waiting {
+  background: #FF9100;
+}
+
+#content main .table-data .order table tr td .status.success {
+  background:#00712D;
 }
 #content main .table-data .order table tr td .status {
   font-size: 10px;
@@ -572,7 +576,7 @@ textarea, input {
 }
 .form button {
   height: 55px;
-  width: 100%;
+  width: 100px;
   color: #fff;
   font-size: 1rem;
   font-weight: 400;
@@ -690,4 +694,51 @@ textarea, input {
   #content main .table-data .todo .todo-list {
     min-width: 420px;
   }
+}
+
+
+/* Notification styling */
+.notification1.success {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+/* Error Notification (Red) */
+.notification1.error {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+.notification1 {
+  position: fixed;
+  top: 70px;
+  left: 60%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  z-index: 9999;
+  font-size: 14px;
+}
+
+.notification-icon {
+  font-size: 18px; /* Adjusted icon size */
+  margin-right: 10px;
+}
+
+.notification-message {
+  flex-grow: 1;
+}
+
+.close-btn {
+  font-size: 18px; /* Adjusted close button size */
+  cursor: pointer;
+}
+
+.notification1.deactive {
+  display: none; /* Hoặc visibility: hidden; */
 }

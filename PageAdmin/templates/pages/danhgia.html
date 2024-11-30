@@ -1,0 +1,41 @@
+{% extends "layout/layout.html" %} {% block title %} Home {% endblock %} 
+{%block content %} 
+{% load static%}
+<main>
+    <div class="head-title">
+        <div class="left">
+            <h1>Sửa giáo viên</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="{% url 'lophoc_admin' request.session.user_idtaikhoan %}">Danh sách lớp học đã đăng ký</a>
+                </li>
+                <li><i class='bx bx-chevron-right' ></i></li>
+                <li>
+                    <a class="active" href="#">Đánh giá lớp học</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="table-data">
+        <div class="order">
+            <section class="container">
+                <form action="{%url 'danhgia' idtaikhoan malop%}" class="form" method="POST">
+                    {% csrf_token %}
+                    <div class="input-box">
+                        <label>Đánh giá</label>
+                        <input name="danhgia" type="text" placeholder="đánh giá của bạn về lớp học?" required />
+                    </div>
+                  <button type="submit">Đánh giá</button>
+                </form>
+              </section>
+              
+        </div>
+        
+    </div>
+</main>
+{% endblock %}
