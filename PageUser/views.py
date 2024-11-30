@@ -594,65 +594,98 @@ def momo_payment(request):
 
 ####
 def thanh_toan(request):
-   
     if not request.session.get('user_username'):
         messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
         return redirect('dangnhap')
 
     gio_hang = request.session.get('gio_hang', {})
 
-   
     if is_conflict_schedule(gio_hang):
         messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
         return redirect('giohang')
-
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
         return redirect('giohang')
 
-    username = request.session['user_username']
+    username = request.session.get('user_username')
     hoc_vien = get_object_or_404(HocVien, email=username)
 
     total_price = Decimal(0)
-
     try:
-        # Tính tổng học phí cho giỏ hàng
         for malop, item in gio_hang.items():
             malop_cleaned = malop.strip()
             lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-            total_price += Decimal(item['hocphi']) * item['so_luong']  # Tính tổng tiền
+            total_price += Decimal(item['hocphi']) * item['so_luong']
 
     except Exception as e:
         messages.error(request, f"Lỗi khi lấy lớp học từ giỏ hàng: {e}")
         return redirect('giohang')
 
-  
     if request.method == 'POST':
         try:
-            with transaction.atomic():  
-               
+            with transaction.atomic():
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
                     lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-             
                     total_price_per_class = Decimal(item['hocphi']) * item['so_luong']
 
-                
                     hoa_don = HoaDon.objects.create(
-                        mahv=hoc_vien,  
-                        malop=lop_hoc,  
-                        ngaylap=date.today(), 
-                        tongtien=total_price_per_class, 
-                        trangthai='Chưa thanh toán'  
+                        mahv=hoc_vien,
+                        malop=lop_hoc,
+                        ngaylap=date.today(),
+                        tongtien=total_price_per_class,
+                        trangthai='Chưa thanh toán'
                     )
 
-                
-           #     request.session['gio_hang'] = {}
+                # Proceed to Momo payment after creating the invoice
+                payment_method = request.POST.get('payment_method', 'captureWallet')  # Default to wallet
+                amount = request.POST.get('amount', '10000')  # Convert amount to smallest unit (in cents, if needed)
+                order_id = f"ORDER{int(time.time())}"  # Unique order ID
+                request_id = f"REQUEST{int(time.time())}"  # Unique request ID
+                order_info = "Thanh toán khóa học"
 
-              
-                messages.success(request, " Đơn hàng của bạn đã được tạo vui lòng thanh toán !")
-                return redirect('giohang')  
+                # Prepare the raw signature
+                raw_signature = (
+                    f"accessKey={settings.MOMO_ACCESS_KEY}&"
+                    f"amount={amount}&"
+                    f"extraData=&"
+                    f"ipnUrl={settings.MOMO_NOTIFY_URL}&"
+                    f"orderId={order_id}&"
+                    f"orderInfo={order_info}&"
+                    f"partnerCode={settings.MOMO_PARTNER_CODE}&"
+                    f"redirectUrl={settings.MOMO_RETURN_URL}&"
+                    f"requestId={request_id}&"
+                    f"requestType={payment_method}"
+                )
+
+                signature = hmac.new(
+                    settings.MOMO_SECRET_KEY.encode('utf-8'),
+                    raw_signature.encode('utf-8'),
+                    hashlib.sha256
+                ).hexdigest()
+
+                data = {
+                    "partnerCode": settings.MOMO_PARTNER_CODE,
+                    "accessKey": settings.MOMO_ACCESS_KEY,
+                    "requestId": request_id,
+                    "amount": amount,
+                    "orderId": order_id,
+                    "orderInfo": order_info,
+                    "redirectUrl": settings.MOMO_RETURN_URL,
+                    "ipnUrl": settings.MOMO_NOTIFY_URL,
+                    "extraData": "",
+                    "requestType": payment_method,
+                    "signature": signature,  # Include signature here
+                }
+
+                response = requests.post(settings.MOMO_ENDPOINT, json=data)
+                response_data = response.json()
+
+                if response_data.get('payUrl'):
+                    return redirect(response_data['payUrl'])  # Redirect to Momo payment page
+                else:
+                    return HttpResponse(f"Lỗi khi tạo yêu cầu thanh toán: {response_data.get('message', 'Unknown error')}")
 
         except Exception as e:
             messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
@@ -661,27 +694,8 @@ def thanh_toan(request):
     else:
         messages.error(request, "Vui lòng gửi yêu cầu thanh toán.")
         return redirect('giohang')
-    
-
 ####
 
-
-
-    if request.method == 'POST':
-        payment_method = request.POST.get('payment_method')
-        total_price = request.POST.get('total_price')
-
-        if payment_method == 'momo':
-            # Chuyển đến logic thanh toán qua Momo
-            return redirect('momo_payment')
-        elif payment_method == 'bank_transfer':
-            # Hiển thị thông tin chuyển khoản ngân hàng
-            return render(request, 'pages/thong_tin_chuyen_khoan.html', {
-                'total_price': total_price
-            })
-        else:
-            messages.error(request, "Phương thức thanh toán không hợp lệ.")
-            return redirect('chon_phuong_thuc_thanh_toan')
 ###
 def momo_return(request):
     if request.method == 'GET':
@@ -709,7 +723,7 @@ def momo_return(request):
 
                     # Lưu lịch sử giao dịch
                     LichSuGiaoDich.objects.create(
-                        magiaodich=hoa_don,
+                        magiaodich=hoa_don.sohd,
                         ngaygiaodich=date.today(),
                         sotien=Decimal(amount),
                         loaigiaodich="Thanh toán qua Momo",
@@ -717,7 +731,7 @@ def momo_return(request):
                     )
 
                     # Thông báo thành công
-                    return render(request, 'payment_success.html', {
+                    return render(request, 'pages/paymey_succesful.html', {
                         'hoa_don': hoa_don,
                         'message': "Thanh toán thành công!"
                     })
@@ -726,7 +740,6 @@ def momo_return(request):
         else:
             # Thanh toán thất bại
             return HttpResponse(f"Thanh toán thất bại: {message}")
-
         
 
 from django.views.decorators.csrf import csrf_exempt
