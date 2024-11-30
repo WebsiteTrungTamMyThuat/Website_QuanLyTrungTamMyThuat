@@ -6,7 +6,7 @@
     <main>
         <div class="head-title">
             <div class="left">
-                <h1>Lịch học</h1>
+                <h1>Lịch {% if request.session.quyen == "HV" %}học{% else %}dạy{% endif %}</h1>
                 <ul class="breadcrumb">
                     <li>
                         <a href="#">Dashboard</a>
