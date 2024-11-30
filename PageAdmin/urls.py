@@ -23,4 +23,8 @@ urlpatterns = [
     
     path('dangxuat/<str:idtaikhoan>/',views.dangxuat,name='dangxuat'),
     
+    path('search_dslop/<str:idtaikhoan>/',views.search_dslop,name='search_dslop'),
+    
+    path('search_lsgd/<str:idtaikhoan>/',views.search_lsgd,name='search_lsgd'),
+    
 ]

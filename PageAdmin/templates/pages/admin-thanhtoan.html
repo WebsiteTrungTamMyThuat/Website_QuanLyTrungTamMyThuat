@@ -22,9 +22,10 @@
         <div class="order">
             <div class="head">
                 <h3>Danh sách hóa đơn</h3>
-                <form action="#" method="GET">
+                <form action="{%url 'search_lsgd' request.session.user_idtaikhoan %}" method="POST">
                     <div class="form-input">
-                        <input name="seachsb" type="search" placeholder="Search...">
+                        {% csrf_token %}
+                        <input name="seach_lsgd" type="search" placeholder="Tìm theo tên lớp...">
                         <button  type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                     </div>
                 </form>
