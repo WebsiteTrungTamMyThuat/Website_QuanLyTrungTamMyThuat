@@ -41,19 +41,11 @@
                     <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau |date:"d F Y"}}</p>
                     <p><strong>Mô tả:</strong> </p>
                     <p>{{ khoa_hoc.mota }}</p>
-                    <p><strong>Lịch học:</strong> </p>
+                   
                     <div class="list-button">
                         <form method="post" action="{% url 'them_vao_gio_hang' single_lop.malop %}">
                             {% csrf_token %}
-                            <div class="course-button">
-                                {% for lich in lichhoc %}
-                                <label>
-                                    <input type="radio" name="selected_lichhoc" value="{{ lich.ngayhoc }}|{{ lich.giohoc }}">
-                                    Ngày: {{ lich.ngayhoc }} - Giờ học: {{ lich.giohoc }}
-                                </label>
-                                <br>
-                                {% endfor %}
-                            </div>
+
                             <br>
                             <button type="submit" class="btn btn-primary">Đăng Ký Lớp Học</button>
                         </form>

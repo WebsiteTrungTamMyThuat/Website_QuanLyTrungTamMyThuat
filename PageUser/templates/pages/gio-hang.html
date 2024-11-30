@@ -9,7 +9,7 @@
 
     <div class="cart container">
         <h1>Tiến hành mua hàng</h1>
-        <div class="cart__content row">
+        <div class="cart__content row" style="grid-template-columns: none">
             <div class="cart__left col-8">
                 <div class="cart__user">
                     <h2>Thông tin khách hàng</h2>
@@ -100,7 +100,7 @@
                                     <span class="cart-item-price">Học phí: {{ item.hocphi|floatformat:0|intcomma }} VND</span>
                                 </div>
 
-                                <h4>Lịch học:  Ngày: {{ item.lichhoc.ngayhoc }} - Giờ: {{ item.lichhoc.giohoc }}</h4>
+                               
 
                                 <a href="{% url 'xoa_hoan_tat' item.malop %}" class="cart-item-remove">Xóa</a>
                             </div>

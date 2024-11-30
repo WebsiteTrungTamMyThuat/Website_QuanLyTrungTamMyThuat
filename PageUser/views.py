@@ -427,7 +427,7 @@ def LoadGioHang(request):
             'hocphi': float(item['hocphi']),
             'so_luong': item['so_luong'],
             'mahv': item.get('mahv', ''),
-            'lichhoc': item['lichhoc']  # Lịch học đã chọn
+           
         }
         for malop, item in gio_hang.items()
     ]
@@ -463,28 +463,15 @@ def them_vao_gio_hang(request, malop):
     mahv = hoc_vien.mahv.strip()
 
     if request.method == "POST":
-        selected_lich = request.POST.get('selected_lichhoc', None)
-        if not selected_lich:
-            messages.error(request, "Vui lòng chọn ít nhất một lịch học trước khi đăng ký.")
-            return redirect('ttkhoahoc', mlop=malop)
-
-       
-        ngayhoc, giohoc = selected_lich.split('|')
-
-        
         gio_hang = request.session.get('gio_hang', {})
 
-       
         gio_hang[malop] = {
             'tenlop': lop_hoc.tenlop,
             'hocphi': str(lop_hoc.hocphi),
             'so_luong': 1,
             'malop': malop,
             'mahv': mahv,
-            'lichhoc': {  # Lưu lịch học đã chọn
-                'ngayhoc': ngayhoc,
-                'giohoc': giohoc
-            }
+
         }
 
         # Lưu giỏ hàng vào session
@@ -705,7 +692,8 @@ def momo_return(request):
         result_code = data.get('resultCode')
         message = data.get('message')
         mahv = request.session.get('user_username')
-
+        print (mahv)
+        
         if result_code == '0':  # Thanh toán thành công
             try:
                 with transaction.atomic():
@@ -718,9 +706,10 @@ def momo_return(request):
                         return HttpResponse("Hóa đơn không tồn tại hoặc đã thanh toán.")
 
                     # Cập nhật trạng thái hóa đơn
+                
                     hoa_don.trangthai = 'Đã thanh toán'
                     hoa_don.save()
-
+                  
                     # Lưu lịch sử giao dịch
                     LichSuGiaoDich.objects.create(
                         magiaodich=hoa_don.sohd,
@@ -730,17 +719,53 @@ def momo_return(request):
                         ghichu=f"Giao dịch thành công: {message}"
                     )
 
+                    request.session['gio_hang'] = {}
                     # Thông báo thành công
-                    return render(request, 'pages/paymey_succesful.html', {
-                        'hoa_don': hoa_don,
-                        'message': "Thanh toán thành công!"
-                    })
+                    return redirect('success')
+                   
+
             except Exception as e:
                 return HttpResponse(f"Đã xảy ra lỗi: {str(e)}")
+            # thanh toán thất bại
         else:
-            # Thanh toán thất bại
-            return HttpResponse(f"Thanh toán thất bại: {message}")
+            try:
+                with transaction.atomic():
+                    # Lấy học viên
+                    hoc_vien = HocVien.objects.get(email=mahv)
+
+                    # Lấy hóa đơn cần cập nhật khi thanh toán thất bại
+                    hoa_don = HoaDon.objects.filter(
+                        mahv=hoc_vien, 
+                        tongtien=Decimal(amount), 
+                        trangthai='Chưa thanh toán'
+                    ).first()
+
+                    # Kiểm tra nếu hóa đơn không tồn tại
+                    if not hoa_don:
+                        return HttpResponse("Hóa đơn không tồn tại hoặc đã được xử lý.")
+
+                    # Cập nhật trạng thái hóa đơn là "Đã hủy"
+                    hoa_don.trangthai = 'Đã hủy'
+                    hoa_don.save()
+
+                    # Lưu lịch sử giao dịch thất bại
+                    LichSuGiaoDich.objects.create(
+                        magiaodich=hoa_don.sohd,
+                        ngaygiaodich=date.today(),
+                        sotien=Decimal(amount),
+                        loaigiaodich="Thanh toán qua Momo",
+                        ghichu=f"Giao dịch thất bại: {message}"
+                    )
+
+                    # Thông báo thanh toán thất bại
+                    return HttpResponse(f"Thanh toán thất bại: {message}")
+
+            except Exception as e:
+                return HttpResponse(f"Đã xảy ra lỗi khi xử lý thanh toán thất bại: {str(e)}")
         
+def success(request):
+     return render(request, 'pages/paymey_succesful.html')
+
 
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
