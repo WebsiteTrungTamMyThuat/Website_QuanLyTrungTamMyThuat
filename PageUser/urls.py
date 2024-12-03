@@ -30,4 +30,10 @@ urlpatterns = [
     path('them-vao-gio-hang/<str:malop>/', views.them_vao_gio_hang, name='them_vao_gio_hang'),
     path('xoa-giỏ-hàng/<str:malop>/', views.xoa_hoan_tat, name='xoa_hoan_tat'),
     path('thanh-toan/', views.thanh_toan, name='thanh_toan'),
+
+   
+    path('momo-payment/', views.momo_payment, name='momo_payment'),
+    path('thank-you/', views.momo_return, name='thank-you'),
+    path('momo-notify/', views.momo_notify, name='momo_notify'),
+    path('success/',views.success, name = 'success'),
 ]

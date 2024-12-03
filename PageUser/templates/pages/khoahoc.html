@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{% static "css/khoahoc.css" %}">
 <div>
     <div class="list-course">
-        <h1>Danh sách khóa học </h1>
+        <h1>Danh sách lớp học </h1>
             <div class="list-button">
                 <h3> Môn học: </h3>
                 <div class="course-button">
@@ -83,6 +83,7 @@
                             </p>
                             
                             <p >Ngày bắt đầu: {{ lop.ngaybatdau|date:"d F Y" }}</p>
+                            <p>Tình trạng: {{lop.tinhtrang}}</p>
                            
                         </div>
                         <div class="price">

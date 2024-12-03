@@ -52,7 +52,7 @@ class LopHoc(models.Model):
     hocphi = models.DecimalField(max_digits=10, decimal_places=2)
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     magv = models.CharField(max_length=10, db_column='magv')
-    urlhinh = models.ImageField(upload_to='PageUser/static/img/', null=True, blank=True)
+    urlhinh = models.CharField(max_length=255)
     tinhtrang = models.CharField(max_length=255)
     class Meta:
         db_table = 'lophoc'
@@ -164,15 +164,26 @@ class DanhGia(models.Model):
     
         
 class LichSuGiaoDich(models.Model):
-    magiaodich = models.AutoField(primary_key=True)
+    magiaodich = models.IntegerField(primary_key=True)
     ngaygiaodich = models.DateField()
     sotien = models.DecimalField(max_digits=10, decimal_places=2)
     loaigiaodich = models.CharField(max_length=20)
     ghichu = models.TextField()
-    mahv = models.ForeignKey(HocVien, on_delete=models.CASCADE)
+
     class Meta:
         db_table = 'lichsugiaodich'
-        
+
+    @classmethod
+    def get_next_magiaodich(cls):
+        last_entry = cls.objects.all().order_by('-magiaodich').first()
+        if last_entry:
+            return last_entry.magiaodich + 1
+        return 1  # Nếu chưa có dữ liệu, bắt đầu từ 1
+    
+    def save(self, *args, **kwargs):
+        if not self.magiaodich:  # Chỉ tự động gán giá trị khi magiaodich chưa có
+            self.magiaodich = self.get_next_magiaodich()
+        super().save(*args, **kwargs)
 class PhieuNhap(models.Model):
     maphieunhap = models.AutoField(primary_key=True)
     ngaynhap = models.DateField()

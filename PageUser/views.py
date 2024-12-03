@@ -379,7 +379,7 @@ def LoadPhieuDK(request):
 def DSKhoaHoc(request):
     dskh = {
         'dm_kh' : KhoaHoc.objects.all(),
-        'ds_lop': LopHoc.objects.all(),
+        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu"),
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
@@ -427,7 +427,7 @@ def LoadGioHang(request):
             'hocphi': float(item['hocphi']),
             'so_luong': item['so_luong'],
             'mahv': item.get('mahv', ''),
-            'lichhoc': item['lichhoc']  # Lịch học đã chọn
+           
         }
         for malop, item in gio_hang.items()
     ]
@@ -463,28 +463,15 @@ def them_vao_gio_hang(request, malop):
     mahv = hoc_vien.mahv.strip()
 
     if request.method == "POST":
-        selected_lich = request.POST.get('selected_lichhoc', None)
-        if not selected_lich:
-            messages.error(request, "Vui lòng chọn ít nhất một lịch học trước khi đăng ký.")
-            return redirect('ttkhoahoc', mlop=malop)
-
-       
-        ngayhoc, giohoc = selected_lich.split('|')
-
-        
         gio_hang = request.session.get('gio_hang', {})
 
-       
         gio_hang[malop] = {
             'tenlop': lop_hoc.tenlop,
             'hocphi': str(lop_hoc.hocphi),
             'so_luong': 1,
             'malop': malop,
             'mahv': mahv,
-            'lichhoc': {  # Lưu lịch học đã chọn
-                'ngayhoc': ngayhoc,
-                'giohoc': giohoc
-            }
+
         }
 
         # Lưu giỏ hàng vào session
@@ -524,66 +511,168 @@ def is_conflict_schedule(gio_hang):
 
     return False
 ###
+
+import hmac
+import hashlib
+import json
+import requests ,time
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.http import HttpResponse
+
+
+
+def momo_payment(request):
+    if request.method == 'POST':
+        # Lấy thông tin từ form
+        payment_method = request.POST.get('payment_method', 'captureWallet')  # Phương thức thanh toán
+        amount = request.POST.get('amount', '10000')  # Số tiền thanh toán
+        order_id = f"ORDER{int(time.time())}"  # Mã đơn hàng
+        request_id = f"REQUEST{int(time.time())}"  # Mã yêu cầu
+        order_info = "Thanh toán khóa học"  # Thông tin đơn hàng
+
+        # Dữ liệu yêu cầu gửi tới Momo API
+        data = {
+            "partnerCode": settings.MOMO_PARTNER_CODE,
+            "accessKey": settings.MOMO_ACCESS_KEY,
+            "requestId": request_id,
+            "amount": amount,
+            "orderId": order_id,
+            "orderInfo": order_info,
+            "redirectUrl": settings.MOMO_RETURN_URL,
+            "ipnUrl": settings.MOMO_NOTIFY_URL,
+            "extraData": "",  # Dữ liệu bổ sung, có thể để trống
+            "requestType": payment_method  # Phương thức thanh toán được chọn
+        }
+
+        # Tạo signature để xác thực yêu cầu
+        raw_signature = (
+            f"accessKey={settings.MOMO_ACCESS_KEY}&"
+            f"amount={amount}&"
+            f"extraData=&"
+            f"ipnUrl={settings.MOMO_NOTIFY_URL}&"
+            f"orderId={order_id}&"
+            f"orderInfo={order_info}&"
+            f"partnerCode={settings.MOMO_PARTNER_CODE}&"
+            f"redirectUrl={settings.MOMO_RETURN_URL}&"
+            f"requestId={request_id}&"
+            f"requestType={payment_method}"  # Đảm bảo phương thức thanh toán được truyền đúng
+        )
+        signature = hmac.new(
+            settings.MOMO_SECRET_KEY.encode('utf-8'),
+            raw_signature.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+
+        data["signature"] = signature
+
+        # Gửi yêu cầu đến Momo
+        response = requests.post(settings.MOMO_ENDPOINT, json=data)
+        response_data = response.json()
+
+        # Kiểm tra phản hồi từ Momo
+        if response_data.get('payUrl'):
+            return redirect(response_data['payUrl'])  # Chuyển hướng tới trang thanh toán Momo
+        else:
+            return HttpResponse(f"Lỗi khi tạo yêu cầu thanh toán: {response_data.get('message', 'Unknown error')}")
+    else:
+        return render(request, 'pages/payment.html')
+
+
+####
 def thanh_toan(request):
-   
     if not request.session.get('user_username'):
         messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
         return redirect('dangnhap')
 
     gio_hang = request.session.get('gio_hang', {})
 
-   
     if is_conflict_schedule(gio_hang):
         messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
         return redirect('giohang')
-
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
         return redirect('giohang')
 
-    username = request.session['user_username']
+    username = request.session.get('user_username')
     hoc_vien = get_object_or_404(HocVien, email=username)
 
     total_price = Decimal(0)
-
     try:
-        # Tính tổng học phí cho giỏ hàng
         for malop, item in gio_hang.items():
             malop_cleaned = malop.strip()
             lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-            total_price += Decimal(item['hocphi']) * item['so_luong']  # Tính tổng tiền
+            total_price += Decimal(item['hocphi']) * item['so_luong']
 
     except Exception as e:
         messages.error(request, f"Lỗi khi lấy lớp học từ giỏ hàng: {e}")
         return redirect('giohang')
 
-  
     if request.method == 'POST':
         try:
-            with transaction.atomic():  
-               
+            with transaction.atomic():
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
                     lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
-             
                     total_price_per_class = Decimal(item['hocphi']) * item['so_luong']
 
-                
                     hoa_don = HoaDon.objects.create(
-                        mahv=hoc_vien,  
-                        malop=lop_hoc,  
-                        ngaylap=date.today(), 
-                        tongtien=total_price_per_class, 
-                        trangthai='Chưa thanh toán'  
+                        mahv=hoc_vien,
+                        malop=lop_hoc,
+                        ngaylap=date.today(),
+                        tongtien=total_price_per_class,
+                        trangthai='Chưa thanh toán'
                     )
 
-                
-                request.session['gio_hang'] = {}
+                # Proceed to Momo payment after creating the invoice
+                payment_method = request.POST.get('payment_method', 'captureWallet')  # Default to wallet
+                amount = request.POST.get('amount', '10000')  # Convert amount to smallest unit (in cents, if needed)
+                order_id = f"ORDER{int(time.time())}"  # Unique order ID
+                request_id = f"REQUEST{int(time.time())}"  # Unique request ID
+                order_info = "Thanh toán khóa học"
 
-              
-                messages.success(request, "Thanh toán thành công! Bạn đã đăng ký các lớp học.")
-                return redirect('user')  
+                # Prepare the raw signature
+                raw_signature = (
+                    f"accessKey={settings.MOMO_ACCESS_KEY}&"
+                    f"amount={amount}&"
+                    f"extraData=&"
+                    f"ipnUrl={settings.MOMO_NOTIFY_URL}&"
+                    f"orderId={order_id}&"
+                    f"orderInfo={order_info}&"
+                    f"partnerCode={settings.MOMO_PARTNER_CODE}&"
+                    f"redirectUrl={settings.MOMO_RETURN_URL}&"
+                    f"requestId={request_id}&"
+                    f"requestType={payment_method}"
+                )
+
+                signature = hmac.new(
+                    settings.MOMO_SECRET_KEY.encode('utf-8'),
+                    raw_signature.encode('utf-8'),
+                    hashlib.sha256
+                ).hexdigest()
+
+                data = {
+                    "partnerCode": settings.MOMO_PARTNER_CODE,
+                    "accessKey": settings.MOMO_ACCESS_KEY,
+                    "requestId": request_id,
+                    "amount": amount,
+                    "orderId": order_id,
+                    "orderInfo": order_info,
+                    "redirectUrl": settings.MOMO_RETURN_URL,
+                    "ipnUrl": settings.MOMO_NOTIFY_URL,
+                    "extraData": "",
+                    "requestType": payment_method,
+                    "signature": signature,  # Include signature here
+                }
+
+                response = requests.post(settings.MOMO_ENDPOINT, json=data)
+                response_data = response.json()
+
+                if response_data.get('payUrl'):
+                    return redirect(response_data['payUrl'])  # Redirect to Momo payment page
+                else:
+                    return HttpResponse(f"Lỗi khi tạo yêu cầu thanh toán: {response_data.get('message', 'Unknown error')}")
 
         except Exception as e:
             messages.error(request, f"Đã xảy ra lỗi khi thanh toán: {e}")
@@ -592,3 +681,111 @@ def thanh_toan(request):
     else:
         messages.error(request, "Vui lòng gửi yêu cầu thanh toán.")
         return redirect('giohang')
+####
+
+###
+def momo_return(request):
+    if request.method == 'GET':
+        data = request.GET
+        order_id = data.get('orderId')
+        amount = data.get('amount')
+        result_code = data.get('resultCode')
+        message = data.get('message')
+        mahv = request.session.get('user_username')
+        print (mahv)
+        
+        if result_code == '0':  # Thanh toán thành công
+            try:
+                with transaction.atomic():
+                    # Lấy học viên
+                    hoc_vien = HocVien.objects.get(email=mahv)
+
+                    # Lấy hóa đơn cần cập nhật
+                    hoa_don = HoaDon.objects.filter(mahv=hoc_vien, tongtien=Decimal(amount), trangthai='Chưa thanh toán').first()
+                    if not hoa_don:
+                        return HttpResponse("Hóa đơn không tồn tại hoặc đã thanh toán.")
+
+                    # Cập nhật trạng thái hóa đơn
+                
+                    hoa_don.trangthai = 'Đã thanh toán'
+                    hoa_don.save()
+                  
+                    # Lưu lịch sử giao dịch
+                    LichSuGiaoDich.objects.create(
+                        magiaodich=hoa_don.sohd,
+                        ngaygiaodich=date.today(),
+                        sotien=Decimal(amount),
+                        loaigiaodich="Thanh toán qua Momo",
+                        ghichu=f"Giao dịch thành công: {message}"
+                    )
+
+                    request.session['gio_hang'] = {}
+                    # Thông báo thành công
+                    return redirect('success')
+                   
+
+            except Exception as e:
+                return HttpResponse(f"Đã xảy ra lỗi: {str(e)}")
+            # thanh toán thất bại
+        else:
+            try:
+                with transaction.atomic():
+                    # Lấy học viên
+                    hoc_vien = HocVien.objects.get(email=mahv)
+
+                    # Lấy hóa đơn cần cập nhật khi thanh toán thất bại
+                    hoa_don = HoaDon.objects.filter(
+                        mahv=hoc_vien, 
+                        tongtien=Decimal(amount), 
+                        trangthai='Chưa thanh toán'
+                    ).first()
+
+                    # Kiểm tra nếu hóa đơn không tồn tại
+                    if not hoa_don:
+                        return HttpResponse("Hóa đơn không tồn tại hoặc đã được xử lý.")
+
+                    # Cập nhật trạng thái hóa đơn là "Đã hủy"
+                    hoa_don.trangthai = 'Đã hủy'
+                    hoa_don.save()
+
+                    # Lưu lịch sử giao dịch thất bại
+                    LichSuGiaoDich.objects.create(
+                        magiaodich=hoa_don.sohd,
+                        ngaygiaodich=date.today(),
+                        sotien=Decimal(amount),
+                        loaigiaodich="Thanh toán qua Momo",
+                        ghichu=f"Giao dịch thất bại: {message}"
+                    )
+
+                    # Thông báo thanh toán thất bại
+                    return HttpResponse(f"Thanh toán thất bại: {message}")
+
+            except Exception as e:
+                return HttpResponse(f"Đã xảy ra lỗi khi xử lý thanh toán thất bại: {str(e)}")
+        
+def success(request):
+     return render(request, 'pages/paymey_succesful.html')
+
+
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def momo_notify(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        order_id = data.get('orderId')
+        result_code = data.get('resultCode')
+
+        try:
+            hoa_don = HoaDon.objects.get(mahd=order_id)
+            if result_code == 0:
+                hoa_don.trangthai = 'Đã thanh toán'
+                hoa_don.save()
+                print(f"Đơn hàng {order_id} đã thanh toán thành công.")
+            else:
+                hoa_don.trangthai = 'Thanh toán thất bại'
+                hoa_don.save()
+                print(f"Đơn hàng {order_id} thanh toán thất bại.")
+        except HoaDon.DoesNotExist:
+            print(f"Đơn hàng {order_id} không tồn tại trong hệ thống.")
+
+        return HttpResponse("Received", status=200)

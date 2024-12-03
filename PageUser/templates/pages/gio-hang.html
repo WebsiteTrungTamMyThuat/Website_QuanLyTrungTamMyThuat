@@ -4,12 +4,12 @@
 
 {% block content %}
     {% load static %}
-    
+
     <link rel="stylesheet" href="{% static 'css/gio-hang.css' %}">
 
     <div class="cart container">
         <h1>Tiến hành mua hàng</h1>
-        <div class="cart__content row">
+        <div class="cart__content row" style="grid-template-columns: none">
             <div class="cart__left col-8">
                 <div class="cart__user">
                     <h2>Thông tin khách hàng</h2>
@@ -34,84 +34,107 @@
                     <span class="note">"Nếu bạn đã từng mua khóa học hoặc có tài khoản tại lopveonline.vn, bạn có thể đăng nhập để không phải nhập lại thông tin cá nhân"</span>
                 </div>
 
-                <!-- Phương thức thanh toán -->
-                <div class="cart__payment">
-                    <h2>Phương thức thanh toán</h2>
-                    <div class="cart__payment-method">
-                        <div class="cart__payment-method-item">
-                            <input type="radio" name="payment" value="transfer" id="payment2">
-                            <label for="payment2">Chuyển khoản ngân hàng</label>
-                            <div class="panel-group">
-                                <div class="panel" id="collapseTransfer">
-                                    <div class="panel__left">
-                                        <img src="{% static 'img/tpbank.png' %}" alt="Ngân hàng TP Bank">
-                                    </div>
-                                    <div class="panel__right">
-                                        <p>Ngân hàng: TP Bank</p>
-                                        <p>Chủ tài khoản: Công ty TNHH Mỹ thuật Bụi</p>
-                                        <p>Số tài khoản: 123456789</p>
+                <!-- Payment Method Section -->
+                <form method="post" action="{% url 'thanh_toan' %}">
+                    {% csrf_token %}
+                    <div class="cart__payment">
+                        <h2>Phương thức thanh toán</h2>
+                        <div class="cart__payment-method">
+                            <!-- Bank Transfer Method -->
+                            <div class="cart__payment-method-item">
+                                <input type="radio" name="payment" value="transfer" id="payment2" required>
+                                <label for="payment2">Chuyển khoản ngân hàng</label>
+                                <div class="panel-group">
+                                    <div class="panel" id="collapseTransfer">
+                                        <div class="panel__left">
+                                            <img src="{% static 'img/tpbank.png' %}" alt="Ngân hàng TP Bank">
+                                        </div>
+                                        <div class="panel__right">
+                                            <p>Ngân hàng: TP Bank</p>
+                                            <p>Chủ tài khoản: Công ty TNHH Mỹ thuật Bụi</p>
+                                            <p>Số tài khoản: 123456789</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="cart__payment-method-item">
-                            <input type="radio" name="payment" value="onepay" id="payment3">
-                            <label for="payment3">Thanh toán online qua Momo - Ngân hàng</label>
-                            <div class="panel" id="collapseOnePay">
-                                <div class="onepay" aria-label="atm">
-                                    <i class="fa fa-university"></i>
-                                    Thanh toán bằng thẻ ATM
-                                </div>
-                                <div class="onepay" aria-label="visa">
-                                    <i class="fa fa-cc-visa"></i>
-                                    Thanh toán bằng thẻ Visa/Master
-                                </div>
-                                <div class="onepay" aria-label="momo">
-                                    <i class="fa fa-qrcode" aria-hidden="true"></i>
-                                    Thanh toán qua Momo
+
+                            <!-- Momo Payment Method -->
+                            <div class="cart__payment-method-item">
+                                <input type="radio" name="payment" value="onepay" id="payment3" required>
+                                <label for="payment3">Thanh toán online qua Momo - Ngân hàng</label>
+                                <div class="panel" id="collapseOnePay">
+                                    <h4>Chọn phương thức thanh toán:</h4>
+                                    <div class="cart__payment-method-item">
+                                        <input type="radio" name="payment_method" value="captureWallet" id="momo_wallet" checked>
+                                        <label for="momo_wallet" class="payment-button momo-wallet">
+                                            Thanh toán qua ví Momo
+                                        </label>
+                                    </div>
+                                    <div class="cart__payment-method-item">
+                                        <input type="radio" name="payment_method" value="payWithATM" id="momo_atm">
+                                        <label for="momo_atm" class="payment-button momo-atm">
+                                            Thanh toán qua thẻ ATM nội địa
+                                        </label>
+                                    </div>
+                                    <div class="cart__payment-method-item">
+                                        <input type="radio" name="payment_method" value="payWithVisa" id="momo_visa">
+                                        <label for="momo_visa" class="payment-button momo-visa">
+                                            Thanh toán qua thẻ Visa/MasterCard
+                                        </label>
+                                    </div>
+                                    <input type="hidden" name="amount" value="{{ total_price|floatformat:0 }}">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Right Side Column -->
-            <div class="cart__right col-4">
-                <h2 class="cart-header">Đơn hàng</h2>
-                <div class="cart-items">
-                    {% for item in gio_hang_display %}
-                    <div class="cart-item-row">
-                        <h3 class="cart-item-title">{{ item.tenlop }}</h3>
-                        {% load humanize %} 
-                        <p class="cart-item-price">Học phí: {{ item.hocphi|floatformat:0|intcomma }} VND</p>
-                
-                        <h4>Lịch học:</h4>
-                        <ul>
-                            <li>
-                                Ngày: {{ item.lichhoc.ngayhoc }} - Giờ: {{ item.lichhoc.giohoc }}
-                            </li>
-                        </ul>
-                        
-                        <a href="{% url 'xoa_hoan_tat' item.malop %}" class="cart-item-remove">Xóa</a>
+                    <!-- Order Summary Section -->
+                    <div class="cart__right col-4">
+                        <h2 class="cart-header">Đơn hàng</h2>
+                        <div class="cart-items">
+                            {% for item in gio_hang_display %}
+                            <div class="cart-item-row">
+                                <div class="cart-item-header">
+                                    <span class="cart-item-title">{{ item.tenlop }}</span>
+                                    {% load humanize %} 
+                                    <span class="cart-item-price">Học phí: {{ item.hocphi|floatformat:0|intcomma }} VND</span>
+                                </div>
+
+                               
+
+                                <a href="{% url 'xoa_hoan_tat' item.malop %}" class="cart-item-remove">Xóa</a>
+                            </div>
+                            {% empty %}
+                            <p>Giỏ hàng của bạn hiện đang trống.</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Total Price Section -->
+                        <div class="cart__total">
+                            <h2>Tổng tiền: {{ total_price|floatformat:0|intcomma }} VND</h2>
+                            <button type="submit" class="btn btn-success">Thanh toán</button>
+                        </div>
                     </div>
-                    {% empty %}
-                    <p>Giỏ hàng của bạn hiện đang trống.</p>
-                    {% endfor %}
-                </div>
-
-                <!-- Total Price Section -->
-                <div class="cart__total">
-                    
-                    <h2>Tổng tiền: {{ total_price|floatformat:0|intcomma }} VND</h2>
-                    <form method="post" action="{% url 'thanh_toan' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success">Thanh toán</button>
-                    </form>
-                </div>
-         
-                <!---->
+                </form>
             </div>
         </div>
     </div>
+
+    <script>
+        // JavaScript to manage display of Momo payment options
+        document.querySelectorAll('input[name="payment"]').forEach(input => {
+            input.addEventListener('change', () => {
+                // Hide all payment method panels
+                document.querySelectorAll('.panel').forEach(panel => panel.style.display = 'none');
+
+                // Show the relevant panel based on selected payment method
+                if (document.getElementById('payment3').checked) {
+                    document.getElementById('collapseOnePay').style.display = 'block';
+                } else if (document.getElementById('payment2').checked) {
+                    document.getElementById('collapseTransfer').style.display = 'block';
+                }
+            });
+        });
+    </script>
+
 {% endblock %}

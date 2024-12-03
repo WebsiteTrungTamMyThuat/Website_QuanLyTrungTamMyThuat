@@ -140,6 +140,14 @@ REST_FRAMEWORK = {
     )
 }
 
+# Momo API configuration
+MOMO_PARTNER_CODE = 'MOMO'
+MOMO_ACCESS_KEY = 'F8BBA842ECF85'
+MOMO_SECRET_KEY = 'K951B6PE1waDMi640xX08PD3vg6EkVlz'
+MOMO_ENDPOINT = 'https://test-payment.momo.vn/v2/gateway/api/create'  # URL API cho môi trường test
+MOMO_RETURN_URL = 'http://127.0.0.1:8000/user/thank-you/'  # URL người dùng được chuyển đến sau khi thanh toán
+MOMO_NOTIFY_URL = 'http://127.0.0.1:8000/momo-notify/' 
+
 import os
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'PageUser/static'),  # Đảm bảo đường dẫn này đúng

@@ -277,3 +277,50 @@
     text-align: center;
     margin-top: 20px;
 }
+
+
+
+
+/* Đưa tên lớp và học phí vào cùng một dòng */
+.cart-item-header {
+    display: flex;
+    align-items: center; /* Căn giữa tên lớp và học phí theo chiều dọc */
+    gap: 10px; /* Khoảng cách giữa tên lớp và học phí */
+    margin-bottom: 10px;
+}
+
+/* Định dạng tên lớp */
+.cart-item-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    white-space: nowrap; 
+}
+
+/* Định dạng học phí */
+.cart-item-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    white-space: nowrap; /* Đảm bảo học phí không bị xuống dòng */
+}
+/* Căn giữa nút "Tạo đơn hàng" */
+.cart__total {
+    text-align: center;
+}
+
+.cart__total button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #8a6d3b; /* Màu nâu */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cart__total button:hover {
+    background-color: #755c2f; /* Màu tối hơn khi hover */
+}

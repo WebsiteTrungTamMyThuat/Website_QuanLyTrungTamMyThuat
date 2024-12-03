@@ -1,0 +1,8 @@
+{% block content %}
+<div class="container">
+    <h1>Cảm ơn bạn đã mua hàng!</h1>
+    <p>Trạng thái giao dịch: {{ transaction_status }}</p>
+    <p>Mã đơn hàng: {{ order_id }}</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Quay về trang chủ</a>
+</div>
+{% endblock %}

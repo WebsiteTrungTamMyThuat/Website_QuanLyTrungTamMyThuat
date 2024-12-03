@@ -1,0 +1,51 @@
+{% extends "layout/layout-user.html" %}
+
+{% block title %}Chọn Phương Thức Thanh Toán{% endblock %}
+
+{% block content %}
+<div class="payment-methods container">
+    <h1>Chọn Phương Thức Thanh Toán</h1>
+    {% load humanize %} 
+    <p>Tổng tiền: {{ total_price|floatformat:0|intcomma }} VND</p>
+
+    <!-- Form chọn phương thức thanh toán -->
+    <form method="post" action="{% url 'thanh_toan_phuong_thuc' %}">
+        {% csrf_token %}
+
+        <!-- Truyền tổng tiền qua hidden input -->
+        <input type="hidden" name="total_price" value="{{ total_price }}">
+
+        <!-- Chọn phương thức thanh toán -->
+        <div class="cart__payment-method-item">
+            <input type="radio" name="payment_method" value="momo" id="payment_momo" checked>
+            <label for="payment_momo">Thanh toán online qua Momo</label>
+        </div>
+
+        <div class="cart__payment-method-item">
+            <input type="radio" name="payment_method" value="bank_transfer" id="payment_bank_transfer">
+            <label for="payment_bank_transfer">Chuyển khoản ngân hàng</label>
+        </div>
+
+
+
+        <!-- Nút xác nhận -->
+        <button type="submit" class="btn btn-primary">Xác nhận</button>
+    </form>
+</div>
+
+<script>
+    // JavaScript để quản lý hiển thị các phương thức thanh toán của Momo
+    document.querySelectorAll('input[name="payment_method"]').forEach(input => {
+        input.addEventListener('change', () => {
+            // Ẩn tất cả các bảng điều khiển của phương thức thanh toán
+            document.querySelectorAll('.panel').forEach(panel => panel.style.display = 'none');
+            
+            // Nếu chọn phương thức thanh toán Momo, hiển thị các lựa chọn cho Momo
+            if (document.getElementById('payment_momo').checked) {
+                document.getElementById('collapseMomo').style.display = 'block';
+            }
+        });
+    });
+</script>
+
+{% endblock %}

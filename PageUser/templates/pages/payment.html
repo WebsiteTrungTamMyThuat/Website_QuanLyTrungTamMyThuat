@@ -1,0 +1,21 @@
+<form method="POST" action="{% url 'momo_payment' %}">
+    {% csrf_token %}
+    <h3>Thông tin thanh toán</h3>
+    <p>Số tiền: {{ amount }} VNĐ</p>
+
+    <h4>Chọn phương thức thanh toán</h4>
+    <div class="cart__payment-method-item">
+        <input type="radio" name="payment_method" value="captureWallet" id="momo_wallet" checked>
+        <label for="momo_wallet">Thanh toán qua ví Momo</label>
+    </div>
+    <div class="cart__payment-method-item">
+        <input type="radio" name="payment_method" value="payWithATM" id="momo_atm">
+        <label for="momo_atm">Thanh toán qua thẻ ATM nội địa</label>
+    </div>
+    <div class="cart__payment-method-item">
+        <input type="radio" name="payment_method" value="payWithVisa" id="momo_visa">
+        <label for="momo_visa">Thanh toán qua thẻ Visa/MasterCard</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Thanh toán</button>
+</form>
