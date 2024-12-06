@@ -262,7 +262,7 @@ def DSTheoKH(request , ml):
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
     return render(request, 'pages/khoahoc.html', data)
-
+# sap xem khoa hoc theo
 from datetime import datetime
 def filter_khoahoc(request):
     danh_sach_khoa_hoc = KhoaHoc.objects.all()
@@ -377,9 +377,10 @@ def LoadPhieuDK(request):
 
 ### Danh sách khóa học - lớp
 def DSKhoaHoc(request):
+    today = date.today()
     dskh = {
-        'dm_kh' : KhoaHoc.objects.all(),
-        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu"),
+        'dm_kh' : KhoaHoc.objects.all().order_by('tenkh'),
+        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('tenlop'),
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
@@ -460,6 +461,21 @@ def them_vao_gio_hang(request, malop):
     tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
     hoc_vien = get_object_or_404(HocVien, email=tai_khoan.username)
 
+
+    gio_hang = request.session.get('gio_hang', {})
+
+    # Kiểm tra xem lớp đã thanh toán chưa
+    lop_hoc = get_object_or_404(LopHoc, malop=malop)
+    is_paid = HoaDon.objects.filter(
+        mahv=hoc_vien,
+        malop=lop_hoc,
+        trangthai='Đã thanh toán'
+    ).exists()
+
+    if is_paid:
+        messages.error(request, "Bạn đã thanh toán lớp học này trước đó.")
+        return redirect('giohang')
+
     mahv = hoc_vien.mahv.strip()
 
     if request.method == "POST":
@@ -484,33 +500,42 @@ def them_vao_gio_hang(request, malop):
 
 ####
 
-def is_conflict_schedule(gio_hang):
+def is_conflict_schedule_and_paid(gio_hang, hoc_vien):
     """
-    Kiểm tra xem có lịch học trùng trong giỏ hàng không.
-    Trả về True nếu có trùng lặp, ngược lại trả về False.
+    Kiểm tra xem có lịch học trùng hoặc lớp đã thanh toán trong giỏ hàng không.
+    Trả về True nếu có trùng lặp hoặc đã thanh toán, ngược lại trả về False.
     """
     schedule_set = set()
 
-    for item in gio_hang.values():
-        lichhoc = item.get('lichhoc', {})  
+    for malop, item in gio_hang.items():
+        lichhoc = item.get('lichhoc', {})
         ngayhoc = lichhoc.get('ngayhoc')
         giohoc = lichhoc.get('giohoc')
 
         if not ngayhoc or not giohoc:
             continue  
 
-       
         ngay_gio = (ngayhoc, giohoc)
 
-       
+        # Kiểm tra lịch học trùng
         if ngay_gio in schedule_set:
-           
             return True
-
         schedule_set.add(ngay_gio)
 
+        # Kiểm tra xem lớp đã được thanh toán chưa
+        try:
+            lop_hoc = LopHoc.objects.get(malop=malop)
+            is_paid = HoaDon.objects.filter(
+                mahv=hoc_vien,
+                malop=lop_hoc,
+                trangthai='Đã thanh toán'
+            ).exists()
+            if is_paid:
+                return True
+        except LopHoc.DoesNotExist:
+            continue  # Nếu lớp học không tồn tại, bỏ qua kiểm tra
+
     return False
-###
 
 import hmac
 import hashlib
@@ -586,17 +611,19 @@ def thanh_toan(request):
         return redirect('dangnhap')
 
     gio_hang = request.session.get('gio_hang', {})
+    username = request.session.get('user_username')
+    hoc_vien = get_object_or_404(HocVien, email=username)
 
-    if is_conflict_schedule(gio_hang):
-        messages.error(request, "Lịch học bị trùng lặp. Vui lòng kiểm tra lại.")
+    if is_conflict_schedule_and_paid(gio_hang, hoc_vien):
+        messages.error(request, "Lịch học bị trùng hoặc lớp học đã được thanh toán.")
         return redirect('giohang')
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
         return redirect('giohang')
 
-    username = request.session.get('user_username')
-    hoc_vien = get_object_or_404(HocVien, email=username)
+ #   username = request.session.get('user_username')
+ #   hoc_vien = get_object_or_404(HocVien, email=username)
 
     total_price = Decimal(0)
     try:
