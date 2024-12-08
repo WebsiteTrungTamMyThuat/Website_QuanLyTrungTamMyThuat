@@ -82,6 +82,9 @@ def chitietgiaovien(request):
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
 
+def lienhe(request):
+    return render(request,'pages/lien-he.html')
+
 #def giohang(request):
     gio_hang = GioHang.objects.filter(user=request.user)
 

@@ -116,7 +116,7 @@ ion-icon {
 }
 
 html {
-    font-family: "Quicksand";
+    font-family: "Quicksand" !important;
     font-size: 10px;
     scroll-behavior: smooth;
 }
@@ -201,8 +201,8 @@ body {
     align-items: center;
     max-width: max-content;
     gap: 12px;
-    min-height: 58px;
-    padding-inline: 36px;
+    min-height: 55px;
+    padding-inline: 26px;
     border-radius: var(--btn-radius);
     transition: var(--transition-1);
 }
