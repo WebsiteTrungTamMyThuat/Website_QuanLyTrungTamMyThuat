@@ -316,21 +316,14 @@ def ChiTietLop(request,mlop):
     khoa_hoc = lop.makh 
     giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
-    lich_hoc = LichHoc.objects.filter(malop=mlop)
-    lich_hoc_list = [
-        {
-            'ngayhoc': lh.ngayhoc.strftime("%d/%m/%Y"),
-            'giohoc': lh.giohoc.strftime("%H:%M"),
-            'sogiohoc': lh.sogiohoc
-        }
-        for lh in lich_hoc
-    ]
+    lichhoc = LichHoc.objects.filter(ngayhoc=lop.ngaybatdau)
+
 
     data = {
         'single_lop': lop,
         'khoa_hoc': khoa_hoc,  
         'giaovien': giaovien,
-        'lichhoc': lich_hoc_list,
+        'lichhoc': lichhoc,
     }
 
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)
@@ -380,7 +373,7 @@ def DSKhoaHoc(request):
     today = date.today()
     dskh = {
         'dm_kh' : KhoaHoc.objects.all().order_by('tenkh'),
-        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('tenlop'),
+        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('ngaybatdau'),
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
@@ -812,19 +805,18 @@ from django.utils.timezone import now, timedelta
 def forgot_password(request):
     if request.method == "POST":
         email = request.POST.get('email')
+
+        # Kiểm tra email có tồn tại trong hệ thống không
         try:
-            # Kiểm tra email có tồn tại trong hệ thống không
             hoc_vien = HocVien.objects.get(email=email)
 
             # Tạo mã OTP
             otp_code = get_random_string(length=6, allowed_chars='0123456789')
 
-            # Lưu OTP vào cơ sở dữ liệu
-            OTPRequest.objects.create(
-                email=email,
-                otp_code=otp_code,
-                created_at=now()
-            )
+            # Lưu OTP vào session
+            request.session['otp_code'] = otp_code
+            request.session['otp_email'] = email
+            request.session['otp_expiry'] = (now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')  # Lưu thời gian hết hạn
 
             # Gửi email với mã OTP
             send_mail(
@@ -849,21 +841,29 @@ def verify_otp(request):
         email = request.POST.get('email')
         otp_code = request.POST.get('otp_code')
 
-        try:
-            otp_request = OTPRequest.objects.get(email=email, otp_code=otp_code)
+        # Kiểm tra OTP từ session
+        saved_otp_code = request.session.get('otp_code')
+        saved_otp_email = request.session.get('otp_email')
+        otp_expiry_str = request.session.get('otp_expiry')
 
-            # Kiểm tra OTP có còn hiệu lực không
-            if not otp_request.is_valid():
-                messages.error(request, "Mã OTP đã hết hạn.")
-                return redirect('forgot_password')
+        # Kiểm tra email và OTP có khớp không
+        if email != saved_otp_email:
+            messages.error(request, "Email không khớp với yêu cầu trước.")
+            return redirect('verify_otp')
 
-            messages.success(request, "OTP xác nhận thành công. Vui lòng đặt lại mật khẩu.")
-            request.session['verified_email'] = email  # Lưu email đã xác nhận vào session
-            return redirect('reset_password')
-
-        except OTPRequest.DoesNotExist:
+        if saved_otp_code != otp_code:
             messages.error(request, "Mã OTP không hợp lệ.")
             return redirect('verify_otp')
+
+        # Kiểm tra thời gian hết hạn của OTP
+        if otp_expiry_str and now() > datetime.strptime(otp_expiry_str, '%Y-%m-%d %H:%M:%S'):
+            messages.error(request, "Mã OTP đã hết hạn.")
+            return redirect('forgot_password')
+
+        # OTP hợp lệ, lưu trạng thái xác nhận vào session
+        request.session['verified_email'] = email
+        messages.success(request, "OTP xác nhận thành công. Vui lòng đặt lại mật khẩu.")
+        return redirect('reset_password')
 
     return render(request, 'verify_otp.html')
 
@@ -884,6 +884,12 @@ def reset_password(request):
             hoc_vien = HocVien.objects.get(email=email)
             hoc_vien.password = make_password(new_password)  # Mã hóa mật khẩu mới
             hoc_vien.save()
+
+            # Xóa dữ liệu OTP và email khỏi session
+            request.session.pop('otp_code', None)
+            request.session.pop('otp_email', None)
+            request.session.pop('otp_expiry', None)
+            request.session.pop('verified_email', None)
 
             messages.success(request, "Đặt lại mật khẩu thành công. Vui lòng đăng nhập.")
             return redirect('dangnhap')
