@@ -44,6 +44,14 @@
                     <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0|intcomma }} VNĐ</p>
                     <p><strong>Mô tả:</strong> </p>
                     <p>{{ khoa_hoc.mota }}</p>
+                    
+                    <ul>
+                        {% for lich in lichhoc %}
+                            <p><strong>Lịch học:</strong> Ngày: {{ lich.ngayhoc|date:"d/m/Y" }} - Giờ học : {{ lich.giohoc|time:"H:i:s" }}</p>
+                            <p><strong>Tổng số giờ học:</strong> {{ lich.sogiohoc }}</p>
+                        {% endfor %}
+                    </ul>
+                   
                    
                     <div class="list-button">
                         <form method="post" action="{% url 'them_vao_gio_hang' single_lop.malop %}">

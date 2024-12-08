@@ -1,0 +1,15 @@
+<form method="post" action="{% url 'verify_otp' %}">
+    {% csrf_token %}
+    <div class="verify-box">
+        <div class="verify-header">
+            <header>Xác nhận mã OTP</header>
+        </div>
+        <div class="input-box">
+            <input type="email" name="email" class="input-field" placeholder="Email" autocomplete="off" required>
+            <input type="text" name="otp_code" class="input-field" placeholder="Mã OTP" required>
+        </div>
+        <div class="input-submit">
+            <button class="submit-btn">Xác nhận</button>
+        </div>
+    </div>
+</form>

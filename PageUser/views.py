@@ -316,21 +316,14 @@ def ChiTietLop(request,mlop):
     khoa_hoc = lop.makh 
     giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
-    lich_hoc = LichHoc.objects.filter(malop=mlop)
-    lich_hoc_list = [
-        {
-            'ngayhoc': lh.ngayhoc.strftime("%d/%m/%Y"),
-            'giohoc': lh.giohoc.strftime("%H:%M"),
-            'sogiohoc': lh.sogiohoc
-        }
-        for lh in lich_hoc
-    ]
+    lichhoc = LichHoc.objects.filter(ngayhoc=lop.ngaybatdau)
+
 
     data = {
         'single_lop': lop,
         'khoa_hoc': khoa_hoc,  
         'giaovien': giaovien,
-        'lichhoc': lich_hoc_list,
+        'lichhoc': lichhoc,
     }
 
     return render(request, 'pages/thong-tin-khoa-hoc.html', data)
@@ -380,7 +373,7 @@ def DSKhoaHoc(request):
     today = date.today()
     dskh = {
         'dm_kh' : KhoaHoc.objects.all().order_by('tenkh'),
-        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('tenlop'),
+        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('ngaybatdau'),
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
@@ -616,17 +609,15 @@ def thanh_toan(request):
 
     if is_conflict_schedule_and_paid(gio_hang, hoc_vien):
         messages.error(request, "Lịch học bị trùng hoặc lớp học đã được thanh toán.")
-        return redirect('giohang')
+        return redirect('khoahoc')
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
         return redirect('giohang')
 
- #   username = request.session.get('user_username')
- #   hoc_vien = get_object_or_404(HocVien, email=username)
-
     total_price = Decimal(0)
     try:
+        # Tính tổng tiền
         for malop, item in gio_hang.items():
             malop_cleaned = malop.strip()
             lop_hoc = get_object_or_404(LopHoc, malop=malop_cleaned)
@@ -638,6 +629,7 @@ def thanh_toan(request):
 
     if request.method == 'POST':
         try:
+            created_invoices = []  # Danh sách hóa đơn đã tạo
             with transaction.atomic():
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
@@ -651,15 +643,19 @@ def thanh_toan(request):
                         tongtien=total_price_per_class,
                         trangthai='Chưa thanh toán'
                     )
+                    created_invoices.append(hoa_don.sohd)  # Thêm mã hóa đơn vào danh sách
 
-                # Proceed to Momo payment after creating the invoice
-                payment_method = request.POST.get('payment_method', 'captureWallet')  # Default to wallet
-                amount = request.POST.get('amount', '10000')  # Convert amount to smallest unit (in cents, if needed)
-                order_id = f"ORDER{int(time.time())}"  # Unique order ID
-                request_id = f"REQUEST{int(time.time())}"  # Unique request ID
+                # Tiếp tục xử lý thanh toán MoMo
+                payment_method = request.POST.get('payment_method', 'captureWallet')
+                amount = request.POST.get('amount', '10000')
+                order_id = f"ORDER{int(time.time())}"  # Mã đơn hàng chung cho giao dịch
+                request_id = f"REQUEST{int(time.time())}"
                 order_info = "Thanh toán khóa học"
 
-                # Prepare the raw signature
+                # Lưu danh sách hóa đơn vào session để sử dụng sau
+                request.session['created_invoices'] = created_invoices
+
+                # Chuẩn bị chữ ký
                 raw_signature = (
                     f"accessKey={settings.MOMO_ACCESS_KEY}&"
                     f"amount={amount}&"
@@ -690,7 +686,7 @@ def thanh_toan(request):
                     "ipnUrl": settings.MOMO_NOTIFY_URL,
                     "extraData": "",
                     "requestType": payment_method,
-                    "signature": signature,  # Include signature here
+                    "signature": signature,
                 }
 
                 response = requests.post(settings.MOMO_ENDPOINT, json=data)
@@ -719,72 +715,51 @@ def momo_return(request):
         result_code = data.get('resultCode')
         message = data.get('message')
         mahv = request.session.get('user_username')
-        print (mahv)
-        
+
+        created_invoices = request.session.get('created_invoices', [])
+
         if result_code == '0':  # Thanh toán thành công
             try:
                 with transaction.atomic():
-                    # Lấy học viên
                     hoc_vien = HocVien.objects.get(email=mahv)
+                    for sohd in created_invoices:
+                        hoa_don = HoaDon.objects.filter(sohd=sohd, mahv=hoc_vien, trangthai='Chưa thanh toán').first()
+                        if hoa_don:
+                            hoa_don.trangthai = 'Đã thanh toán'
+                            hoa_don.save()
 
-                    # Lấy hóa đơn cần cập nhật
-                    hoa_don = HoaDon.objects.filter(mahv=hoc_vien, tongtien=Decimal(amount), trangthai='Chưa thanh toán').first()
-                    if not hoa_don:
-                        return HttpResponse("Hóa đơn không tồn tại hoặc đã thanh toán.")
-
-                    # Cập nhật trạng thái hóa đơn
-                
-                    hoa_don.trangthai = 'Đã thanh toán'
-                    hoa_don.save()
-                  
-                    # Lưu lịch sử giao dịch
-                    LichSuGiaoDich.objects.create(
-                        magiaodich=hoa_don.sohd,
-                        ngaygiaodich=date.today(),
-                        sotien=Decimal(amount),
-                        loaigiaodich="Thanh toán qua Momo",
-                        ghichu=f"Giao dịch thành công: {message}"
-                    )
+                            LichSuGiaoDich.objects.create(
+                                magiaodich=sohd,
+                                ngaygiaodich=date.today(),
+                                sotien=hoa_don.tongtien,
+                                loaigiaodich="Thanh toán qua Momo",
+                                ghichu=f"Giao dịch thành công: {message}"
+                            )
 
                     request.session['gio_hang'] = {}
-                    # Thông báo thành công
                     return redirect('success')
-                   
 
             except Exception as e:
                 return HttpResponse(f"Đã xảy ra lỗi: {str(e)}")
-            # thanh toán thất bại
         else:
+            # Thanh toán thất bại
             try:
                 with transaction.atomic():
-                    # Lấy học viên
                     hoc_vien = HocVien.objects.get(email=mahv)
+                    for sohd in created_invoices:
+                        hoa_don = HoaDon.objects.filter(sohd=sohd, mahv=hoc_vien, trangthai='Chưa thanh toán').first()
+                        if hoa_don:
+                            hoa_don.trangthai = 'Đã hủy'
+                            hoa_don.save()
 
-                    # Lấy hóa đơn cần cập nhật khi thanh toán thất bại
-                    hoa_don = HoaDon.objects.filter(
-                        mahv=hoc_vien, 
-                        tongtien=Decimal(amount), 
-                        trangthai='Chưa thanh toán'
-                    ).first()
+                            LichSuGiaoDich.objects.create(
+                                magiaodich=sohd,
+                                ngaygiaodich=date.today(),
+                                sotien=hoa_don.tongtien,
+                                loaigiaodich="Thanh toán qua Momo",
+                                ghichu=f"Giao dịch thất bại: {message}"
+                            )
 
-                    # Kiểm tra nếu hóa đơn không tồn tại
-                    if not hoa_don:
-                        return HttpResponse("Hóa đơn không tồn tại hoặc đã được xử lý.")
-
-                    # Cập nhật trạng thái hóa đơn là "Đã hủy"
-                    hoa_don.trangthai = 'Đã hủy'
-                    hoa_don.save()
-
-                    # Lưu lịch sử giao dịch thất bại
-                    LichSuGiaoDich.objects.create(
-                        magiaodich=hoa_don.sohd,
-                        ngaygiaodich=date.today(),
-                        sotien=Decimal(amount),
-                        loaigiaodich="Thanh toán qua Momo",
-                        ghichu=f"Giao dịch thất bại: {message}"
-                    )
-
-                    # Thông báo thanh toán thất bại
                     return HttpResponse(f"Thanh toán thất bại: {message}")
 
             except Exception as e:
@@ -797,6 +772,7 @@ def success(request):
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def momo_notify(request):
+    
     if request.method == 'POST':
         data = json.loads(request.body)
         order_id = data.get('orderId')
@@ -816,3 +792,110 @@ def momo_notify(request):
             print(f"Đơn hàng {order_id} không tồn tại trong hệ thống.")
 
         return HttpResponse("Received", status=200)
+    
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+#from .models import  OTPRequest
+from django.utils.timezone import now, timedelta
+
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+
+        # Kiểm tra email có tồn tại trong hệ thống không
+        try:
+            hoc_vien = HocVien.objects.get(email=email)
+
+            # Tạo mã OTP
+            otp_code = get_random_string(length=6, allowed_chars='0123456789')
+
+            # Lưu OTP vào session
+            request.session['otp_code'] = otp_code
+            request.session['otp_email'] = email
+            request.session['otp_expiry'] = (now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')  # Lưu thời gian hết hạn
+
+            # Gửi email với mã OTP
+            send_mail(
+                'Khôi phục mật khẩu',
+                f'Mã OTP để khôi phục mật khẩu của bạn là: {otp_code}',
+                'no-reply@example.com',  # Email người gửi
+                [email],
+                fail_silently=False,
+            )
+
+            messages.success(request, "Mã OTP đã được gửi tới email của bạn.")
+            return redirect('verify_otp')  # Redirect tới trang nhập OTP
+
+        except HocVien.DoesNotExist:
+            messages.error(request, "Email không tồn tại trong hệ thống.")
+            return redirect('forgot_password')
+
+    return render(request, 'forgot_password.html')
+###
+def verify_otp(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        otp_code = request.POST.get('otp_code')
+
+        # Kiểm tra OTP từ session
+        saved_otp_code = request.session.get('otp_code')
+        saved_otp_email = request.session.get('otp_email')
+        otp_expiry_str = request.session.get('otp_expiry')
+
+        # Kiểm tra email và OTP có khớp không
+        if email != saved_otp_email:
+            messages.error(request, "Email không khớp với yêu cầu trước.")
+            return redirect('verify_otp')
+
+        if saved_otp_code != otp_code:
+            messages.error(request, "Mã OTP không hợp lệ.")
+            return redirect('verify_otp')
+
+        # Kiểm tra thời gian hết hạn của OTP
+        if otp_expiry_str and now() > datetime.strptime(otp_expiry_str, '%Y-%m-%d %H:%M:%S'):
+            messages.error(request, "Mã OTP đã hết hạn.")
+            return redirect('forgot_password')
+
+        # OTP hợp lệ, lưu trạng thái xác nhận vào session
+        request.session['verified_email'] = email
+        messages.success(request, "OTP xác nhận thành công. Vui lòng đặt lại mật khẩu.")
+        return redirect('reset_password')
+
+    return render(request, 'pages/verify_otp.html')
+
+
+###
+from django.contrib.auth.hashers import make_password
+
+def reset_password(request):
+    if request.method == "POST":
+        email = request.session.get('verified_email')
+        new_password = request.POST.get('new_password')
+
+        if not email:
+            messages.error(request, "Phiên xác nhận đã hết hạn. Vui lòng thử lại.")
+            return redirect('forgot_password')
+
+        try:
+            hoc_vien = HocVien.objects.get(email=email)
+            hoc_vien.password = make_password(new_password)  # Mã hóa mật khẩu mới
+            hoc_vien.save()
+
+            # Xóa dữ liệu OTP và email khỏi session
+            request.session.pop('otp_code', None)
+            request.session.pop('otp_email', None)
+            request.session.pop('otp_expiry', None)
+            request.session.pop('verified_email', None)
+
+            messages.success(request, "Đặt lại mật khẩu thành công. Vui lòng đăng nhập.")
+            return redirect('dangnhap')
+
+        except HocVien.DoesNotExist:
+            messages.error(request, "Không tìm thấy tài khoản.")
+            return redirect('forgot_password')
+
+    return render(request, 'reset_password.html')
