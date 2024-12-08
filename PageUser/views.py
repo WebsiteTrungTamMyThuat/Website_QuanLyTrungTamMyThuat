@@ -199,7 +199,23 @@ def tthocvien(request):
     return render(request,'pages/thong-tin-hoc-vien.html')
 
 def lichsukh(request):
-    return render(request,'pages/lich-su-khoa-hoc.html')
+ 
+    username = request.session.get('user_username')
+    if not username:
+        messages.error(request, "Bạn cần đăng nhập để xem lịch sử khóa học.")
+        return redirect('login')  # Redirect tới trang đăng nhập
+
+
+    hoc_vien = get_object_or_404(HocVien, email=username)
+    
+
+    registered_courses = HoaDon.objects.filter(mahv=hoc_vien, trangthai='Đã thanh toán').select_related('malop')
+    
+
+    context = {
+        'registered_courses': registered_courses
+    }
+    return render(request, 'pages/lich-su-khoa-hoc.html', context)
 
 ## thông tin học viên
 def thongtinhv(request):
