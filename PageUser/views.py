@@ -834,8 +834,9 @@ def forgot_password(request):
             messages.error(request, "Email không tồn tại trong hệ thống.")
             return redirect('forgot_password')
 
-    return render(request, 'forgot_password.html')
+    return render(request, 'pages/forgot_password.html')
 ###
+from django.utils.timezone import now, make_aware
 def verify_otp(request):
     if request.method == "POST":
         email = request.POST.get('email')
@@ -856,9 +857,11 @@ def verify_otp(request):
             return redirect('verify_otp')
 
         # Kiểm tra thời gian hết hạn của OTP
-        if otp_expiry_str and now() > datetime.strptime(otp_expiry_str, '%Y-%m-%d %H:%M:%S'):
-            messages.error(request, "Mã OTP đã hết hạn.")
-            return redirect('forgot_password')
+        if otp_expiry_str:
+            otp_expiry_time = make_aware(datetime.strptime(otp_expiry_str, '%Y-%m-%d %H:%M:%S'))
+            if now() > otp_expiry_time:
+                messages.error(request, "Mã OTP đã hết hạn.")
+                return redirect('forgot_password')
 
         # OTP hợp lệ, lưu trạng thái xác nhận vào session
         request.session['verified_email'] = email
@@ -873,29 +876,35 @@ from django.contrib.auth.hashers import make_password
 
 def reset_password(request):
     if request.method == "POST":
-        email = request.session.get('verified_email')
+        username = request.session.get('verified_email')
+        if not username:
+            messages.error(request, "Yêu cầu không hợp lệ.")
+            return redirect('forgot_password')
+
+        # Lấy mật khẩu mới từ form
         new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
 
-        if not email:
-            messages.error(request, "Phiên xác nhận đã hết hạn. Vui lòng thử lại.")
-            return redirect('forgot_password')
+        if not new_password or not confirm_password:
+            messages.error(request, "Vui lòng nhập đầy đủ thông tin.")
+            return redirect('reset_password')
 
-        try:
-            hoc_vien = HocVien.objects.get(email=email)
-            hoc_vien.password = make_password(new_password)  # Mã hóa mật khẩu mới
-            hoc_vien.save()
+        if new_password != confirm_password:
+            messages.error(request, "Mật khẩu xác nhận không khớp.")
+            return redirect('reset_password')
 
-            # Xóa dữ liệu OTP và email khỏi session
-            request.session.pop('otp_code', None)
-            request.session.pop('otp_email', None)
-            request.session.pop('otp_expiry', None)
-            request.session.pop('verified_email', None)
+        # Lấy tài khoản người dùng từ cơ sở dữ liệu
+        user = get_object_or_404(TaiKhoanNguoiDung, username=username)
 
-            messages.success(request, "Đặt lại mật khẩu thành công. Vui lòng đăng nhập.")
-            return redirect('dangnhap')
+        # Cập nhật mật khẩu mới (đã mã hóa)
+        user.pass_word = new_password  # Đổi 'pass_field' thành tên cột chứa mật khẩu
+        user.save()
 
-        except HocVien.DoesNotExist:
-            messages.error(request, "Không tìm thấy tài khoản.")
-            return redirect('forgot_password')
+        # Xóa session đã xác thực
+        del request.session['verified_email']
 
-    return render(request, 'reset_password.html')
+        # Hiển thị thông báo thành công
+        messages.success(request, "Mật khẩu đã được thay đổi thành công.")
+        return redirect('dangnhap')  # Chuyển hướng về trang đăng nhập
+
+    return render(request, 'pages/reset_password.html')

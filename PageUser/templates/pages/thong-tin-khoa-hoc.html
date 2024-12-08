@@ -43,7 +43,7 @@
                     {% load humanize %} 
                     <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0|intcomma }} VNĐ</p>
                     <p><strong>Mô tả:</strong> </p>
-                    <p>{{ khoa_hoc.mota }}</p>
+                    <p style="white-space: pre-wrap;">{{ khoa_hoc.mota|linebreaksbr }}</p>
                     
                     <ul>
                         {% for lich in lichhoc %}
