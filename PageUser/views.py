@@ -865,7 +865,7 @@ def verify_otp(request):
         messages.success(request, "OTP xác nhận thành công. Vui lòng đặt lại mật khẩu.")
         return redirect('reset_password')
 
-    return render(request, 'verify_otp.html')
+    return render(request, 'pages/verify_otp.html')
 
 
 ###
