@@ -16,7 +16,7 @@
             <div class="instruct-content">
                 <div class="side-bar">
                     <!-- Display class image and details -->
-                    <img src="{% static 'img/'|add:single_lop.urlhinh %}" class="card-img-top" alt="{{ lop.tenlop }}">
+                    <img src="{% static 'img/' %}{{ single_lop.urlhinh }}" class="card-img-top" alt="{{ single_lop.tenlop }}">
                     <h3>{{ single_lop.tenlop }}</h3>
                     <p>
                         Giáo viên: 
@@ -43,7 +43,7 @@
                     {% load humanize %} 
                     <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0|intcomma }} VNĐ</p>
                     <p><strong>Mô tả:</strong> </p>
-                    <p>{{ khoa_hoc.mota }}</p>
+                    <p style="white-space: pre-wrap;">{{ khoa_hoc.mota|linebreaksbr }}</p>
                     
                     <ul>
                         {% for lich in lichhoc %}

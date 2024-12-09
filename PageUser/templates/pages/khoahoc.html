@@ -69,7 +69,7 @@
             {% for lop in ds_lop %}
                 <a class="card" href="{% url 'ttkhoahoc' lop.malop %}">
                     <div>
-                        <img src="{% static 'img/'|add:lop.urlhinh %}" class="card-img-top" alt="{{ lop.tenlop }}">
+                        <img src="{% static 'img/' %}{{ lop.urlhinh }}" class="card-img-top" alt="{{ lop.tenlop }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ lop.tenlop }}</h5>
                             <p class="card-text">
