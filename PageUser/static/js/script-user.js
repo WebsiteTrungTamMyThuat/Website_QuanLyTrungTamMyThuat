@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function ()
     dropdownMenu.innerHTML = `
         <ul>
             <li><a href="/dieukhien/${idtaikhoan}">Bảng điều khiển</a></li>
-            <li><a href="/user/lichsukh">Lịch sử mua hàng</a></li>
             <li><a id="logoutButton" href="/user/logout">Đăng xuất</a></li>
         </ul>
     `;
