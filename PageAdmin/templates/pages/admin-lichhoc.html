@@ -13,7 +13,7 @@
                     </li>
                     <li><i class='bx bx-chevron-right'></i></li>
                     <li>
-                        <a class="active" href="#">Lịch học</a>
+                        <a class="active" href="#">Lịch {% if request.session.quyen == "HV" %}học{% else %}dạy{% endif %}</a>
                     </li>
                 </ul>
             </div>
