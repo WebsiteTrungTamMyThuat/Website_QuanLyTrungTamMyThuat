@@ -351,14 +351,10 @@ def ChiTietLop(request,mlop):
 ### 
 
 def LoadPhieuDK(request):
-
     if not request.session.get('user_username'):
         messages.error(request, "Vui lòng đăng nhập để tiếp tục!")
         return redirect('dangnhap')
-
-   
     username = request.session['user_username']
-
     try:
        
         tai_khoan = get_object_or_404(TaiKhoanNguoiDung, username=username)
@@ -779,6 +775,31 @@ def momo_return(request):
                                 ghichu=f"Giao dịch thất bại: {message}"
                             )
 
+                    # Lấy hóa đơn cần cập nhật khi thanh toán thất bại
+                    hoa_don = HoaDon.objects.filter(
+                        mahv=hoc_vien, 
+                        tongtien=Decimal(amount), 
+                        trangthai='Chưa thanh toán'
+                    ).first()
+                    print("Hello")
+                    # Kiểm tra nếu hóa đơn không tồn tại
+                    if not hoa_don:
+                        return HttpResponse("Hóa đơn không tồn tại hoặc đã được xử lý.")
+
+                    # Cập nhật trạng thái hóa đơn là "Đã hủy"
+                    hoa_don.trangthai = 'Đã hủy'
+                    hoa_don.save()
+
+                    # Lưu lịch sử giao dịch thất bại
+                    LichSuGiaoDich.objects.create(
+                        magiaodich=hoa_don.sohd,
+                        ngaygiaodich=date.today(),
+                        sotien=Decimal(amount),
+                        loaigiaodich="Thanh toán qua Momo",
+                        ghichu=f"Giao dịch thất bại: {message}"
+                    )
+
+                    # Thông báo thanh toán thất bại
                     return HttpResponse(f"Thanh toán thất bại: {message}")
 
             except Exception as e:

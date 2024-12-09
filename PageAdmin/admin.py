@@ -5,7 +5,9 @@ from django import forms
 # Register your models here.
 
 
-
+admin.site.site_header = "Trang quản trị Mỹ Thuật Bụi"
+admin.site.site_title = "Quản trị hệ thống"
+admin.site.index_title = "Chào mừng đến với trang quản trị Mỹ Thuật Bụi"
 
 @admin.register(NhanVien)
 class NhanVienAdmin(admin.ModelAdmin):
@@ -119,9 +121,14 @@ class HoaDonAdmin(admin.ModelAdmin):
 
 @admin.register(LichHoc)
 class LichHocAdmin(admin.ModelAdmin):
-    list_display = ('malich','ngayhoc','giohoc','sogiohoc','malop',)
-    search_fields = ('malich','malop',)
-    list_filter = ('giohoc','sogiohoc','malop',)
+    list_display = ('malich', 'ngayhoc', 'giohoc', 'sogiohoc', 'get_tenlop',)
+    search_fields = ('malich', 'malop__tenlop',)  # Tìm kiếm theo tên lớp học
+    list_filter = ('giohoc', 'sogiohoc', 'malop',)  # Lọc theo lớp học
+
+    def get_tenlop(self, obj):
+        return obj.malop.tenlop  # Lấy tên lớp từ ForeignKey
+    get_tenlop.short_description = 'Tên lớp'  # Đặt tiêu đề cho cột
+
     
     
 
