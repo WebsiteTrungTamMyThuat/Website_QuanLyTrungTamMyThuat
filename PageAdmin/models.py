@@ -73,7 +73,8 @@ class LopHoc(models.Model):
         self.malop = self.malop.strip()
     def save(self, *args, **kwargs):
         if self.urlhinh:
-            self.urlhinh.name = os.path.basename(self.urlhinh.name)
+            # Lấy tên file, bỏ khoảng trắng và chuẩn hóa
+            self.urlhinh.name = "_".join(self.urlhinh.name.split()).strip()
         super().save(*args, **kwargs)
         
 class HocVien(models.Model):

@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/gio-hang.css' %}">
 
     <div class="cart container">
-        <h1>Tiến hành mua hàng</h1>
+        <h1>Đăng ký lớp học</h1>
         <div class="cart__content row" style="grid-template-columns: none">
             <div class="cart__left col-8">
                 <div class="cart__user">
-                    <h2>Thông tin khách hàng</h2>
+                    <h2>Thông tin học viên</h2>
                     <form class="row">
                         <div class="col-6">
                             <div class="form-group">
@@ -90,7 +90,7 @@
 
                     <!-- Order Summary Section -->
                     <div class="cart__right col-4">
-                        <h2 class="cart-header">Đơn hàng</h2>
+                        <h2 class="cart-header">Danh sách lớp đã chọn</h2>
                         <div class="cart-items">
                             {% for item in gio_hang_display %}
                             <div class="cart-item-row">
