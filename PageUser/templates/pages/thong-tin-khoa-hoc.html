@@ -16,7 +16,7 @@
             <div class="instruct-content">
                 <div class="side-bar">
                     <!-- Display class image and details -->
-                    <img src="{% static 'img/'|add:single_lop.urlhinh %}" class="card-img-top" alt="{{ lop.tenlop }}">
+                    <img src="{% static 'img/' %}{{ single_lop.urlhinh }}" class="card-img-top" alt="{{ single_lop.tenlop }}">
                     <h3>{{ single_lop.tenlop }}</h3>
                     <p>
                         Giáo viên: 
@@ -39,8 +39,19 @@
                     <h1>{{ single_lop.tenlop }}</h1>
                     <p><strong>Địa điểm học:</strong> {{ single_lop.diadiemhoc }}</p>
                     <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau |date:"d F Y"}}</p>
+                    <p><strong>Số buổi học:</strong> {{ single_lop.tonggiohoc}}</p>
+                    {% load humanize %} 
+                    <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0|intcomma }} VNĐ</p>
                     <p><strong>Mô tả:</strong> </p>
-                    <p>{{ khoa_hoc.mota }}</p>
+                    <p style="white-space: pre-wrap;">{{ khoa_hoc.mota|linebreaksbr }}</p>
+                    
+                    <ul>
+                        {% for lich in lichhoc %}
+                            <p><strong>Lịch học:</strong> Ngày: {{ lich.ngayhoc|date:"d/m/Y" }} - Giờ học : {{ lich.giohoc|time:"H:i:s" }}</p>
+                            <p><strong>Tổng số giờ học:</strong> {{ lich.sogiohoc }}</p>
+                        {% endfor %}
+                    </ul>
+                   
                    
                     <div class="list-button">
                         <form method="post" action="{% url 'them_vao_gio_hang' single_lop.malop %}">

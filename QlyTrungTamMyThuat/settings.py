@@ -152,3 +152,14 @@ import os
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'PageUser/static'),  # Đảm bảo đường dẫn này đúng
 ]
+
+MEDIA_URL = '/media/'  # URL để truy cập file media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'phamkhanhdu09@gmail.com'  # Email của bạn
+EMAIL_HOST_PASSWORD = 'juux kflh uedu btqg'  # Mật khẩu ứng dụng (không phải mật khẩu Gmail)

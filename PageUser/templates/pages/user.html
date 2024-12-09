@@ -54,14 +54,14 @@
       - #COURSE
     -->
     <section class="section course" aria-label="course">
-      <p class="course-title">25 khóa học từ căn bản đến nâng cao, đa dạng chất liệu, chủ đề, đáp ứng mọi sở thích, định hướng của bạn</p>
+      <p class="course-title">5 môn học từ căn bản đến nâng cao, đa dạng chất liệu, chủ đề, đáp ứng mọi sở thích, định hướng của bạn</p>
         <div class="container">
           {% for tl in dm_kh|slice:":5" %}
           <div class="card">
               <div class="img-bx" style="--img:url({% static "img/tranh-phong-canh.jpg" %})"></div>
               
               <div class="content">
-                  <h3>{{ tl.tenkh }}<br><span><a href="{% url 'khoahoc'  %}">Tìm hiểu thêm</a></span></h3>
+                  <h3>{{ tl.tenkh }}<br><span><a href="{% url 'DSTheoKH' tl.makh %}">Tìm hiểu thêm</a></span></h3>
               </div>
              
           </div>
@@ -91,9 +91,10 @@
             <div class="collection-card">
 
               <figure class="card-banner img-holder" style="--width: 500; --height: 550;">
-                <img src="{%static "img/sp-1.jpg"%}" width="500" height="550" loading="lazy"
+                <img src="{%static "img/sp-2.jpg"%}" width="500" height="550" loading="lazy"
                   alt="Pottery & Ceramics" class="img-cover">
               </figure>
+
 
             </div>
           </li>
@@ -102,7 +103,7 @@
             <div class="collection-card">
 
               <figure class="card-banner img-holder" style="--width: 500; --height: 550;">
-                <img src="{%static "img/sp-2.jpg"%}" width="500" height="550" loading="lazy"
+                <img src="{%static "img/sp-1.jpg"%}" width="500" height="550" loading="lazy"
                   alt="Leather Craft" class="img-cover">
               </figure>
 
@@ -389,7 +390,7 @@
               <div class="card-content">
 
                 <h3 class="h4">
-                  <a href="https://baomoi.com/trien-lam-tim-ve-2017-about-time-mau-khoanh-khac-toi-dem-ky-uc-dep-luu-giu-nhe-vao-tranh/c/25200120.epi" class="card-title">
+                  <a href="https://sovhtt.hanoi.gov.vn/trien-lam-tim-ve-2017-mau-khoanh-khac/" class="card-title">
                     Triển lãm Tìm về 2017: About Time – Màu khoảnh khắc tôi đem ký ức đẹp lưu giữ nhẹ vào tranh
                   </a>
                 </h3>
@@ -426,7 +427,7 @@
               <div class="card-content">
 
                 <h3 class="h4">
-                  <a href="#" class="card-title">
+                  <a href="https://cand.com.vn/Chuyen-dong-van-hoa/Quay-nguoc-thoi-gian-cung-trien-lam-Tim-ve-2017-Mau-khoanh-khac-i467844/" class="card-title">
                     Khai mạc Triển Lãm Tìm Về 2017: About Time – Màu Khoảnh Khắc
                   </a>
                 </h3>
@@ -461,7 +462,7 @@
               <div class="card-content">
 
                 <h3 class="h4">
-                  <a href="#" class="card-title">
+                  <a href="https://baoxaydung.com.vn/trien-lam-tim-ve-2017-about-time-mau-khoanh-khac-toi-dem-ky-uc-dep-luu-giu-nhe-vao-tranh-225980.html" class="card-title">
                     Triển lãm “Tìm về 2017: Màu khoảnh khắc” – Chiếc vé ngược thời gian
                   </a>
                 </h3>
@@ -484,12 +485,6 @@
           </li>
         </ul>
         
-        <a href="#" class="btn">
-          <span class="span">XEM THÊM TIN TỨC</span>
-
-          <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
-        </a>
-
       </div>
     </section>
 
