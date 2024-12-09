@@ -75,6 +75,8 @@ class LopHoc(models.Model):
         if self.urlhinh:
             # Lấy tên file, bỏ khoảng trắng và chuẩn hóa
             self.urlhinh.name = "_".join(self.urlhinh.name.split()).strip()
+            # Lấy tên file, bỏ khoảng trắng và chuẩn hóa
+            self.urlhinh.name = "_".join(self.urlhinh.name.split()).strip()
         super().save(*args, **kwargs)
         
 class HocVien(models.Model):
