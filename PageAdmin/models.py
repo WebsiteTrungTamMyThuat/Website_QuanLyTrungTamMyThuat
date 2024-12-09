@@ -52,7 +52,7 @@ class LopHoc(models.Model):
     hocphi = models.DecimalField(max_digits=10, decimal_places=2)
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh')
     magv = models.CharField(max_length=10, db_column='magv')
-    urlhinh = models.CharField(max_length=255)
+    urlhinh = models.ImageField(upload_to='PageUser/static/img/', null=True, blank=True)
     tinhtrang = models.CharField(max_length=255)
     class Meta:
         db_table = 'lophoc'
@@ -62,7 +62,8 @@ class LopHoc(models.Model):
         self.malop = self.malop.strip()
     def save(self, *args, **kwargs):
         if self.urlhinh:
-            self.urlhinh.name = os.path.basename(self.urlhinh.name)
+            # Lấy tên file, bỏ khoảng trắng và chuẩn hóa
+            self.urlhinh.name = "_".join(self.urlhinh.name.split()).strip()
         super().save(*args, **kwargs)
         
 class HocVien(models.Model):

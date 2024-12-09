@@ -153,6 +153,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'PageUser/static'),  # Đảm bảo đường dẫn này đúng
 ]
 
+MEDIA_URL = '/media/'  # URL để truy cập file media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

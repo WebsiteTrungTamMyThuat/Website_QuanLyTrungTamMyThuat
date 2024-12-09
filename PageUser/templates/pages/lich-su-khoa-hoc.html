@@ -21,9 +21,10 @@
                     <a class="card" href="#">
                         <div>
                             {% if hoa_don.malop.urlhinh %}
-                            <img src="{{ hoa_don.malop.urlhinh }}" class="card-img-top" alt="{{ hoa_don.malop.tenlop }}">
+                            <img src="{% static 'img/' %}{{ hoa_don.malop.urlhinh }}" class="card-img-top" alt="{{ hoa_don.malop.tenlop }}">
+
                         {% else %}
-                            <p>Không có hình ảnh</p>
+                            <img src="{% static 'img/default-image.jpg' %}" class="card-img-top" alt="Hình mặc định">
                         {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title">{{ hoa_don.malop.tenlop }}</h5>
