@@ -864,9 +864,7 @@ def verify_otp(request):
         otp_expiry_str = request.session.get('otp_expiry')
 
         # Kiểm tra email và OTP có khớp không
-        if email != saved_otp_email:
-            messages.error(request, "Email không khớp với yêu cầu trước.")
-            return redirect('verify_otp')
+
 
         if saved_otp_code != otp_code:
             messages.error(request, "Mã OTP không hợp lệ.")
