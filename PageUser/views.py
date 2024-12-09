@@ -49,9 +49,6 @@ def dangky(request):
 def dangnhap(request):
     return render(request,'layout/dangnhap.html')
 
-def quenmk(request):
-    return render(request,'layout/quenmk.html')
-
 def dangkytuvan(request):
     return render(request,'pages/dang-ky-tu-van.html')
 
@@ -933,7 +930,7 @@ def forgot_password(request):
             messages.error(request, "Email không tồn tại trong hệ thống.")
             return redirect('forgot_password')
 
-    return render(request, 'pages/forgot_password.html')
+    return render(request, 'layout/quenmk.html')
 ###
 from django.utils.timezone import now, make_aware
 def verify_otp(request):
@@ -1013,40 +1010,6 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 #from .models import  OTPRequest
 from django.utils.timezone import now, timedelta
-
-def forgot_password(request):
-    if request.method == "POST":
-        email = request.POST.get('email')
-
-        # Kiểm tra email có tồn tại trong hệ thống không
-        try:
-            hoc_vien = HocVien.objects.get(email=email)
-
-            # Tạo mã OTP
-            otp_code = get_random_string(length=6, allowed_chars='0123456789')
-
-            # Lưu OTP vào session
-            request.session['otp_code'] = otp_code
-            request.session['otp_email'] = email
-            request.session['otp_expiry'] = (now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')  # Lưu thời gian hết hạn
-
-            # Gửi email với mã OTP
-            send_mail(
-                'Khôi phục mật khẩu',
-                f'Mã OTP để khôi phục mật khẩu của bạn là: {otp_code}',
-                'no-reply@example.com',  # Email người gửi
-                [email],
-                fail_silently=False,
-            )
-
-            messages.success(request, "Mã OTP đã được gửi tới email của bạn.")
-            return redirect('verify_otp')  # Redirect tới trang nhập OTP
-
-        except HocVien.DoesNotExist:
-            messages.error(request, "Email không tồn tại trong hệ thống.")
-            return redirect('forgot_password')
-
-    return render(request, 'pages/forgot_password.html')
 ###
 from django.utils.timezone import now, make_aware
 def verify_otp(request):
