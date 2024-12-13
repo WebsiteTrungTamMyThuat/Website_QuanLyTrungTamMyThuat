@@ -57,10 +57,12 @@
       <p class="course-title">5 môn học từ căn bản đến nâng cao, đa dạng chất liệu, chủ đề, đáp ứng mọi sở thích, định hướng của bạn</p>
         <div class="container">
           {% for tl in dm_kh|slice:":5" %}
-          <div class="card">
-              <div class="img-bx" style="--img:url({% static "img/tranh-phong-canh.jpg" %})"></div>
+          <div class="card" href="{% url 'DSTheoKH' tl.makh %}">
+              <div class="img-bx" style="--img:url({% static "img/tranh-phong-canh.jpg" %}) ">
+                <a  href="{% url 'DSTheoKH' tl.makh %}"></a>
+              </div>
               
-              <div class="content">
+              <div class="content"  >
                   <h3>{{ tl.tenkh }}<br><span><a href="{% url 'DSTheoKH' tl.makh %}">Tìm hiểu thêm</a></span></h3>
               </div>
              

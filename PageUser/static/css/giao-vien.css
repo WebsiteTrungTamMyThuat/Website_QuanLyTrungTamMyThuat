@@ -71,9 +71,9 @@ h3, h5 {
     margin: 30px;
     padding: 10px;
     text-align: center;
-}
-
-.list-page li {
+  }
+  
+  .list-page li {
     color: var(--white);
     background-color: var(--umber);
     padding: 10px;
@@ -82,10 +82,9 @@ h3, h5 {
     cursor: pointer;
     height: auto;
     border-radius: 15px;
-}
-
-.list-page .active {
+  }
+  
+  .list-page .active {
     background-color: var(--bistre);
     color: var(--white);
-}
-
+  }
