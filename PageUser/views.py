@@ -53,7 +53,10 @@ def quenmk(request):
     return render(request,'layout/quenmk.html')
 
 def dangkytuvan(request):
-    return render(request,'pages/dang-ky-tu-van.html')
+
+       
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def gioithieu(request):
     return render(request,'pages/gioithieu.html')
@@ -220,22 +223,7 @@ def lichsukh(request):
     }
     return render(request, 'pages/lich-su-khoa-hoc.html', context)
  
-    username = request.session.get('user_username')
-    if not username:
-        messages.error(request, "Bạn cần đăng nhập để xem lịch sử khóa học.")
-        return redirect('login')  # Redirect tới trang đăng nhập
 
-
-    hoc_vien = get_object_or_404(HocVien, email=username)
-    
-
-    registered_courses = HoaDon.objects.filter(mahv=hoc_vien, trangthai='Đã thanh toán').select_related('malop')
-    
-
-    context = {
-        'registered_courses': registered_courses
-    }
-    return render(request, 'pages/lich-su-khoa-hoc.html', context)
 
 ## thông tin học viên
 def thongtinhv(request):
@@ -414,6 +402,13 @@ def DSKhoaHoc(request):
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
     return render(request,'pages/khoahoc.html',dskh)
+
+
+def DSGiaovien(request):
+    dsgv ={
+        'dsgv_' : GiaoVien.objects.all()
+    }
+    return render(request,'pages/giao-vien.html',dsgv)
 
 ### xoa gio hang
 
@@ -646,7 +641,7 @@ def thanh_toan(request):
     if is_conflict_schedule_and_paid(gio_hang, hoc_vien):
         messages.error(request, "Lịch học bị trùng hoặc lớp học đã được thanh toán.")
         return redirect('khoahoc')
-        return redirect('khoahoc')
+     
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
@@ -667,8 +662,8 @@ def thanh_toan(request):
 
     if request.method == 'POST':
         try:
-            created_invoices = []  # Danh sách hóa đơn đã tạo
-            created_invoices = []  # Danh sách hóa đơn đã tạo
+            created_invoices = []  
+            
             with transaction.atomic():
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
@@ -931,9 +926,9 @@ def forgot_password(request):
 
         except HocVien.DoesNotExist:
             messages.error(request, "Email không tồn tại trong hệ thống.")
-            return redirect('forgot_password')
+            return redirect('quenml')
 
-    return render(request, 'pages/forgot_password.html')
+    return render(request, 'pages/quenmk.html')
 ###
 from django.utils.timezone import now, make_aware
 def verify_otp(request):
@@ -946,8 +941,12 @@ def verify_otp(request):
         saved_otp_email = request.session.get('otp_email')
         otp_expiry_str = request.session.get('otp_expiry')
 
-        # Kiểm tra email và OTP có khớp không
 
+    
+        # Kiểm tra email và OTP có khớp không
+        if email != saved_otp_email:
+            messages.error(request, "Email không khớp với yêu cầu trước.")
+            return redirect('verify_otp')
 
         if saved_otp_code != otp_code:
             messages.error(request, "Mã OTP không hợp lệ.")

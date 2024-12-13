@@ -5,119 +5,16 @@
 <div class="list-teacher">
     <h1>Danh sách giáo viên</h1>
     <div class="grid-container">
+        {% for gv in dsgv_ %}
         <div class="card">
             <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
+                <p class="card-text">{{gv.hoten}}</p>
                 <button class="btn btn-submit">Xem thêm</button>
             </div>
         </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-        <div class="card">
-            <img src="{% static "img/gv-1.jpeg" %}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Giáo viên</h5>
-                <p class="card-text">Ngô Khánh Hân</p>
-                <button class="btn btn-submit">Xem thêm</button>
-            </div>
-        </div>
-    </div>
+        {% endfor %}
 
     <ul class="list-page">
         <li class="active">1</li>
