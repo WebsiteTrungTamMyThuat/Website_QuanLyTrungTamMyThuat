@@ -155,18 +155,23 @@ def register(request):
         password = request.POST.get('password')
         password_confirmation = request.POST.get('password_confirmation')
 
-        # Kiểm tra mật khẩu khớp
-        if password != password_confirmation:
-            return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
-        
-
-        if not SDT.isdigit():
-            return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
-
         try:
             validate_email(email)
         except ValidationError:
-            return render(request, 'user/dangky.html', {'error': 'Email không hợp lệ!'})
+            return render(request, 'layout/dangky.html', {'error': 'Email không hợp lệ!'})
+
+        try:
+            validate_phone_number(SDT)
+        except ValidationError:
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại không hợp lệ!'})
+
+        # Kiểm tra mật khẩu khớp
+        if password != password_confirmation:
+            return render(request, 'layout/dangky.html', {'error': 'Mật khẩu không khớp!'})
+        
+
+        if not SDT.isdigit():
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại phải là số!'})
 
         try:
             # Tạo mã học viên duy nhất
@@ -1083,3 +1088,11 @@ def reset_password(request):
         return redirect('dangnhap')  # Chuyển hướng về trang đăng nhập
 
     return render(request, 'pages/reset_password.html')
+
+import re
+from django.core.exceptions import ValidationError
+def validate_phone_number(value):
+    pattern = r'^(84|0)(3|5|7|8|9)\d{8}$'
+    
+    if not re.match(pattern, value):
+        raise ValidationError("Vui lòng nhập đúng số điện thoại.")

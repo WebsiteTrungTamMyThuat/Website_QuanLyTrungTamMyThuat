@@ -20,15 +20,15 @@
 
 
             <div class="input-box">
-                <input type="email" class="input-field" placeholder="Email hoặc Số điện thoại" autocomplete="off" required name="username" id="username"> 
+                <input type="email" class="input-field" placeholder="Email" autocomplete="off" required name="username" id="username"> 
             </div>
             <div class="input-box">
-                <input type="password" class="input-field" placeholder="Password" autocomplete="off" required name="pass_word" id="pass_word" >
+                <input type="password" class="input-field password" placeholder="Password" autocomplete="off" required name="pass_word" id="pass_word" >
             </div>
        
         <div class="forgot">
             <section>
-                <input type="checkbox" id="check">
+                <input type="checkbox" id="check" onclick="togglePassword()">
                 <label for="check">Hiện mật khẩu</label>
             </section>
             <section>
@@ -55,6 +55,14 @@
         localStorage.setItem('isLoggedIn', 'true');
         window.location.href = "{% url "user" %}";
     });
+
+    function togglePassword() {
+        const passwordFields = document.querySelectorAll('.password');
+        console.log(passwordFields)
+        passwordFields.forEach(field => {
+            field.type = (field.type === 'password' ? 'text' : 'password');
+        });
+    }
 </script>
 
 
