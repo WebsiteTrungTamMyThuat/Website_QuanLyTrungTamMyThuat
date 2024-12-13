@@ -50,7 +50,8 @@ def dangnhap(request):
     return render(request,'layout/dangnhap.html')
 
 def dangkytuvan(request):
-    return render(request,'pages/dang-ky-tu-van.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def gioithieu(request):
     return render(request,'pages/gioithieu.html')
@@ -71,10 +72,12 @@ def ttkhoahoc(request):
     return render(request,'pages/thong-tin-khoa-hoc.html')
 
 def giaovien(request):
-    return render(request, 'pages/giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chitietgiaovien(request):
-    return render(request, 'pages/chi-tiet-giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
