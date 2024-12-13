@@ -4,10 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang lỗi</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static "css/tt-thatbai.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"/>
 </head>
 <body>
-    <h1>Đã xảy ra lỗi!</h1>
-    <p>{{ message }}</p>  <!-- Hiển thị thông báo lỗi -->
-    <a href="/">Trở về trang chủ</a>
+    <div>
+        <div class="modal-box">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <h2>Đã xảy ra lỗi</h2>
+            <h3>{{ message }}</h3>
+            <div class="buttons">
+                <button><a href="{% url 'user' %}">Quay lại trang chủ</a></button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

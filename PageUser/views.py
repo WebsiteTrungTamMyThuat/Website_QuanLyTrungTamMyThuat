@@ -41,8 +41,6 @@ def user(request):
     # Render the template with the combined context
     return render(request, 'pages/user.html', context)
 
-
-
 def dangky(request):
     return render(request,'layout/dangky.html')
 
@@ -90,7 +88,6 @@ def lienhe(request):
 
     return render(request, 'gio-hang.html', {
         'gio_hang': gio_hang })
-
 
 
 #### Đăng nhập
