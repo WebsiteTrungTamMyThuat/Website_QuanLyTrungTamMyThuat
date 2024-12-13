@@ -41,20 +41,13 @@ def user(request):
     # Render the template with the combined context
     return render(request, 'pages/user.html', context)
 
-
-
 def dangky(request):
     return render(request,'layout/dangky.html')
 
 def dangnhap(request):
     return render(request,'layout/dangnhap.html')
 
-def quenmk(request):
-    return render(request,'layout/quenmk.html')
-
 def dangkytuvan(request):
-
-       
     messages.error(request, "Chức năng chưa hoàn thiện!")
     return redirect('/user')
 
@@ -77,10 +70,12 @@ def ttkhoahoc(request):
     return render(request,'pages/thong-tin-khoa-hoc.html')
 
 def giaovien(request):
-    return render(request, 'pages/giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chitietgiaovien(request):
-    return render(request, 'pages/chi-tiet-giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
@@ -95,20 +90,22 @@ def lienhe(request):
         'gio_hang': gio_hang })
 
 
-
 #### Đăng nhập
 from django.urls import reverse
 
 def userlogin(request):
     if request.method == 'POST':
+        # Lấy dữ liệu từ request
         username = request.POST.get('username')
         pass_word = request.POST.get('pass_word')
-        # request.session.flush()
+
+        # Kiểm tra username và password
         if username and pass_word:
             try:         
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
                 if nguoidung.pass_word == pass_word:
                     
+                    # Lưu thông tin vào session
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
                     request.session['quyen'] = nguoidung.quyen
@@ -116,19 +113,18 @@ def userlogin(request):
                     if nguoidung.quyen == 'GV': 
                         return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
                     elif nguoidung.quyen == 'HV':
-                        messages.success(request, f"Chào mừng {nguoidung.username}!") 
-                        return redirect('user')
+                        return JsonResponse({'success': True}, status=200)  # Đăng nhập thành công
                     else:
-                        messages.error(request, 'Thông tin đăng nhập không chính xác')
-                        return redirect('login')
+                        return JsonResponse({'success': False, 'message': 'Thông tin đăng nhập không chính xác'}, status=400)
                 else:
-                    messages.error(request, 'Mật khẩu không chính xác!')
+                    return JsonResponse({'success': False, 'message': 'Mật khẩu không chính xác!'}, status=400)
                     
             except TaiKhoanNguoiDung.DoesNotExist:
-                messages.error(request, 'Người dùng không tồn tại!')
+                return JsonResponse({'success': False, 'message': 'Người dùng không tồn tại!'}, status=400)
+        else:
+            return JsonResponse({'success': False, 'message': 'Vui lòng điền đầy đủ thông tin!'}, status=400)
 
     return render(request, 'layout/dangnhap.html')
-
 
 
 ####
@@ -151,6 +147,14 @@ def generate_unique_id():
             if not TaiKhoanNguoiDung.objects.filter(idtaikhoan=new_id).exists():
                 return new_id
 
+###
+from django.http import JsonResponse
+
+def check_login_status(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'logged_in': True, 'username': request.user.username})
+    else:
+        return JsonResponse({'logged_in': False})
 
 ## Đăng ký
 def register(request):
@@ -161,18 +165,23 @@ def register(request):
         password = request.POST.get('password')
         password_confirmation = request.POST.get('password_confirmation')
 
-        # Kiểm tra mật khẩu khớp
-        if password != password_confirmation:
-            return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
-        
-
-        if not SDT.isdigit():
-            return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
-
         try:
             validate_email(email)
         except ValidationError:
-            return render(request, 'user/dangky.html', {'error': 'Email không hợp lệ!'})
+            return render(request, 'layout/dangky.html', {'error': 'Email không hợp lệ!'})
+
+        try:
+            validate_phone_number(SDT)
+        except ValidationError:
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại không hợp lệ!'})
+
+        # Kiểm tra mật khẩu khớp
+        if password != password_confirmation:
+            return render(request, 'layout/dangky.html', {'error': 'Mật khẩu không khớp!'})
+        
+
+        if not SDT.isdigit():
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại phải là số!'})
 
         try:
             # Tạo mã học viên duy nhất
@@ -498,7 +507,7 @@ def them_vao_gio_hang(request, malop):
 
     if is_paid:
         messages.error(request, "Bạn đã thanh toán lớp học này trước đó.")
-        return redirect('giohang')
+        return redirect('khoahoc')
 
     mahv = hoc_vien.mahv.strip()
 
@@ -928,7 +937,7 @@ def forgot_password(request):
             messages.error(request, "Email không tồn tại trong hệ thống.")
             return redirect('quenml')
 
-    return render(request, 'pages/quenmk.html')
+    return render(request, 'layout/quenmk.html')
 ###
 from django.utils.timezone import now, make_aware
 def verify_otp(request):
@@ -1012,40 +1021,6 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 #from .models import  OTPRequest
 from django.utils.timezone import now, timedelta
-
-def forgot_password(request):
-    if request.method == "POST":
-        email = request.POST.get('email')
-
-        # Kiểm tra email có tồn tại trong hệ thống không
-        try:
-            hoc_vien = HocVien.objects.get(email=email)
-
-            # Tạo mã OTP
-            otp_code = get_random_string(length=6, allowed_chars='0123456789')
-
-            # Lưu OTP vào session
-            request.session['otp_code'] = otp_code
-            request.session['otp_email'] = email
-            request.session['otp_expiry'] = (now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')  # Lưu thời gian hết hạn
-
-            # Gửi email với mã OTP
-            send_mail(
-                'Khôi phục mật khẩu',
-                f'Mã OTP để khôi phục mật khẩu của bạn là: {otp_code}',
-                'no-reply@example.com',  # Email người gửi
-                [email],
-                fail_silently=False,
-            )
-
-            messages.success(request, "Mã OTP đã được gửi tới email của bạn.")
-            return redirect('verify_otp')  # Redirect tới trang nhập OTP
-
-        except HocVien.DoesNotExist:
-            messages.error(request, "Email không tồn tại trong hệ thống.")
-            return redirect('forgot_password')
-
-    return render(request, 'pages/forgot_password.html')
 ###
 from django.utils.timezone import now, make_aware
 def verify_otp(request):
@@ -1119,3 +1094,11 @@ def reset_password(request):
         return redirect('dangnhap')  # Chuyển hướng về trang đăng nhập
 
     return render(request, 'pages/reset_password.html')
+
+import re
+from django.core.exceptions import ValidationError
+def validate_phone_number(value):
+    pattern = r'^(84|0)(3|5|7|8|9)\d{8}$'
+    
+    if not re.match(pattern, value):
+        raise ValidationError("Vui lòng nhập đúng số điện thoại.")
