@@ -32,10 +32,10 @@ def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
 
-    # Prepare the context dictionary
+   
     context = {
         'username': username,
-        'dm_kh': KhoaHoc.objects.all()  # Add the list of courses to the context
+        'dm_kh': KhoaHoc.objects.all()  
     }
 
     # Render the template with the combined context
@@ -94,38 +94,42 @@ def lienhe(request):
 from django.urls import reverse
 
 def userlogin(request):
+    context = {} 
     if request.method == 'POST':
-        # Lấy dữ liệu từ request
         username = request.POST.get('username')
         pass_word = request.POST.get('pass_word')
 
-        # Kiểm tra username và password
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, username):
+            return JsonResponse({'success': False, 'message': 'Vui lòng điền đúng email !'}, status=400)
+
+      
         if username and pass_word:
-            try:         
+            try:
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
                 if nguoidung.pass_word == pass_word:
-                    
-                    # Lưu thông tin vào session
+                    # Save user information to the session
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
                     request.session['quyen'] = nguoidung.quyen
                     
+                   
+                    context = {'idtaikhoan': nguoidung.idtaikhoan}
+                    
                     if nguoidung.quyen == 'GV': 
-                        return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
+                        return JsonResponse({'success': True, 'role': 'GV', 'idtaikhoan': nguoidung.idtaikhoan}, status=200)
                     elif nguoidung.quyen == 'HV':
-                        return JsonResponse({'success': True}, status=200)  # Đăng nhập thành công
+                        return JsonResponse({'success': True, 'role': 'HV', 'idtaikhoan': nguoidung.idtaikhoan}, status=200)
                     else:
                         return JsonResponse({'success': False, 'message': 'Thông tin đăng nhập không chính xác'}, status=400)
                 else:
                     return JsonResponse({'success': False, 'message': 'Mật khẩu không chính xác!'}, status=400)
-                    
             except TaiKhoanNguoiDung.DoesNotExist:
                 return JsonResponse({'success': False, 'message': 'Người dùng không tồn tại!'}, status=400)
         else:
             return JsonResponse({'success': False, 'message': 'Vui lòng điền đầy đủ thông tin!'}, status=400)
 
-    return render(request, 'layout/dangnhap.html')
-
+    return render(request, 'layout/dangnhap.html', context)
 
 ####
 

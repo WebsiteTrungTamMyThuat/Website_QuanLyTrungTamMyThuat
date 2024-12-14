@@ -45,7 +45,8 @@
                     <tr>
                         <td>{{hd.sohd}}</td>
                         <td>{{hd.ngaylap}}</td>
-                        <td>{{hd.tongtien}}</td>
+                        {% load humanize %} 
+                        <td>{{hd.tongtien|floatformat:0|intcomma }}</td>
                         <td>{{hd.lop}}</td>
                         <td>
                             {%if hd.trangthai == "Chưa thanh toán" %}

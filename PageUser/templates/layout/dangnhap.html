@@ -50,58 +50,61 @@
 
     
     <script>
-        // Khi người dùng nhấn nút Đăng nhập
-        const check = document.getElementById('submit');
-        check.addEventListener('click', function(event) {
-            // Ngừng hành động mặc định của form khi không cần thiết
-            event.preventDefault();
-    
-            // Lấy dữ liệu từ form
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('pass_word').value;
-    
-            // Kiểm tra nếu cả username và password đều không trống
-            if (username && password) {
-                // Gửi dữ liệu đăng nhập qua AJAX tới server
-                fetch("{% url 'dangnhap' %}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-                    },
-                    body: `username=${username}&pass_word=${password}`
-                })
-                .then(response => response.json())  // Phản hồi JSON từ server
-                .then(data => {
-                    if (data.success) {
-                        // Nếu đăng nhập thành công, lưu vào localStorage và chuyển hướng
-                        localStorage.setItem('isLoggedIn', 'true');
-                        localStorage.setItem('username', username); // Lưu tên người dùng vào localStorage
+      
+      const check = document.getElementById('submit');
+check.addEventListener('click', function(event) {
+    event.preventDefault();
 
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('pass_word').value;
 
-                        alert('Chào mừng, ' + username + '!');
+    if (username && password) {
+        fetch("{% url 'dangnhap' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: `username=${username}&pass_word=${password}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+            
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                
+                // Hiển thị thông báo chào mừng
+                alert('Chào mừng, ' + username + '!');
 
-                        window.location.href = "{% url 'user' %}";  // Chuyển hướng trang sau khi đăng nhập
-                    } else {
-                        // Nếu đăng nhập thất bại, hiển thị thông báo lỗi
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
+               
+                if (data.role === 'GV') {
+                    window.location.href = `/dieukhien/${data.idtaikhoan}/`; 
+                } else {
+                  
+                    window.location.href = "{% url 'user' %}";
+                }
             } else {
-                alert("Vui lòng nhập đầy đủ thông tin.");
+                alert(data.message);  
             }
+        })
+        .catch(error => {
+            console.error("Error:", error);
         });
-    
-        function togglePassword() {
-            const passwordFields = document.querySelectorAll('.password');
-            passwordFields.forEach(field => {
-                field.type = (field.type === 'password' ? 'text' : 'password');
-            });
-        }
+    } else {
+        alert("Vui lòng nhập đầy đủ thông tin.");
+    }
+});
+
+
+function togglePassword() {
+    const passwordFields = document.querySelectorAll('.password');
+    passwordFields.forEach(field => {
+        field.type = (field.type === 'password' ? 'text' : 'password');
+    });
+}
     </script>
+    
 
 
 </div>
