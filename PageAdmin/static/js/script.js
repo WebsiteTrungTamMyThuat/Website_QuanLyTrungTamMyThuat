@@ -8,9 +8,9 @@ allSideMenu.forEach((item) => {
 })
 
 document.addEventListener("DOMContentLoaded", function() {
-	const path = window.location.pathname.replace("/admin/", "").split("/")[0].replace("/", "")
-	
-	if (path === "") setActivePage("dashboard")
+	const path = window.location.pathname.replace("/dieukhien/", "").split("/")[0].replace("/", "")
+	console.log()
+	if (window.location.pathname.split("/").length < 5) setActivePage("dashboard")
 	else setActivePage(path)
 	
 })
