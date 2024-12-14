@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh toán thành công</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static "css/tt-thanhcong.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"/>
 </head>
 <body>
-    <h1>Thanh toán thành công</h1>
-    <p>Cảm ơn bạn đã thanh toán. Dưới đây là thông tin giao dịch của bạn:</p>
-<!--    <ul>
-        <li><strong>Mã giao dịch:</strong> {{ giao_dich.magiaodich }}</li>
-        <li><strong>Ngày giao dịch:</strong> {{ giao_dich.ngaygiaodich }}</li>
-        <li><strong>Số tiền:</strong> {{ giao_dich.sotien }}</li>
-        <li><strong>Loại giao dịch:</strong> {{ giao_dich.loaigiaodich }}</li>
-        <li><strong>Ghi chú:</strong> {{ giao_dich.ghichu }}</li>
-    </ul>
--->  
-    <a href="{% url 'user' %}">Quay lại trang chủ</a>
+    <div>
+        <div class="modal-box">
+            <i class="fa-regular fa-circle-check"></i>
+            <h2>Thành công</h2>
+            <h3>Cảm ơn bạn đã thanh toán.</h3>
+            <div class="buttons">
+                <button><a href="{% url 'user' %}">Quay lại trang chủ</a></button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

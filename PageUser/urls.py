@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.user, name='user'),
     path('dangky/',views.register,name='dangky'),
     path('dangnhap/',views.userlogin,name='dangnhap'),
-    path('dangkytuvan/',views.LoadPhieuDK,name='dangkytuvan'),
+    path('dangkytuvan/',views.dangkytuvan,name='dangkytuvan'),
     path('gioithieu/',views.gioithieu,name='gioithieu'),
     path('chinhsachbaomat/',views.chinhsachbaomat,name='chinhsachbaomat'),
     path('hdthanhtoan/',views.hdthanhtoan,name='hdthanhtoan'),
@@ -20,7 +20,7 @@ urlpatterns = [
     path("filter-khoahoc", views.filter_khoahoc, name="filter_khoahoc"),
 
     path('logout', views.logout_view, name='logout'),
-    path('giaovien/', views.giaovien, name='giaovien'),
+    path('giaovien/', views.DSGiaovien, name='giaovien'),
     path('chinhanh/',views.chinhanh,name='chinhanh'),
     path('giaovien/chitietgiaovien/', views.chitietgiaovien, name='chitietgiaovien'),
     path('tthocvien/',views.thongtinhv,name='tthocvien'),

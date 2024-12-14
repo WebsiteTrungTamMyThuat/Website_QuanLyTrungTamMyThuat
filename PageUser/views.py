@@ -32,16 +32,14 @@ def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
 
-    # Prepare the context dictionary
+   
     context = {
         'username': username,
-        'dm_kh': KhoaHoc.objects.all()  # Add the list of courses to the context
+        'dm_kh': KhoaHoc.objects.all()  
     }
 
     # Render the template with the combined context
     return render(request, 'pages/user.html', context)
-
-
 
 def dangky(request):
     return render(request,'layout/dangky.html')
@@ -50,7 +48,8 @@ def dangnhap(request):
     return render(request,'layout/dangnhap.html')
 
 def dangkytuvan(request):
-    return render(request,'pages/dang-ky-tu-van.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def gioithieu(request):
     return render(request,'pages/gioithieu.html')
@@ -71,10 +70,12 @@ def ttkhoahoc(request):
     return render(request,'pages/thong-tin-khoa-hoc.html')
 
 def giaovien(request):
-    return render(request, 'pages/giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chitietgiaovien(request):
-    return render(request, 'pages/chi-tiet-giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
@@ -89,41 +90,46 @@ def lienhe(request):
         'gio_hang': gio_hang })
 
 
-
 #### Đăng nhập
 from django.urls import reverse
 
 def userlogin(request):
+    context = {} 
     if request.method == 'POST':
         username = request.POST.get('username')
         pass_word = request.POST.get('pass_word')
-        # request.session.flush()
+
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, username):
+            return JsonResponse({'success': False, 'message': 'Vui lòng điền đúng email !'}, status=400)
+
+      
         if username and pass_word:
-            try:         
+            try:
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
                 if nguoidung.pass_word == pass_word:
-                    
+                    # Save user information to the session
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
                     request.session['quyen'] = nguoidung.quyen
                     
-                    if nguoidung.quyen == 'GV': 
-                        return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
-                    elif nguoidung.quyen == 'HV':
-                        messages.success(request, f"Chào mừng {nguoidung.username}!") 
-                        return redirect('user')
-                    else:
-                        messages.error(request, 'Thông tin đăng nhập không chính xác')
-                        return redirect('login')
-                else:
-                    messages.error(request, 'Mật khẩu không chính xác!')
+                   
+                    context = {'idtaikhoan': nguoidung.idtaikhoan}
                     
+                    if nguoidung.quyen == 'GV': 
+                        return JsonResponse({'success': True, 'role': 'GV', 'idtaikhoan': nguoidung.idtaikhoan}, status=200)
+                    elif nguoidung.quyen == 'HV':
+                        return JsonResponse({'success': True, 'role': 'HV', 'idtaikhoan': nguoidung.idtaikhoan}, status=200)
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Thông tin đăng nhập không chính xác'}, status=400)
+                else:
+                    return JsonResponse({'success': False, 'message': 'Mật khẩu không chính xác!'}, status=400)
             except TaiKhoanNguoiDung.DoesNotExist:
-                messages.error(request, 'Người dùng không tồn tại!')
+                return JsonResponse({'success': False, 'message': 'Người dùng không tồn tại!'}, status=400)
+        else:
+            return JsonResponse({'success': False, 'message': 'Vui lòng điền đầy đủ thông tin!'}, status=400)
 
-    return render(request, 'layout/dangnhap.html')
-
-
+    return render(request, 'layout/dangnhap.html', context)
 
 ####
 
@@ -145,6 +151,14 @@ def generate_unique_id():
             if not TaiKhoanNguoiDung.objects.filter(idtaikhoan=new_id).exists():
                 return new_id
 
+###
+from django.http import JsonResponse
+
+def check_login_status(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'logged_in': True, 'username': request.user.username})
+    else:
+        return JsonResponse({'logged_in': False})
 
 ## Đăng ký
 def register(request):
@@ -155,18 +169,23 @@ def register(request):
         password = request.POST.get('password')
         password_confirmation = request.POST.get('password_confirmation')
 
-        # Kiểm tra mật khẩu khớp
-        if password != password_confirmation:
-            return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
-        
-
-        if not SDT.isdigit():
-            return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
-
         try:
             validate_email(email)
         except ValidationError:
-            return render(request, 'user/dangky.html', {'error': 'Email không hợp lệ!'})
+            return render(request, 'layout/dangky.html', {'error': 'Email không hợp lệ!'})
+
+        try:
+            validate_phone_number(SDT)
+        except ValidationError:
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại không hợp lệ!'})
+
+        # Kiểm tra mật khẩu khớp
+        if password != password_confirmation:
+            return render(request, 'layout/dangky.html', {'error': 'Mật khẩu không khớp!'})
+        
+
+        if not SDT.isdigit():
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại phải là số!'})
 
         try:
             # Tạo mã học viên duy nhất
@@ -217,22 +236,7 @@ def lichsukh(request):
     }
     return render(request, 'pages/lich-su-khoa-hoc.html', context)
  
-    username = request.session.get('user_username')
-    if not username:
-        messages.error(request, "Bạn cần đăng nhập để xem lịch sử khóa học.")
-        return redirect('login')  # Redirect tới trang đăng nhập
 
-
-    hoc_vien = get_object_or_404(HocVien, email=username)
-    
-
-    registered_courses = HoaDon.objects.filter(mahv=hoc_vien, trangthai='Đã thanh toán').select_related('malop')
-    
-
-    context = {
-        'registered_courses': registered_courses
-    }
-    return render(request, 'pages/lich-su-khoa-hoc.html', context)
 
 ## thông tin học viên
 def thongtinhv(request):
@@ -412,6 +416,13 @@ def DSKhoaHoc(request):
     }
     return render(request,'pages/khoahoc.html',dskh)
 
+
+def DSGiaovien(request):
+    dsgv ={
+        'dsgv_' : GiaoVien.objects.all()
+    }
+    return render(request,'pages/giao-vien.html',dsgv)
+
 ### xoa gio hang
 
 def xoa_hoan_tat(request, malop):
@@ -500,7 +511,7 @@ def them_vao_gio_hang(request, malop):
 
     if is_paid:
         messages.error(request, "Bạn đã thanh toán lớp học này trước đó.")
-        return redirect('giohang')
+        return redirect('khoahoc')
 
     mahv = hoc_vien.mahv.strip()
 
@@ -643,7 +654,7 @@ def thanh_toan(request):
     if is_conflict_schedule_and_paid(gio_hang, hoc_vien):
         messages.error(request, "Lịch học bị trùng hoặc lớp học đã được thanh toán.")
         return redirect('khoahoc')
-        return redirect('khoahoc')
+     
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
@@ -664,8 +675,8 @@ def thanh_toan(request):
 
     if request.method == 'POST':
         try:
-            created_invoices = []  # Danh sách hóa đơn đã tạo
-            created_invoices = []  # Danh sách hóa đơn đã tạo
+            created_invoices = []  
+            
             with transaction.atomic():
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
@@ -928,7 +939,7 @@ def forgot_password(request):
 
         except HocVien.DoesNotExist:
             messages.error(request, "Email không tồn tại trong hệ thống.")
-            return redirect('forgot_password')
+            return redirect('quenml')
 
     return render(request, 'layout/quenmk.html')
 ###
@@ -943,8 +954,12 @@ def verify_otp(request):
         saved_otp_email = request.session.get('otp_email')
         otp_expiry_str = request.session.get('otp_expiry')
 
-        # Kiểm tra email và OTP có khớp không
 
+    
+        # Kiểm tra email và OTP có khớp không
+        if email != saved_otp_email:
+            messages.error(request, "Email không khớp với yêu cầu trước.")
+            return redirect('verify_otp')
 
         if saved_otp_code != otp_code:
             messages.error(request, "Mã OTP không hợp lệ.")
@@ -1083,3 +1098,11 @@ def reset_password(request):
         return redirect('dangnhap')  # Chuyển hướng về trang đăng nhập
 
     return render(request, 'pages/reset_password.html')
+
+import re
+from django.core.exceptions import ValidationError
+def validate_phone_number(value):
+    pattern = r'^(84|0)(3|5|7|8|9)\d{8}$'
+    
+    if not re.match(pattern, value):
+        raise ValidationError("Vui lòng nhập đúng số điện thoại.")

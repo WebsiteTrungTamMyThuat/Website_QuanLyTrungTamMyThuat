@@ -717,7 +717,7 @@ body {
     height: 50px;
     line-height: 50px;
     margin-top: -25px;
-    z-index: 100;
+    z-index: 98;
     cursor: pointer;
     background: var(--camel);
     box-shadow: 0 9px 26px rgba(58, 87, 135, 0.45);

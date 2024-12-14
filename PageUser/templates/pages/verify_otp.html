@@ -1,7 +1,6 @@
 {% extends "layout/layout-user.html" %} {% block title %} Home {% endblock %} 
 {%block content %} 
 {% load static%}
-
 <link rel="stylesheet" href="{% static "css/dangky-dangnhap.css" %}">
 <div class="body">
     <form method="post" action="{% url 'verify_otp' %}">

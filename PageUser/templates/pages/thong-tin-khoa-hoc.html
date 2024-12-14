@@ -40,8 +40,10 @@
                     <p><strong>Địa điểm học:</strong> {{ single_lop.diadiemhoc }}</p>
                     <p><strong>Ngày bắt đầu:</strong> {{ single_lop.ngaybatdau |date:"d F Y"}}</p>
                     <p><strong>Số buổi học:</strong> {{ single_lop.tonggiohoc}}</p>
+
                     {% load humanize %} 
                     <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0|intcomma }} VNĐ</p>
+                    
                     <p><strong>Mô tả:</strong> </p>
                     <p style="white-space: pre-wrap;">{{ khoa_hoc.mota|linebreaksbr }}</p>
                     
