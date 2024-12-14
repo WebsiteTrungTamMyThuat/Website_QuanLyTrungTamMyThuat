@@ -33,20 +33,20 @@
                     {% csrf_token %}
                     <div class="input-box">
                         <label>Mã học viên</label>
-                        <input type="text" value={{ thongtincanhan.mahv }} readonly >
+                        <input type="text" value={{ thongtincanhan.mahv }} disabled />
                     </div>
                     <div class="input-box">
                         <label>Họ tên</label>
-                        <input type="text" value="{{ thongtincanhan.tenhv }}" readonly >
+                        <input type="text" value="{{ thongtincanhan.tenhv }}" disabled>
                     </div>
                     <div class="column">
                         <div class="input-box">
                             <label>Email</label>
-                            <input type="email" value={{ thongtincanhan.email }} readonly>
+                            <input type="email" value={{ thongtincanhan.email }} disabled>
                         </div>
                         <div class="input-box">
                             <label>Giới tính</label>
-                            <input name="gioitinh" type="text" value={{ thongtincanhan.GioiTinh }} >
+                            <input id="gioitinh" name="gioitinh" type="text" onblur="validateGender()" value={{ thongtincanhan.GioiTinh }} >
                         </div>
                     </div>
                     <div class="column">
@@ -56,7 +56,7 @@
                             </div>
                         <div class="input-box">
                             <label>Ngày sinh</label>
-                            <input name="ngaysinh" type="date" value={{ thongtincanhan.NgaySinh }} >
+                            <input id="ngaysinh" name="ngaysinh" type="date" value={{ thongtincanhan.NgaySinh }} min="1960-01-01" onchange="validateAge()" />
                         </div>
                     </div>
                     <div class="input-box address">
@@ -72,4 +72,58 @@
         </div>
     </div>
 </main>
+
+<script>
+    function validateGender() {
+        const genderInput = document.getElementById("gioitinh");
+        const value = genderInput.value.trim().toLowerCase();
+        if (!["nam", "nữ"].includes(value)) {
+            Toastify({
+                text: "Giới tính chỉ được nhập 'Nam' hoặc 'Nữ'.",
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+            genderInput.value = "";
+        } else {
+            // Format lại chữ viết hoa chữ cái đầu
+            genderInput.value = value === "nam" ? "Nam" : "Nữ";
+        }
+    }
+
+    function validateAge() {
+        const input = document.getElementById("ngaysinh");
+        const dob = new Date(input.value);
+        const today = new Date();
+    
+        const age = today.getFullYear() - dob.getFullYear();
+        const monthDifference = today.getMonth() - dob.getMonth();
+        const dayDifference = today.getDate() - dob.getDate();
+    
+        if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+            age--;
+        }
+    
+        if (age >= 6) {
+            input.value = ""
+        } else {
+            Toastify({
+                text: "Tuổi học viên phải lớn hơn hoặc bằng 6.",
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+        }
+    }
+    </script>
 {% endblock %}
