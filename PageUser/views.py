@@ -32,6 +32,7 @@ def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
 
+
     lst = ["nhung-am-thanh-thuong-nhat.jpg", "tranh-chan-dung.png", "tranh-phong-canh-1.jpg", "tranh-ky-hoa-phong-canh.jpg", "tranh-son-dau.jpg"]
     khoa_hoc = KhoaHoc.objects.all()
     khoa_hoc_with_images = zip(khoa_hoc, lst)
@@ -45,19 +46,15 @@ def user(request):
     # Render the template with the combined context
     return render(request, 'pages/user.html', context)
 
-
-
 def dangky(request):
     return render(request,'layout/dangky.html')
 
 def dangnhap(request):
     return render(request,'layout/dangnhap.html')
 
-def quenmk(request):
-    return render(request,'layout/quenmk.html')
-
 def dangkytuvan(request):
-    return render(request,'pages/dang-ky-tu-van.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def gioithieu(request):
     return render(request,'pages/gioithieu.html')
@@ -78,10 +75,12 @@ def ttkhoahoc(request):
     return render(request,'pages/thong-tin-khoa-hoc.html')
 
 def giaovien(request):
-    return render(request, 'pages/giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chitietgiaovien(request):
-    return render(request, 'pages/chi-tiet-giao-vien.html')
+    messages.error(request, "Chức năng chưa hoàn thiện!")
+    return redirect('/user')
 
 def chinhanh(request):
     return render(request,'pages/chi-nhanh.html')
@@ -94,7 +93,6 @@ def lienhe(request):
 
     return render(request, 'gio-hang.html', {
         'gio_hang': gio_hang })
-
 
 
 #### Đăng nhập
@@ -138,8 +136,6 @@ def userlogin(request):
 
     return render(request, 'layout/dangnhap.html', context)
 
-
-
 ####
 
 @never_cache
@@ -160,6 +156,14 @@ def generate_unique_id():
             if not TaiKhoanNguoiDung.objects.filter(idtaikhoan=new_id).exists():
                 return new_id
 
+###
+from django.http import JsonResponse
+
+def check_login_status(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'logged_in': True, 'username': request.user.username})
+    else:
+        return JsonResponse({'logged_in': False})
 
 ## Đăng ký
 def register(request):
@@ -170,18 +174,23 @@ def register(request):
         password = request.POST.get('password')
         password_confirmation = request.POST.get('password_confirmation')
 
-        # Kiểm tra mật khẩu khớp
-        if password != password_confirmation:
-            return render(request, 'user/dangky.html', {'error': 'Mật khẩu không khớp!'})
-        
-
-        if not SDT.isdigit():
-            return render(request, 'user/dangky.html', {'error': 'Số điện thoại phải là số!'})
-
         try:
             validate_email(email)
         except ValidationError:
-            return render(request, 'user/dangky.html', {'error': 'Email không hợp lệ!'})
+            return render(request, 'layout/dangky.html', {'error': 'Email không hợp lệ!'})
+
+        try:
+            validate_phone_number(SDT)
+        except ValidationError:
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại không hợp lệ!'})
+
+        # Kiểm tra mật khẩu khớp
+        if password != password_confirmation:
+            return render(request, 'layout/dangky.html', {'error': 'Mật khẩu không khớp!'})
+        
+
+        if not SDT.isdigit():
+            return render(request, 'layout/dangky.html', {'error': 'Số điện thoại phải là số!'})
 
         try:
             # Tạo mã học viên duy nhất
@@ -231,6 +240,8 @@ def lichsukh(request):
         'registered_courses': registered_courses
     }
     return render(request, 'pages/lich-su-khoa-hoc.html', context)
+ 
+
 
 ## thông tin học viên
 def thongtinhv(request):
@@ -350,11 +361,14 @@ def ChiTietLop(request,mlop):
 
     lichhoc = LichHoc.objects.filter(malop=mlop).first()
 
+    lichhoc = LichHoc.objects.filter(ngayhoc=lop.ngaybatdau)
+
 
     data = {
         'single_lop': lop,
         'khoa_hoc': khoa_hoc,  
         'giaovien': giaovien,
+        'lichhoc': lichhoc,
         'lichhoc': lichhoc,
     }
 
@@ -402,10 +416,18 @@ def DSKhoaHoc(request):
     dskh = {
         'dm_kh' : KhoaHoc.objects.all().order_by('tenkh'),
         'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('ngaybatdau'),
+        'ds_lop': LopHoc.objects.filter(tinhtrang="Chưa bắt đầu",ngaybatdau__gt=today).order_by('ngaybatdau'),
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
     return render(request,'pages/khoahoc.html',dskh)
+
+
+def DSGiaovien(request):
+    dsgv ={
+        'dsgv_' : GiaoVien.objects.all()
+    }
+    return render(request,'pages/giao-vien.html',dsgv)
 
 ### xoa gio hang
 
@@ -495,7 +517,7 @@ def them_vao_gio_hang(request, malop):
 
     if is_paid:
         messages.error(request, "Bạn đã thanh toán lớp học này trước đó.")
-        return redirect('giohang')
+        return redirect('khoahoc')
 
     mahv = hoc_vien.mahv.strip()
 
@@ -638,6 +660,7 @@ def thanh_toan(request):
     if is_conflict_schedule_and_paid(gio_hang, hoc_vien):
         messages.error(request, "Lịch học bị trùng hoặc lớp học đã được thanh toán.")
         return redirect('khoahoc')
+     
 
     if not gio_hang:
         messages.error(request, "Giỏ hàng không có lớp học nào.")
@@ -645,6 +668,7 @@ def thanh_toan(request):
 
     total_price = Decimal(0)
     try:
+        # Tính tổng tiền
         # Tính tổng tiền
         for malop, item in gio_hang.items():
             malop_cleaned = malop.strip()
@@ -657,7 +681,8 @@ def thanh_toan(request):
 
     if request.method == 'POST':
         try:
-            created_invoices = []  # Danh sách hóa đơn đã tạo
+            created_invoices = []  
+            
             with transaction.atomic():
                 for malop, item in gio_hang.items():
                     malop_cleaned = malop.strip()
@@ -678,8 +703,19 @@ def thanh_toan(request):
                 amount = request.POST.get('amount', '10000')
                 order_id = f"ORDER{int(time.time())}"  # Mã đơn hàng chung cho giao dịch
                 request_id = f"REQUEST{int(time.time())}"
+                created_invoices.append(hoa_don.sohd)  # Thêm mã hóa đơn vào danh sách
+
+                # Tiếp tục xử lý thanh toán MoMo
+                payment_method = request.POST.get('payment_method', 'captureWallet')
+                amount = request.POST.get('amount', '10000')
+                order_id = f"ORDER{int(time.time())}"  # Mã đơn hàng chung cho giao dịch
+                request_id = f"REQUEST{int(time.time())}"
                 order_info = "Thanh toán khóa học"
 
+                # Lưu danh sách hóa đơn vào session để sử dụng sau
+                request.session['created_invoices'] = created_invoices
+
+                # Chuẩn bị chữ ký
                 # Lưu danh sách hóa đơn vào session để sử dụng sau
                 request.session['created_invoices'] = created_invoices
 
@@ -715,6 +751,7 @@ def thanh_toan(request):
                     "extraData": "",
                     "requestType": payment_method,
                     "signature": signature,
+                    "signature": signature,
                 }
 
                 response = requests.post(settings.MOMO_ENDPOINT, json=data)
@@ -746,10 +783,26 @@ def momo_return(request):
 
         created_invoices = request.session.get('created_invoices', [])
 
+
+        created_invoices = request.session.get('created_invoices', [])
+
         if result_code == '0':  # Thanh toán thành công
             try:
                 with transaction.atomic():
                     hoc_vien = HocVien.objects.get(email=mahv)
+                    for sohd in created_invoices:
+                        hoa_don = HoaDon.objects.filter(sohd=sohd, mahv=hoc_vien, trangthai='Chưa thanh toán').first()
+                        if hoa_don:
+                            hoa_don.trangthai = 'Đã thanh toán'
+                            hoa_don.save()
+
+                            LichSuGiaoDich.objects.create(
+                                magiaodich=sohd,
+                                ngaygiaodich=date.today(),
+                                sotien=hoa_don.tongtien,
+                                loaigiaodich="Thanh toán qua Momo",
+                                ghichu=f"Giao dịch thành công: {message}"
+                            )
                     for sohd in created_invoices:
                         hoa_don = HoaDon.objects.filter(sohd=sohd, mahv=hoc_vien, trangthai='Chưa thanh toán').first()
                         if hoa_don:
@@ -770,6 +823,7 @@ def momo_return(request):
             except Exception as e:
                 return HttpResponse(f"Đã xảy ra lỗi: {str(e)}")
         else:
+            # Thanh toán thất bại
             # Thanh toán thất bại
             try:
                 with transaction.atomic():
@@ -803,16 +857,21 @@ def momo_return(request):
                     hoa_don.trangthai = 'Đã hủy'
                     hoa_don.save()
 
-                    # Lưu lịch sử giao dịch thất bại
                     LichSuGiaoDich.objects.create(
-                        magiaodich=hoa_don.sohd,
+                        magiaodich=sohd,
                         ngaygiaodich=date.today(),
-                        sotien=Decimal(amount),
+                        sotien=hoa_don.tongtien,
+                        loaigiaodich="Thanh toán qua Momo",
+                        ghichu=f"Giao dịch thất bại: {message}"
+                    )
+                    LichSuGiaoDich.objects.create(
+                        magiaodich=sohd,
+                        ngaygiaodich=date.today(),
+                        sotien=hoa_don.tongtien,
                         loaigiaodich="Thanh toán qua Momo",
                         ghichu=f"Giao dịch thất bại: {message}"
                     )
 
-                    # Thông báo thanh toán thất bại
                     return HttpResponse(f"Thanh toán thất bại: {message}")
 
             except Exception as e:
@@ -825,6 +884,7 @@ def success(request):
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def momo_notify(request):
+    
     
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -885,9 +945,92 @@ def forgot_password(request):
 
         except HocVien.DoesNotExist:
             messages.error(request, "Email không tồn tại trong hệ thống.")
+            return redirect('quenml')
+
+    return render(request, 'layout/quenmk.html')
+###
+from django.utils.timezone import now, make_aware
+def verify_otp(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        otp_code = request.POST.get('otp_code')
+
+        # Kiểm tra OTP từ session
+        saved_otp_code = request.session.get('otp_code')
+        saved_otp_email = request.session.get('otp_email')
+        otp_expiry_str = request.session.get('otp_expiry')
+
+
+    
+        # Kiểm tra email và OTP có khớp không
+        if email != saved_otp_email:
+            messages.error(request, "Email không khớp với yêu cầu trước.")
+            return redirect('verify_otp')
+
+        if saved_otp_code != otp_code:
+            messages.error(request, "Mã OTP không hợp lệ.")
+            return redirect('verify_otp')
+
+        # Kiểm tra thời gian hết hạn của OTP
+        if otp_expiry_str:
+            otp_expiry_time = make_aware(datetime.strptime(otp_expiry_str, '%Y-%m-%d %H:%M:%S'))
+            if now() > otp_expiry_time:
+                messages.error(request, "Mã OTP đã hết hạn.")
+                return redirect('forgot_password')
+
+        # OTP hợp lệ, lưu trạng thái xác nhận vào session
+        request.session['verified_email'] = email
+        messages.success(request, "OTP xác nhận thành công. Vui lòng đặt lại mật khẩu.")
+        return redirect('reset_password')
+
+    return render(request, 'pages/verify_otp.html')
+
+###
+from django.contrib.auth.hashers import make_password
+
+def reset_password(request):
+    if request.method == "POST":
+        username = request.session.get('verified_email')
+        if not username:
+            messages.error(request, "Yêu cầu không hợp lệ.")
             return redirect('forgot_password')
 
-    return render(request, 'pages/forgot_password.html')
+        # Lấy mật khẩu mới từ form
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not new_password or not confirm_password:
+            messages.error(request, "Vui lòng nhập đầy đủ thông tin.")
+            return redirect('reset_password')
+
+        if new_password != confirm_password:
+            messages.error(request, "Mật khẩu xác nhận không khớp.")
+            return redirect('reset_password')
+
+        # Lấy tài khoản người dùng từ cơ sở dữ liệu
+        user = get_object_or_404(TaiKhoanNguoiDung, username=username)
+
+        # Cập nhật mật khẩu mới (đã mã hóa)
+        user.pass_word = new_password  # Đổi 'pass_field' thành tên cột chứa mật khẩu
+        user.save()
+
+        # Xóa session đã xác thực
+        del request.session['verified_email']
+
+        # Hiển thị thông báo thành công
+        messages.success(request, "Mật khẩu đã được thay đổi thành công.")
+        return redirect('dangnhap')  # Chuyển hướng về trang đăng nhập
+
+    return render(request, 'pages/reset_password.html')
+    
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+#from .models import  OTPRequest
+from django.utils.timezone import now, timedelta
 ###
 from django.utils.timezone import now, make_aware
 def verify_otp(request):
@@ -961,3 +1104,11 @@ def reset_password(request):
         return redirect('dangnhap')  # Chuyển hướng về trang đăng nhập
 
     return render(request, 'pages/reset_password.html')
+
+import re
+from django.core.exceptions import ValidationError
+def validate_phone_number(value):
+    pattern = r'^(84|0)(3|5|7|8|9)\d{8}$'
+    
+    if not re.match(pattern, value):
+        raise ValidationError("Vui lòng nhập đúng số điện thoại.")

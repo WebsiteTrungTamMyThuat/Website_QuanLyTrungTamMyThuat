@@ -8,6 +8,7 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<!-- My CSS -->
 	<link rel="stylesheet" href="{% static "css/layout-admin.css" %}">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 	<title>Bảng điều khiển</title>
 </head>
@@ -43,21 +44,21 @@
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
-			<li id="hocvien">
+			<li id="thongtincanhan">
 				<a href="{% url 'thongtincanhan' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-group' ></i>
 					<span class="text">Thông tin cá nhân</span>
 				</a>
 			</li>
 			
-			<li id="khoahoc_admin">
+			<li id="lichhoc">
 				<a href="{% url 'lichhoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-calendar-check' ></i>
 					<span class="text">{% if  request.session.quyen == "HV" %} Lịch học {% else %} Lịch dạy {% endif %}</span>
 				</a>
 			</li>
 			
-			<li id="giaovien">
+			<li id="lophoc">
 				<a href="{% url 'lophoc_admin' request.session.user_idtaikhoan%}">
 					<i class='bx bxs-graduation'></i>
 					<span class="text">Danh sách lớp học</span>
@@ -154,6 +155,6 @@
 			window.location.href = '/user/dangnhap';  // Chuyển hướng đến App User để đăng nhập lại
 		});
 	});
-	
 </script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </html>

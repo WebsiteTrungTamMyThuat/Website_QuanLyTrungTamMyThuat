@@ -56,7 +56,6 @@
         </div>
 
         <div id="loginSuccessNotification" class="notification deactive">
-            <span class="notification-icon">&#10003;</span>
             <span class="notification-message">
                 {% if messages %}
                     <div class="message-content">
@@ -110,6 +109,8 @@
                         <button class="navbar-button"><a href="{% url "dangnhap" %}">Đăng nhập</a></button>
                     </div>
                 </div>
+
+          
 
                 
                 <div id="userLoggedIn" class="packing-button {% if request.session.user_username %}active{% else %}deactive{% endif %}">
@@ -281,8 +282,19 @@
 <script>
     const idtaikhoan = "{{ request.session.user_idtaikhoan }}";
 </script>
-
-
+<!--
+<script>
+    // Kiểm tra nếu người dùng đã đăng nhập
+    const username = "{{ request.session.user_username }}";  // Lấy tên người dùng từ session
+    if (username) {
+        // Lưu tên người dùng vào localStorage
+        localStorage.setItem('username', username);
+        
+        // Hiển thị thông báo chào mừng ngay khi người dùng đăng nhập thành công
+        alert('Chào mừng, ' + username + '!');
+    }
+</script>
+-->
 
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

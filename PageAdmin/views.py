@@ -1,5 +1,9 @@
+
+from django.forms import ValidationError
 from django.shortcuts import render, redirect, HttpResponseRedirect
-from django.http import HttpResponse,Http404 
+from django.http import HttpResponse,Http404
+
+from PageUser.views import validate_phone_number 
 from .models import *
 from django.db import transaction, connection
 from django.contrib import messages
@@ -11,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.messages import get_messages
 from django.views.decorators.cache import never_cache
-from datetime import timedelta
+from datetime import date, datetime, timedelta
 from django.utils.timezone import now
 from django.db.models import Sum
 
@@ -203,6 +207,7 @@ def thongtincanhan(request, idtaikhoan):
     
     if taikhoan.quyen == 'GV':
         thongtincanhan = GiaoVien.objects.filter(magv=idtaikhoan).first()
+
         data = {
             "mahv" : thongtincanhan.magv,
             "tenhv" : thongtincanhan.hoten,
@@ -242,6 +247,24 @@ def luuthongtincanhan(request, idtaikhoan):
         sodienthoai = request.POST.get('sdt')
         ngaysinh = request.POST.get('ngaysinh')
         diachi = request.POST.get('diachi')
+
+        try:
+            validate_phone_number(sodienthoai)
+        except ValidationError:
+            messages.error(request, "Số điện thoại không hợp lệ")
+            return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
+
+        if gioitinh == "":
+            messages.error(request, "Giới tính không được để trống")
+            return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
+        
+        today = date.today()
+        ngaySinh = datetime.strptime(ngaysinh, "%Y-%m-%d").date()
+        age = today.year - ngaySinh.year - ((today.month, today.day) < (ngaySinh.month, ngaySinh.day))
+
+        if age < 6:
+            messages.error(request, "Tuổi học viên phải lớn hơn hoặc bằng 6")
+            return redirect('thongtincanhan', idtaikhoan=idtaikhoan)
         
         print(f"Dữ liệu POST: {gioitinh}, {sodienthoai}, {ngaysinh}, {diachi}")
         if taikhoan.quyen == 'GV':

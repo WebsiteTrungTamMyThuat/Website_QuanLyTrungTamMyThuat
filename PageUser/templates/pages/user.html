@@ -56,11 +56,13 @@
     <section class="section course" aria-label="course">
       <p class="course-title">5 khóa học từ căn bản đến nâng cao, đa dạng chất liệu, chủ đề, đáp ứng mọi sở thích, định hướng của bạn</p>
         <div class="container">
+
           {% for tl, anh in khoa_hoc_with_images|slice:":5" %}
           <div class="card">
             <div class="img-bx" style="--img:url({% static 'img/'|add:anh %})"></div>
+
               
-              <div class="content">
+              <div class="content"  >
                   <h3>{{ tl.tenkh }}<br><span><a href="{% url 'DSTheoKH' tl.makh %}">Tìm hiểu thêm</a></span></h3>
               </div>
              
@@ -103,7 +105,7 @@
             <div class="collection-card">
 
               <figure class="card-banner img-holder" style="--width: 500; --height: 550;">
-                <img src="{%static "img/sp-1.jpg"%}" width="500" height="550" loading="lazy"
+                <img src="{%static "img/sp-4.jpg"%}" width="500" height="550" loading="lazy"
                   alt="Leather Craft" class="img-cover">
               </figure>
 

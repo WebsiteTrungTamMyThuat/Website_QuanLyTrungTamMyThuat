@@ -23,10 +23,10 @@
                 <input type="email" class="input-field" name="email" placeholder="Email" autocomplete="off" required>
             </div>
             <div class="input-box">
-                <input type="password" class="input-field" name="password" placeholder="Mật khẩu" autocomplete="off" required>
+                <input type="password" class="input-field password" name="password" placeholder="Mật khẩu" autocomplete="off" required>
             </div>
             <div class="input-box">
-                <input type="password" class="input-field" name="password_confirmation" placeholder="Nhập lại mật khẩu" autocomplete="off" required>
+                <input type="password" class="input-field password" name="password_confirmation" placeholder="Nhập lại mật khẩu" autocomplete="off" required>
             </div>
             <div class="forgot">
                 <section>
@@ -44,5 +44,19 @@
         </div>
     </div>
 </div>
+<script>
+    const regexPhoneNumber = phone => {
+        const regex = /^(84|0)(3|5|7|8|9)\d{8}$/;
+        return regex.test(phone);
+    };
+
+    function togglePassword() {
+        const passwordFields = document.querySelectorAll('.password');
+        console.log(passwordFields)
+        passwordFields.forEach(field => {
+            field.type = (field.type === 'password' ? 'text' : 'password');
+        });
+    }
+</script>
 {% endblock %}
 <script src="{% static "js/script.js" %}">
