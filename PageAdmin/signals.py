@@ -24,7 +24,7 @@ def update_nhanvien_for_user(sender, instance, created, **kwargs):
         nhanvien = NhanVien.objects.get(user_id=instance.id)
 
         # Cập nhật tất cả các trường thông tin trong NhanVien từ User
-        nhanvien.hoten = instance.first_name + ' ' + instance.last_name
+        nhanvien.hoten = instance.last_name + ' ' + instance.first_name
         nhanvien.email = instance.email
 
         # Lưu thay đổi vào cơ sở dữ liệu

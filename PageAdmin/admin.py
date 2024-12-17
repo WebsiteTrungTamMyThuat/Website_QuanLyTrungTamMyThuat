@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from .models import *
 from django import forms
+from django.forms import PasswordInput
+
 # Register your models here.
 
 
@@ -37,12 +39,22 @@ class NhaCungCapAdmin(admin.ModelAdmin):
 class HoaCuAdmin(admin.ModelAdmin):
     list_display = ('mahoacu', 'tenhoacu', 'soluong')
     search_fields = ('tenhoacu',)
-    
+  
+  
+class TaiKhoanNguoiDungForm(forms.ModelForm):
+    class Meta:
+        model = TaiKhoanNguoiDung
+        exclude = ('pass_word',)
+        
 @admin.register(TaiKhoanNguoiDung)
 class TaiKhoanNguoiDungAdmin(admin.ModelAdmin):
     list_display = ('idtaikhoan', 'username', 'quyen', 'trangthai',)
     search_fields = ('username','quyen', 'trangthai', )
     list_filter = ('quyen', 'trangthai')
+    readonly_fields = ('username', 'quyen')
+    form = TaiKhoanNguoiDungForm
+    def has_add_permission(self, request):
+        return False
 
 @admin.register(HocVien)
 class HocVienAdmin(admin.ModelAdmin):
@@ -102,12 +114,27 @@ class NoiDungKhoaHocAdmin(admin.ModelAdmin):
     list_display = ('manoidung', 'tieude')
     search_fields = ('tieude',)
     
+
+# class ChiTietPhieuNhapInline(admin.TabularInline):
+#     model = ChiTietPhieuNhap
+#     extra = 1
+#     fields = ('mahoacu', 'soluong', 'dongia', 'thanhtien')
     
 @admin.register(PhieuNhap)
 class PhieuNhapAdmin(admin.ModelAdmin):
-    list_display = ('maphieunhap', 'ngaynhap', 'tongtien', 'ghichu', 'mancc', 'manv')
-    search_fields = ('maphieunhap','mancc', 'manv', )
-    list_filter = ('mancc','manv','ngaynhap',) 
+    list_display = ('maphieunhap', 'ngaynhap', 'tongtien', 'ghichu', 'get_mancc', 'get_manv')
+    search_fields = ('maphieunhap', 'mancc__tenncc', 'manv__hoten')
+    list_filter = ('mancc', 'manv', 'ngaynhap',)
+
+    #inlines = [ChiTietPhieuNhapInline]
+    
+    def get_mancc(self, obj):
+        return obj.mancc.tenncc if obj.mancc else "N/A"
+    get_mancc.short_description = 'Nhà cung cấp'
+
+    def get_manv(self, obj):
+        return obj.manv.hoten if obj.manv else "N/A"
+    get_manv.short_description = 'Nhân viên nhập'
     
     
 from .forms import HoaDonForm
@@ -124,13 +151,9 @@ class LichHocAdmin(admin.ModelAdmin):
     list_display = ('malich', 'ngayhoc', 'giohoc', 'sogiohoc', 'get_tenlop',)
     search_fields = ('malich', 'malop__tenlop',)  # Tìm kiếm theo tên lớp học
     list_filter = ('giohoc', 'sogiohoc', 'malop',)  # Lọc theo lớp học
-
     def get_tenlop(self, obj):
         return obj.malop.tenlop  # Lấy tên lớp từ ForeignKey
     get_tenlop.short_description = 'Tên lớp'  # Đặt tiêu đề cho cột
-
-    
-    
 
         
 @admin.register(LopHoc)
@@ -139,6 +162,15 @@ class LopHocAdmin(admin.ModelAdmin):
     search_fields = ('tenlop','makh',)
     list_filter = ('tenlop','makh',)
     
-    
+    def save_model(self, request, obj, form, change):
+        if obj.urlhinh:
+            # Lấy tên file từ đường dẫn, bỏ tất cả các khoảng trắng
+            file_name = os.path.basename(obj.urlhinh.name)
+            
+            # Lưu lại tên file vào trường urlhinh
+            obj.urlhinh.name = file_name  # Đây sẽ là tên file không có đường dẫn
+        
+        # Gọi phương thức save_model của lớp cha để lưu model
+        super().save_model(request, obj, form, change)
     
     

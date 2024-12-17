@@ -128,7 +128,10 @@ LOCALE_PATHS = [
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+import os
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'PageUser/static'),  # Thêm thư mục static của app PageUser
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -148,13 +151,8 @@ MOMO_ENDPOINT = 'https://test-payment.momo.vn/v2/gateway/api/create'  # URL API 
 MOMO_RETURN_URL = 'http://127.0.0.1:8000/user/thank-you/'  # URL người dùng được chuyển đến sau khi thanh toán
 MOMO_NOTIFY_URL = 'http://127.0.0.1:8000/momo-notify/' 
 
-import os
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'PageUser/static'),  # Đảm bảo đường dẫn này đúng
-]
 
-MEDIA_URL = '/media/'  # URL để truy cập file media
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

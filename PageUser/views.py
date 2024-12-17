@@ -32,10 +32,15 @@ def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
 
-   
+
+    lst = ["nhung-am-thanh-thuong-nhat.jpg", "tranh-chan-dung.png", "tranh-phong-canh-1.jpg", "tranh-ky-hoa-phong-canh.jpg", "tranh-son-dau.jpg"]
+    khoa_hoc = KhoaHoc.objects.all()
+    khoa_hoc_with_images = zip(khoa_hoc, lst)
+    # Prepare the context dictionary
     context = {
         'username': username,
-        'dm_kh': KhoaHoc.objects.all()  
+        'dm_kh': KhoaHoc.objects.all(),
+        'khoa_hoc_with_images': khoa_hoc_with_images # Add the list of courses to the context
     }
 
     # Render the template with the combined context
@@ -287,14 +292,14 @@ def thongtinhv(request):
 
 
 ## Danh sách lớp theo khóa học
-
+from itertools import groupby
 def DSTheoKH(request , ml):
 
     Lop = LopHoc.objects.filter(makh=ml)
     dskh = KhoaHoc.objects.all()
     data = {
         'ds_lop': Lop,
-        'dm_kh': dskh, 
+        'dm_kh': dskh,
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
@@ -303,6 +308,7 @@ def DSTheoKH(request , ml):
 from datetime import datetime
 def filter_khoahoc(request):
     danh_sach_khoa_hoc = KhoaHoc.objects.all()
+    print(danh_sach_khoa_hoc)
     danh_sach_lop = LopHoc.objects.all()
 
     # Lấy thông tin lọc từ request
@@ -353,7 +359,7 @@ def ChiTietLop(request,mlop):
     khoa_hoc = lop.makh 
     giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
-    lichhoc = LichHoc.objects.filter(ngayhoc=lop.ngaybatdau)
+    lichhoc = LichHoc.objects.filter(malop=mlop).first()
 
     lichhoc = LichHoc.objects.filter(ngayhoc=lop.ngaybatdau)
 

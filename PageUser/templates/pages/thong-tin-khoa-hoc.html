@@ -43,16 +43,12 @@
 
                     {% load humanize %} 
                     <p><strong>Học phí:</strong> {{ single_lop.hocphi|floatformat:0|intcomma }} VNĐ</p>
-                    
+                    <ul>
+                        <p><strong>Lịch học:</strong> Ngày: {{ lichhoc.ngayhoc|date:"d/m/Y" }} - Giờ học : {{ lichhoc.giohoc|time:"H:i:s" }}</p>
+                        <p><strong>Số giờ học mỗi buổi:</strong> {{ lichhoc.sogiohoc }}</p>
+                    </ul>
                     <p><strong>Mô tả:</strong> </p>
                     <p style="white-space: pre-wrap;">{{ khoa_hoc.mota|linebreaksbr }}</p>
-                    
-                    <ul>
-                        {% for lich in lichhoc %}
-                            <p><strong>Lịch học:</strong> Ngày: {{ lich.ngayhoc|date:"d/m/Y" }} - Giờ học : {{ lich.giohoc|time:"H:i:s" }}</p>
-                            <p><strong>Tổng số giờ học:</strong> {{ lich.sogiohoc }}</p>
-                        {% endfor %}
-                    </ul>
                    
                    
                     <div class="list-button">

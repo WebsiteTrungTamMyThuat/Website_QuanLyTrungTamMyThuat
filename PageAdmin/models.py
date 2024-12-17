@@ -17,8 +17,8 @@ class TaiKhoanNguoiDung(models.Model):
 
         
 class KhoaHoc(models.Model):
-    makh = models.CharField(max_length=7, primary_key=True,verbose_name="Mã khách hàng")
-    tenkh = models.CharField(max_length=255, verbose_name="Tên khách hàng")
+    makh = models.CharField(max_length=7, primary_key=True,verbose_name="Mã khóa học")
+    tenkh = models.CharField(max_length=255, verbose_name="Tên khóa học")
     mota = models.TextField(verbose_name="Mô tả")
     hinhthuc = models.CharField(max_length=50, verbose_name="Hình thức")
     dotuoi = models.IntegerField(verbose_name="Độ tuổi")
@@ -44,13 +44,17 @@ class ChiTietKhoaHoc(models.Model):
     stt = models.IntegerField()
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh', verbose_name="Khóa học")
     manoidung = models.ForeignKey(NoiDungKhoaHoc, on_delete=models.CASCADE, db_column='manoidung', verbose_name="Nội dung")
-    id = models.IntegerField(primary_key=True, db_column='id')
+    id = models.AutoField(primary_key=True, db_column='id')
     class Meta:
         db_table = 'chitietkhoahoc'
         verbose_name = "Chi tiết khóa học"
         verbose_name_plural = "Chi tiết khóa học"
     
-        
+import os
+from django.conf import settings     
+def upload_to_pageuser(instance, filename):
+    # Đường dẫn lưu file: static/img/PageUser/<tên file>
+    return os.path.join('PageUser', 'static', 'img', filename)
 class LopHoc(models.Model):
     malop = models.CharField(max_length=7, primary_key=True, db_column='malop', verbose_name="Mã lớp")
     tenlop = models.CharField(max_length=100, verbose_name="Tên lớp")
@@ -61,7 +65,7 @@ class LopHoc(models.Model):
     hocphi = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Học phí")
     makh = models.ForeignKey(KhoaHoc, on_delete=models.CASCADE, db_column='makh', verbose_name="Khóa học")
     magv = models.CharField(max_length=10, db_column='magv', verbose_name="Giáo viên")
-    urlhinh = models.CharField(max_length=255)
+    urlhinh = models.FileField(max_length=255, upload_to=upload_to_pageuser, verbose_name="Hình ảnh")
     tinhtrang = models.CharField(max_length=255, verbose_name="Tình trạng")
     class Meta:
         db_table = 'lophoc'
@@ -71,13 +75,6 @@ class LopHoc(models.Model):
         return self.malop + " - " + self.tenlop
     def clean(self):
         self.malop = self.malop.strip()
-    def save(self, *args, **kwargs):
-        if self.urlhinh:
-            # Lấy tên file, bỏ khoảng trắng và chuẩn hóa
-            self.urlhinh.name = "_".join(self.urlhinh.name.split()).strip()
-            # Lấy tên file, bỏ khoảng trắng và chuẩn hóa
-            self.urlhinh.name = "_".join(self.urlhinh.name.split()).strip()
-        super().save(*args, **kwargs)
         
 class HocVien(models.Model):
     GIOI_TINH_CHOICES = [('Nam', 'Nam'), ('Nu', 'Nữ'),]
@@ -206,30 +203,8 @@ class LichSuGiaoDich(models.Model):
         if not self.magiaodich:  # Chỉ tự động gán giá trị khi magiaodich chưa có
             self.magiaodich = self.get_next_magiaodich()
         super().save(*args, **kwargs)
-class PhieuNhap(models.Model):
-    maphieunhap = models.AutoField(primary_key=True,verbose_name="Mã phiếu nhập")
-    ngaynhap = models.DateField(verbose_name="Ngày nhập")
-    tongtien = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Tổng tiền")
-    ghichu = models.TextField(verbose_name="Ghi chú")
-    mancc = models.ForeignKey(NhaCungCap, on_delete=models.CASCADE, db_column="mancc",verbose_name="Nhà cung cấp")
-    manv = models.ForeignKey(NhanVien, on_delete=models.CASCADE, db_column="manv", verbose_name="Nhân viên")
-    class Meta:
-        db_table = 'phieunhap'
-        verbose_name = "Phiếu nhập"
-        verbose_name_plural = "Phiếu nhập"
-        
-class ChiTietPhieuNhap(models.Model):
-    soluong = models.IntegerField(verbose_name="Số lượng")
-    dongia = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Đơn giá")
-    thanhtien = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Thành tiền")
-    maphieunhap = models.ForeignKey(PhieuNhap, on_delete=models.CASCADE, verbose_name="Phiếu nhập")
-    mahoacu = models.ForeignKey('HoaCu', on_delete=models.CASCADE, verbose_name="Họa cụ")
-    class Meta:
-        db_table = 'chitietphieunhap'
-        verbose_name = "Chi tiết phiếu nhập"
-        verbose_name_plural = "Chi tiết phiếu nhập"
-        
-        
+
+
 class HoaCu(models.Model):
     mahoacu = models.AutoField(primary_key=True, verbose_name="Mã họa cụ")
     tenhoacu = models.CharField(max_length=255, verbose_name="Tên họa cụ")
@@ -240,7 +215,32 @@ class HoaCu(models.Model):
         verbose_name_plural = "Họa cụ"
     def __str__(self):
         return self.tenhoacu
-
+          
+class PhieuNhap(models.Model):
+    maphieunhap = models.AutoField(primary_key=True,verbose_name="Mã phiếu nhập")
+    ngaynhap = models.DateField(verbose_name="Ngày nhập")
+    tongtien = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Tổng tiền")
+    ghichu = models.TextField(verbose_name="Ghi chú")
+    mancc = models.ForeignKey(NhaCungCap, on_delete=models.CASCADE, db_column="mancc",verbose_name="Nhà cung cấp")
+    manv = models.ForeignKey(NhanVien, on_delete=models.CASCADE, db_column="manv", verbose_name="Nhân viên nhập")
+    class Meta:
+        db_table = 'phieunhap'
+        verbose_name = "Phiếu nhập"
+        verbose_name_plural = "Phiếu nhập"
+        
+class ChiTietPhieuNhap(models.Model):
+    soluong = models.IntegerField(verbose_name="Số lượng")
+    dongia = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Đơn giá")
+    thanhtien = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Thành tiền")
+    maphieunhap = models.ForeignKey(PhieuNhap, on_delete=models.CASCADE, verbose_name="Phiếu nhập", primary_key=True)
+    mahoacu = models.ForeignKey(HoaCu, on_delete=models.CASCADE, verbose_name="Họa cụ")
+    class Meta:
+        db_table = 'chitietphieunhap'
+        verbose_name = "Chi tiết phiếu nhập"
+        verbose_name_plural = "Chi tiết phiếu nhập"
+        unique_together = ('maphieunhap', 'mahoacu')
+        
+    
 
 
 class ChiTietPhieuNhap(models.Model):
