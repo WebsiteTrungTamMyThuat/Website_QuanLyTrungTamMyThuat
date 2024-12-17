@@ -209,7 +209,7 @@ def thongtincanhan(request, idtaikhoan):
             "email" : thongtincanhan.email,
             "SDT"   : thongtincanhan.SDT,
             "GioiTinh": thongtincanhan.GioiTinh,
-            "NgaySinh" : thongtincanhan.NgaySinh.strftime("%Y-%m-%d"),
+            "NgaySinh" : thongtincanhan.NgaySinh.strftime("%Y-%m-%d") if thongtincanhan.NgaySinh else None,
             "DiaChi" : thongtincanhan.DiaChi
         }
     
@@ -221,7 +221,7 @@ def thongtincanhan(request, idtaikhoan):
             "email" : thongtincanhan.email,
             "SDT"   : thongtincanhan.SDT,
             "GioiTinh": thongtincanhan.GioiTinh,
-            "NgaySinh" : thongtincanhan.NgaySinh.strftime("%Y-%m-%d"),
+            "NgaySinh" : thongtincanhan.NgaySinh.strftime("%Y-%m-%d") if thongtincanhan.NgaySinh else None,
             "DiaChi" : thongtincanhan.DiaChi
         }
     if not thongtincanhan:

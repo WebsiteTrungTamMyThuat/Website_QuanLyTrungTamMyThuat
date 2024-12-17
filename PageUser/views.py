@@ -32,10 +32,14 @@ def user(request):
     # Lấy username từ session
     username = request.session.get('user_username', None)
 
+    lst = ["nhung-am-thanh-thuong-nhat.jpg", "tranh-chan-dung.png", "tranh-phong-canh-1.jpg", "tranh-ky-hoa-phong-canh.jpg", "tranh-son-dau.jpg"]
+    khoa_hoc = KhoaHoc.objects.all()
+    khoa_hoc_with_images = zip(khoa_hoc, lst)
     # Prepare the context dictionary
     context = {
         'username': username,
-        'dm_kh': KhoaHoc.objects.all()  # Add the list of courses to the context
+        'dm_kh': KhoaHoc.objects.all(),
+        'khoa_hoc_with_images': khoa_hoc_with_images # Add the list of courses to the context
     }
 
     # Render the template with the combined context
@@ -97,34 +101,42 @@ def lienhe(request):
 from django.urls import reverse
 
 def userlogin(request):
+    context = {} 
     if request.method == 'POST':
         username = request.POST.get('username')
         pass_word = request.POST.get('pass_word')
-        # request.session.flush()
+
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, username):
+            return JsonResponse({'success': False, 'message': 'Vui lòng điền đúng email !'}, status=400)
+
+      
         if username and pass_word:
-            try:         
+            try:
                 nguoidung = TaiKhoanNguoiDung.objects.get(username=username)
                 if nguoidung.pass_word == pass_word:
-                    
+                    # Save user information to the session
                     request.session['user_username'] = nguoidung.username
                     request.session['user_idtaikhoan'] = nguoidung.idtaikhoan
                     request.session['quyen'] = nguoidung.quyen
                     
-                    if nguoidung.quyen == 'GV': 
-                        return redirect(reverse('admin', kwargs={'idtaikhoan': nguoidung.idtaikhoan}))
-                    elif nguoidung.quyen == 'HV':
-                        messages.success(request, f"Chào mừng {nguoidung.username}!") 
-                        return redirect('user')
-                    else:
-                        messages.error(request, 'Thông tin đăng nhập không chính xác')
-                        return redirect('login')
-                else:
-                    messages.error(request, 'Mật khẩu không chính xác!')
+                   
+                    context = {'idtaikhoan': nguoidung.idtaikhoan}
                     
+                    if nguoidung.quyen == 'GV': 
+                        return JsonResponse({'success': True, 'role': 'GV', 'idtaikhoan': nguoidung.idtaikhoan}, status=200)
+                    elif nguoidung.quyen == 'HV':
+                        return JsonResponse({'success': True, 'role': 'HV', 'idtaikhoan': nguoidung.idtaikhoan}, status=200)
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Thông tin đăng nhập không chính xác'}, status=400)
+                else:
+                    return JsonResponse({'success': False, 'message': 'Mật khẩu không chính xác!'}, status=400)
             except TaiKhoanNguoiDung.DoesNotExist:
-                messages.error(request, 'Người dùng không tồn tại!')
+                return JsonResponse({'success': False, 'message': 'Người dùng không tồn tại!'}, status=400)
+        else:
+            return JsonResponse({'success': False, 'message': 'Vui lòng điền đầy đủ thông tin!'}, status=400)
 
-    return render(request, 'layout/dangnhap.html')
+    return render(request, 'layout/dangnhap.html', context)
 
 
 
@@ -269,14 +281,14 @@ def thongtinhv(request):
 
 
 ## Danh sách lớp theo khóa học
-
+from itertools import groupby
 def DSTheoKH(request , ml):
 
     Lop = LopHoc.objects.filter(makh=ml)
     dskh = KhoaHoc.objects.all()
     data = {
         'ds_lop': Lop,
-        'dm_kh': dskh, 
+        'dm_kh': dskh,
         'ctkh': ChiTietKhoaHoc.objects.all(),
         'ndkh': NoiDungKhoaHoc.objects.all(),
     }
@@ -285,6 +297,7 @@ def DSTheoKH(request , ml):
 from datetime import datetime
 def filter_khoahoc(request):
     danh_sach_khoa_hoc = KhoaHoc.objects.all()
+    print(danh_sach_khoa_hoc)
     danh_sach_lop = LopHoc.objects.all()
 
     # Lấy thông tin lọc từ request
@@ -335,7 +348,7 @@ def ChiTietLop(request,mlop):
     khoa_hoc = lop.makh 
     giaovien = get_object_or_404(GiaoVien, magv=lop.magv)
 
-    lichhoc = LichHoc.objects.filter(ngayhoc=lop.ngaybatdau)
+    lichhoc = LichHoc.objects.filter(malop=mlop).first()
 
 
     data = {
