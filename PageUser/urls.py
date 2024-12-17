@@ -20,7 +20,7 @@ urlpatterns = [
     path("filter-khoahoc", views.filter_khoahoc, name="filter_khoahoc"),
 
     path('logout', views.logout_view, name='logout'),
-    path('giaovien/', views.DSGiaovien, name='giaovien'),
+    path('giaovien/', views.giaovien, name='giaovien'),
     path('chinhanh/',views.chinhanh,name='chinhanh'),
     path('giaovien/chitietgiaovien/', views.chitietgiaovien, name='chitietgiaovien'),
     path('tthocvien/',views.thongtinhv,name='tthocvien'),
