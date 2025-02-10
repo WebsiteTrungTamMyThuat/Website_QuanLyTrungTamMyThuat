@@ -1,1 +1,1 @@
-Thông tin chi tiết về dự án trong file PDF 
+Thông tin chi tiết dự án: https://github.com/WebsiteTrungTamMyThuat/Website_QuanLyTrungTamMyThuat/blob/main/X%C3%A2y-d%E1%BB%B1ng-Website-Qu%E1%BA%A3n-l%C3%BD-trung-t%C3%A2m-m%E1%BB%B9-thu%E1%BA%ADt-s%C3%A1ng-t%E1%BA%A1o.pdf
